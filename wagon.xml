@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<node id="wagon">
+
+  <node id="CTL" address="0" permission="rw">
+    <node id="PEEK_SELECT" mask="0x70"/>
+    <node id="RESET_INTERNAL" mask="0x10000"/>
+    <node id="RESET_RX" mask="0x20000"/>
+    <node id="SPY_RX_START" mask="0x40000"/>
+    <node id="BER_CLEAR" mask="0x80000"/>
+    <node id="BER_START" mask="0x100000"/>
+    <node id="POWER_ENABLE" mask="0x7000"/>    
+  </node>
+  <node id="RX_SPY_PTR" address="1" permission="rw" description="Pointer into the spy buffer"/>
+  <node id="BER_DURATION" address="2" permission="rw" description="Duration of BER test in 6.125 ns units"/>
+
+  <node id="FIRMWARE_VERSION" address="0x08" mask="0xFFFF" permission="r"/>
+  <node id="FIRMWARE_FLAVOR" address="0x08" mask="0xFFFF0000" permission="r"/>
+  <node id="NUMBER_TX" address="0x09" mask="0x3F" permission="r"/>
+  <node id="NUMBER_RX" address="0x09" mask="0x3F00" permission="r"/>
+  <node id="NUMBER_TXRX" address="0x09" mask="0x3F000000" permission="r"/>
+  <node id="BER_RUNNING" address="0x09" mask="0x10000" permission="r"/>
+  <node id="PEEK_TRANSMIT" address="0x0a" permission="r"/>
+
+  <node id="RX0" address="0x80">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX1" address="0x82">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX2" address="0x84">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX3" address="0x86">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX4" address="0x88">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX5" address="0x8A">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX6" address="0x8C">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX7" address="0x8E">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+  <node id="RX8" address="0x90">
+    <node id="BITDELAY" address="0" mask="0x1FF" description="Fine delay on input relative to clock"/>
+    <node id="INVERT" address="0" mask="0x200" description="Invert the input"/>
+    <node id="SPY" address="0" mask="0xFF0000" permission="r" description="View into the RX spy"/>
+    <node id="BER_LOCK" address="0" mask="0x1000000" permission="r" description="Is the BER system locked?"/>
+    <node id="BER_COUNT" address="1" permission="r" description="Bit error rate count"/>
+  </node>
+
+  <node id="TX0" address="0x20">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX1" address="0x21">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX2" address="0x22">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX3" address="0x23">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX4" address="0x24">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX5" address="0x25">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX6" address="0x26">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+  <node id="TX7" address="0x27">
+    <node id="MODE" mask="0xF"/>
+    <node id="TX_ENABLE" mask="0x8000" description="Enable transmission for bidirectional channels"/>
+    <node id="PRBS_RESET" mask="0x10000000"/>
+  </node>
+
+
+</node>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node id="TOP">
+<node id="gbt_sca_com_0_GBT_SCA_rx" module="file://gbt-sca-sw/address_table/modules/GBT_SCA_rx.xml"  address="0x80010000"/>
+<node id="gbt_sca_com_0_GBT_SCA_tx" module="file://gbt-sca-sw/address_table/modules/GBT_SCA_tx.xml"  address="0x80020000"/>
+<node id="gbt_sca_com_0_axi_gpio_0" module="file://gbt-sca-sw/address_table/modules/GBT_SCA_axi_gpio.xml"  address="0x80030000"/>     
+</node>
