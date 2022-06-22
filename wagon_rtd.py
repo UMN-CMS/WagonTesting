@@ -83,19 +83,19 @@ class module_ADS124:
 class id_ADS124:
 
 	# wire connections to analog input number (12 is common)                                                                                         
-    X_PWR_EN = 1
-    X_RESETb = 2
-    VMON_REF0 = 4
-    VMON_REF1 = 8
-    VMON_REF2 = 10
-    PROBE_DC = 12
-    WAGON_TYPE = 6
-    GND = 7
-    IDAC1 = 3
-    IDAC2 = 5
-    IDAC3 = 9
-    IDAC4 = 0
-    IDAC5 = 11
+	X_PWR_EN = 1
+	X_RESETb = 2
+	VMON_REF0 = 4
+	VMON_REF1 = 8
+	VMON_REF2 = 10
+	PROBE_DC = 12
+	WAGON_TYPE = 6
+	GND = 7
+	IDAC1 = 3
+	IDAC2 = 5
+	IDAC3 = 9
+	IDAC4 = 0
+	IDAC5 = 11
 
 	def __init__(self):
 		self.chip = ADS124(bus=1, device=3)
