@@ -13,7 +13,7 @@ def parse_ID(ID): #likely will come from an imported utility class, right now ju
 	return num_modules, east
 
 def check_value(value, target, tolerance):
-	passed = (target - tolerance < line < target + tolerance)
+	passed = (target - tolerance < value < target + tolerance)
 	if passed:
 		message = "passed"
 	else:
@@ -46,6 +46,7 @@ class module_ADS124:
 		self.data={}
 
 	def get_resistances(self):
+		print("testing chip for module " + str(self.module))
 		all_passed = True
 		self.chip.ref_config(1) # internal reference on (needed for IDAC)                                                                        
 		self.chip.set_conv_delay(7)
@@ -58,17 +59,17 @@ class module_ADS124:
 		self.chip.setup_mux(self.RTD, self.HGCROC_RE_Sb) # measuring full resistance across all wires
 		line = 'RTD -> HGCROC_RE_Sb'                                       
 		resistance = self.chip.read_volts(vref=2000,ave=4)
-		passed, message = check_value(resistance[0], self.targets[0][0], self.targets[0][1])
-		if not passed:
-			all_passed = False
-		self.data[line] = (resistance[0], message)
-		print("line %s resistance is %.2f ohms; %s" % (line resistance[0], message))
+		self.data[line] = resistance[0]
+		print("line %s resistance is %.2f ohms" % (line, resistance[0]))
 
 		self.chip.setup_mux(self.RTD, self.VMON_LVS) # measuring resistance between lines RTD and VMON_LVS  
 		line = 'RTD -> VMON_LVS'                                  
 		resistance = self.chip.read_volts(vref=2000,ave=4)
+		passed, message = check_value(resistance[0], self.targets[0][0], self.targets[0][1])
+		if not passed:
+			all_passed = False
 		self.data[line] = resistance[0]
-		print("line %s resistance is %.2f ohms" % (line, resistance[0]))
+		print("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
 
 		self.chip.setup_mux(self.PWR_EN, self.PG_LDO) # measuring resistance between lines PWR_EN and PG_LDO      
 		line = 'PWR_EN -> PG_LDO'                             
@@ -140,6 +141,7 @@ class id_ADS124:
 		self.data = {}
 
 	def get_resistances(self, num_modules=1, east=False):
+		print("testing ID chip")
 		all_passed = True
 		self.chip.ref_config(1) # internal reference on (needed for IDAC)                                                                        
 		self.chip.set_gain(1,enable=False)
@@ -209,7 +211,7 @@ class rtd_test(Test):
 	def __init__(self, board_sn=-1, tester=""):
 		self.info_dict = {'name': "Resistance test", 'board_sn': board_sn, 'tester': tester}
 
-		super().__init__(self.rtd_test, self.info_dict, num_modules=2, east=False)
+		super().__init__(self.rtd_test, self.info_dict, num_modules=1, east=False)
 
 	def rtd_test(self, **kwargs):
 		passed = True
