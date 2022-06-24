@@ -424,7 +424,9 @@ class ADS124:
 
 	def self_offset_cal(self):
 		""" initiates a self offset calibration. The device internally shorts the inputs to mid-supply and performs the calibration. Must be in conversion mode """
+		self.spi.xfer2([self.START])
 		self.spi.xfer2([0x19])
+		time.sleep(3)
 
 	def sys_offset_cal(self):
 		""" 
