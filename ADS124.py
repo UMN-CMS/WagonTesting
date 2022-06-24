@@ -180,7 +180,7 @@ class ADS124:
 		When enabled, the device automatically swaps the inputs and takes the average of two consecutive readings to cancel the offset voltage.
 		"""
 		setting = self.read_reg(self.DATARATE_REG)[0]
-		if enable_global_chop:
+		if enable:
 			setting = setting|(1<<7)
 		else:
 			setting = (setting|(1<<7))^(1<<7)
