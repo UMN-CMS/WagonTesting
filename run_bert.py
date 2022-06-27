@@ -8,19 +8,20 @@ parser = ArgumentParser()
 parser.add_argument("-m", "--module", action="store", type=int, dest="module", help="Module to use PRBS for bit error rate test", default=None)
 parser.add_argument("-o", "--output", action="store", type=str, dest="output", help="Output file name/path for BER data", default=None)
 parser.add_argument("--long", action="store_true", dest="long", help="Run long BER scan (iskip required)", default=False)
-parser.add_argument("--delayskip", action="store", type=int, dest="iskip", help="Skip for delay (0 to 425)", default=False)
+parser.add_argument("--delayskip", action="store", type=int, dest="iskip", help="Skip for delay (0 to 425)", default=1)
 parser.add_argument("--nbits", action="store", type=float, dest="nbits", help="Number of bits to collect for long scan (1e12 by default)", default=1e12)
 
 args = parser.parse_args()
 
-from dev_wagoneer import Wagon
+from wagoneer import Wagon
 
 class BERT:
 
-    def __init__(self, output, iskip, nbits):
+    def __init__(self, output, iskip, nbits, module):
         self.scans = []
         self.crossovers = []
         self.long_scan = []
+        self.mod = module
 
         self.wagon = Wagon()
 
@@ -66,8 +67,11 @@ class BERT:
                 self.wagon.clear_invert(i)
 
     def set_crosspoint(self):
-        for mod in range(0,3):
-            os.system("python3 wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(mod))
+        if self.mod:
+            os.system("python3 wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(self.mod))
+        else:
+            for mod in range(0,3):
+                os.system("python3 wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(mod))
 
         #This should work but there is a weird python version thing going on that I can't solve right now
         '''for mod in range(0,3):
@@ -164,4 +168,4 @@ class BERT:
             print("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
             
 
-BERT(args.output, args.iskip, args.nbits)
+BERT(args.output, args.iskip, args.nbits, args.module)

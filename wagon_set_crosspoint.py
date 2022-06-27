@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import iic 
-import pca9575
 import mcp23009
 from math import fabs
 
