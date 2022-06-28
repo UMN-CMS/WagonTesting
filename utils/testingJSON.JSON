@@ -1,0 +1,11 @@
+{
+    "name": "Battery Test",
+    "board_sn": 32031100222999,
+    "tester": "Garrett",
+    "pass": true,
+    "data": {
+        "Voltage": 9,
+        "Resistance": 100,
+        "Current": 0.09
+    }
+}

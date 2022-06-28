@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<connections>
+   <connection id="tbt1_wagon" uri="uioaxi-1.0://tbt1_wagon.xml" address_table="file://tbt1_wagon.xml"/>
+   <connection id="mylittlememory" uri="uioaxi-1.0://gbtsca.xml" address_table="file://gbtsca.xml" />
+</connections>
