@@ -1,7 +1,13 @@
 #!/usr/bin/python3
 
-from run_iic_check import iic_check
+from run_iic_check import IIC_Check
+from run_bert import BERT
 
-test = {'board_sn': 32031100299999, 'tester': "Bryan"}
+test_info = {'board_sn': 32031100299999, 'tester': "Bryan"}
 
-iic_check(**test) 
+print("Running IIC Check")
+IIC_Check(**test_info)
+print("Running BERT")
+BERT(**test_info) 
+
+print("All tests done")

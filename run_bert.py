@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
+from test import Test
 
 import os
 
@@ -15,15 +16,18 @@ args = parser.parse_args()
 
 from wagoneer import Wagon
 
-class BERT:
+class BERT(Test):
 
-    def __init__(self, output, iskip, nbits, module):
+    def __init__(self, board_sn=-1, tester=''):
+        self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
+
+        Test.__init__(self, self.bert, self.info_dict, output='BERT.csv', iskip=1, nbits=1e8, module=1)
+
+    def bert(self, **kwargs):
         self.scans = []
         self.crossovers = []
-        self.long_scan = []
-        self.mod = module
-
         self.wagon = Wagon()
+        self.mod = kwargs['module']
 
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
@@ -31,7 +35,7 @@ class BERT:
         self.setup_links()
         self.set_prbs(1)
 
-        self.run_long_scan(iskip, nbits, output)
+        self.run_long_scan(kwargs['iskip'], kwargs['nbits'], kwargs['output'])
 
         """for i in [1, 5, 10]:
 
@@ -80,14 +84,15 @@ class BERT:
                 self.cp.program_output(ii, 2)
         '''
 
-    def run_test(self, iskip):
-        return self.wagon.scan(iskip)
+    #def run_test(self, iskip):
+    #    return self.wagon.scan(iskip)
 
-    def run_long_scan(self, iskip, max_bit, output):
+    def run_long_scan(self, iskip=1, max_bit=1e8, output=""):
         i_bit = 0
-        BIT_PER_SCAN = 80000008
-        i = 1
+        BIT_PER_SCAN = 80000000
+        self.long_scan = []
         start = datetime.now()
+        i = 1
         while i_bit < max_bit:
             print("Running scan {} of {}".format(i, int(max_bit/BIT_PER_SCAN)+1))
             current_scan = self.wagon.scan(iskip)
@@ -168,4 +173,4 @@ class BERT:
             print("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
             
 
-BERT(args.output, args.iskip, args.nbits, args.module)
+#BERT(args.output, args.iskip, args.nbits, args.module)

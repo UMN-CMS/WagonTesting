@@ -7,8 +7,9 @@ from math import fabs
 
 import time
 import random
+import logging
 
-class iic_check(Test):
+class IIC_Check(Test):
     
     def __init__(self, board_sn=-1, tester=""):
         self.info_dict = {'name': "IIC Check", 'board_sn': board_sn, 'tester': tester}
@@ -16,7 +17,7 @@ class iic_check(Test):
         # Initialization of a memebr of the Test class will automatically run the test
         # Make sure that all of the arguments necessary are passed as kwargs to the
         # super().__init__() function below
-        super().__init__(self.iic_check, self.info_dict, ibus=1, n_check=10000)
+        Test.__init__(self, self.iic_check, self.info_dict, ibus=1, n_check=10000)
 
     def iic_check(self, **kwargs): #ibus=1, n_check=10000):
         i2c = iic.iic()
