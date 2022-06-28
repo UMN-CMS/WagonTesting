@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<node id="tbt1_wagon">
-   <node id="wagon" module="file://wagon.xml" address="0x80100000"/>
-</node>
-

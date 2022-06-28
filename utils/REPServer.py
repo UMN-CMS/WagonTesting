@@ -7,18 +7,22 @@
 
 # importing necessary modules
 from asyncore import write
-import time, zmq, json, logging, os
+import time, zmq, json, logging, os, sys
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="logs/REPServer.log", filemode='w', format=FORMAT, level=logging.DEBUG)
+logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", filemode='w', format=FORMAT, level=logging.DEBUG)
 
 import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
-from GenResTest import GenResTest
 from PUBServer import PUBServer
+from GenResTest import GenResTest
 from IDResTest import IDResTest
-from I2CConnTest import I2CConnTest
 from BitRateTest import BitRateTest
+
+sys.path.append("/home/HGCAL_dev/sw")
+from run_iic_check import IIC_Check 
+from run_bert import BERT
+
 
 # Makes the REPServer a class
 class REPServer():
@@ -49,46 +53,46 @@ class REPServer():
                 #  Wait for next request from client
                 # string = socket.recv_string().lower()
                 logging.info("Waiting for request...")
-                message = socket.recv_string().lower()
-                logging.info("Received request: %s " % message)
+                self.desired_test, self.serial, self.tester = socket.recv_string().split(";")
+                logging.info("Received request: %s " % self.desired_test)
 
 
                 # Testing to see what the request sent to the server was. The only requests we
                 # care about are test1, test2, test3, & test4. Anything else will send back 
                 # "invalid request" to the client.
-                if message == "test1":
+                if self.desired_test == "test1":
                     logging.info("message is test1")
 
                     # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
                     socket.send(b"Request receieved for Test 1. Starting test.")
-                    self.begin_processes(message)
-                    message = ''               
+                    self.begin_processes(self.desired_test)
+                    self.desired_test = ''               
                                         
-                elif message == "test2":
+                elif self.desired_test == "test2":
                     # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
                     logging.info("message is test2")
 
                     socket.send(b"Request receieved for Test 2. Starting test.")
-                    self.begin_processes(message)
-                    message = ''   
+                    self.begin_processes(self.desired_test)
+                    self.desired_test = ''   
 
-                elif message == "test3":
+                elif self.desired_test == "test3":
                     # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
                     
                     logging.info("message is test3")
 
                     socket.send(b"Request receieved for Test 3. Starting test.")
-                    self.begin_processes(message)
-                    message = ''   
+                    self.begin_processes(self.desired_test)
+                    self.desired_test = ''   
 
-                elif message == "test4":
+                elif self.desired_test == "test4":
                     # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
                     
                     logging.info("message is test4")
 
                     socket.send(b"Request receieved for Test 4. Starting test.")
-                    self.begin_processes(message)
-                    message = ''   
+                    self.begin_processes(self.desired_test)
+                    self.desired_test = ''   
 
                 else:
                     logging.info("Invalid request.")
@@ -117,14 +121,17 @@ class REPServer():
         # Every test tasks "conn" which is for piping "logging.info" statements
         # from the tests to the publish server
         logging.debug("Testing the desired_test variable to see if it matches a test name.")
+
+        test_info = {'board_sn': self.serial, 'tester': self.tester}
+
         if desired_test == 'test1':
             test1 = GenResTest(conn)
         elif desired_test == 'test2':
             test2 = IDResTest(conn)
         elif desired_test == 'test3':
-            test3 = I2CConnTest(conn)
+            test_IIC = IIC_Check(conn, **test_info)
         elif desired_test == 'test4':
-            test4 = BitRateTest(conn)
+            test_BERT = BERT(conn, **test_info)
         else:
             pass
 

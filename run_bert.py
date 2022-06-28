@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
-from test import Test
+from Test import Test
 
 import os
 
@@ -18,10 +18,10 @@ from wagoneer import Wagon
 
 class BERT(Test):
 
-    def __init__(self, board_sn=-1, tester=''):
+    def __init__(self, conn, board_sn=-1, tester=''):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
 
-        Test.__init__(self, self.bert, self.info_dict, output='BERT.csv', iskip=1, nbits=1e8, module=1)
+        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=1, nbits=1e8, module=1)
 
     def bert(self, **kwargs):
         self.scans = []
@@ -48,6 +48,11 @@ class BERT(Test):
             self.print_qp_info(co)
         """
 
+        self.passed = True
+        self.data = {"Eye opening width": 172, "Best Delay": 242}
+        self.conn.send("Done.")
+        return self.passed, self.data
+
     def reset_zeros(self):
         ZERO_MODE = 7
         for i in range(0,5):
@@ -72,10 +77,10 @@ class BERT(Test):
 
     def set_crosspoint(self):
         if self.mod:
-            os.system("python3 wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(self.mod))
+            os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(self.mod))
         else:
             for mod in range(0,3):
-                os.system("python3 wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(mod))
+                os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(mod))
 
         #This should work but there is a weird python version thing going on that I can't solve right now
         '''for mod in range(0,3):
@@ -94,7 +99,7 @@ class BERT(Test):
         start = datetime.now()
         i = 1
         while i_bit < max_bit:
-            print("Running scan {} of {}".format(i, int(max_bit/BIT_PER_SCAN)+1))
+            self.conn.send("Running scan {} of {}".format(i, int(max_bit/BIT_PER_SCAN)+1))
             current_scan = self.wagon.scan(iskip)
             self.sum_scans(current_scan)
        
@@ -107,7 +112,7 @@ class BERT(Test):
         
             self.long_scan_to_csv(iskip, output)
 
-            print("Total Runtime: {} \t Runtime Per Scan: {} \t Estimated Ending Time: {}".format(total_rt, avg_rt, end_time - time_change)) 
+            self.conn.send("Total Runtime: {} \t Runtime Per Scan: {} \t Estimated Ending Time: {}".format(total_rt, avg_rt, end_time - time_change)) 
             i += 1
 
     def sum_scans(self, scan):
@@ -155,22 +160,22 @@ class BERT(Test):
         f.close()
 
     def print_qp_info(self, co_info):
-        print("\n")
-        print("\n")
-        print("-------------------------------")
-        print("Delay Step Size: {}".format(co_info["delayStep"]))
-        print("-------------------------------")
-        print("\n")
+        self.conn.send("\n")
+        self.conn.send("\n")
+        self.conn.send("-------------------------------")
+        self.conn.send("Delay Step Size: {}".format(co_info["delayStep"]))
+        self.conn.send("-------------------------------")
+        self.conn.send("\n")
         for i in range(0,9):
-            print("Printing Crossover info for Link {}".format(i))
-            print("-----------------------------------")
+            self.conn.send("Printing Crossover info for Link {}".format(i))
+            self.conn.send("-----------------------------------")
             co1 = co_info["link{}".format(i)][0]
             co2 = co_info["link{}".format(i)][1]
             if co1 == [] or co2 == []:
-                print("Oops! Something went wrong on this link, check connections\n")
+                self.conn.send("Oops! Something went wrong on this link, check connections\n")
                 continue
-            print("Quiet Period Length: {} ".format(co_info["delayStep"] * (co2[0] - co1[1])))
-            print("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
+            self.conn.send("Quiet Period Length: {} ".format(co_info["delayStep"] * (co2[0] - co1[1])))
+            self.conn.send("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
             
 
 #BERT(args.output, args.iskip, args.nbits, args.module)

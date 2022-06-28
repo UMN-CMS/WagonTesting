@@ -4,7 +4,7 @@ import zmq, signal, logging, os
 if not os.path.isdir("logs"):
     os.makedirs("logs")
 
-logging.basicConfig(filename='logs/PUBServer.log', filemode='w', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/home/HGCAL_dev/sw/utils/logs/PUBServer.log', filemode='w', level=logging.DEBUG, format='%(asctime)s %(message)s')
 
 # Creates the class for the PUBServer
 class PUBServer():
