@@ -1,6 +1,6 @@
 #!/usr/bin/python                                                               
-from ADS124 import ADS124
-from test import Test 
+from HwInterface.ADS124 import ADS124
+from Test import Test 
 
 import argparse
 from datetime import datetime
@@ -211,7 +211,7 @@ class rtd_test(Test):
 	def __init__(self, board_sn=-1, tester=""):
 		self.info_dict = {'name': "Resistance test", 'board_sn': board_sn, 'tester': tester}
 
-		super().__init__(self.rtd_test, self.info_dict, num_modules=1, east=False)
+		Test.__init__(self, self.rtd_test, self.info_dict, num_modules=1, east=False)
 
 	def rtd_test(self, **kwargs):
 		passed = True
