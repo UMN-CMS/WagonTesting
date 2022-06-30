@@ -1,7 +1,7 @@
 #####################################################################
 #                                                                   #
 #  This code creates a server to be housed locally on the testing   #
-#       station (at the moment this would be the raspberry pi)      #
+#                              station.                             #
 #                                                                   #
 #####################################################################
 
@@ -14,14 +14,19 @@ logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", file
 import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
+
 from PUBServer import PUBServer
 from GenResTest import GenResTest
 from IDResTest import IDResTest
 from BitRateTest import BitRateTest
+# from StressScript import StressScript
 
 sys.path.append("/home/HGCAL_dev/sw")
 from run_iic_check import IIC_Check 
 from run_bert import BERT
+from wagon_rtd import gen_resist_test, id_resist_test
+
+
 
 
 # Makes the REPServer a class
@@ -41,7 +46,7 @@ class REPServer():
         try:
             socket.bind("tcp://*:5555")
         except Exception as e:
-            print(e)
+            logging.debug(e)
 
         logging.info("Reply Server has started.")
         time.sleep(1)
@@ -56,50 +61,11 @@ class REPServer():
                 self.desired_test, self.serial, self.tester = socket.recv_string().split(";")
                 logging.info("Received request: %s " % self.desired_test)
 
-
-                # Testing to see what the request sent to the server was. The only requests we
-                # care about are test1, test2, test3, & test4. Anything else will send back 
-                # "invalid request" to the client.
-                if self.desired_test == "test1":
-                    logging.info("message is test1")
-
-                    # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
-                    socket.send(b"Request receieved for Test 1. Starting test.")
-                    self.begin_processes(self.desired_test)
-                    self.desired_test = ''               
+                # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
+                socket.send_string("Request receieved for %s. Starting test." % self.desired_test)
+                self.begin_processes(self.desired_test)
+                self.desired_test = ''               
                                         
-                elif self.desired_test == "test2":
-                    # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
-                    logging.info("message is test2")
-
-                    socket.send(b"Request receieved for Test 2. Starting test.")
-                    self.begin_processes(self.desired_test)
-                    self.desired_test = ''   
-
-                elif self.desired_test == "test3":
-                    # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
-                    
-                    logging.info("message is test3")
-
-                    socket.send(b"Request receieved for Test 3. Starting test.")
-                    self.begin_processes(self.desired_test)
-                    self.desired_test = ''   
-
-                elif self.desired_test == "test4":
-                    # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
-                    
-                    logging.info("message is test4")
-
-                    socket.send(b"Request receieved for Test 4. Starting test.")
-                    self.begin_processes(self.desired_test)
-                    self.desired_test = ''   
-
-                else:
-                    logging.info("Invalid request.")
-                    logging.debug("The message must be exactly equal to the strings in the if statements.")
-                    # Contingency response for debugging
-                    socket.send(b"Invalid request. Request must be a test.")
-
         # Keyboard interrupt with ZMQ has a bug when on BOTH Windows AND Python at the same time.
         # This code should allow for CTRL + C interrupt for the server on any non-windows system.
         except KeyboardInterrupt:
@@ -125,15 +91,18 @@ class REPServer():
         test_info = {'board_sn': self.serial, 'tester': self.tester}
 
         if desired_test == 'test1':
-            test1 = GenResTest(conn)
+            test1 = gen_resist_test(conn, **test_info)
         elif desired_test == 'test2':
-            test2 = IDResTest(conn)
+            test2 = id_resist_test(conn, **test_info)
         elif desired_test == 'test3':
             test_IIC = IIC_Check(conn, **test_info)
         elif desired_test == 'test4':
             test_BERT = BERT(conn, **test_info)
+        elif desired_test == 'STRESS':
+            test_STRESS = StressScript(conn)
         else:
-            pass
+            conn.send("Invalid request. String does not match any test type.")
+            logging.debug("Invalid request. Strings must match exactly.")
 
     # The target function for process_PUBServer being created in begin_process
     def task_PUBServer(self, conn):
