@@ -49,6 +49,9 @@ class IIC_Check(Test):
                 correct += 1
 
             if i % 1000 == 0:
+                print("IIC Check Number: {}".format(i))
+
+                print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
                 self.conn.send("IIC Check Number: {}".format(i))
                 self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
 

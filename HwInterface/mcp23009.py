@@ -67,8 +67,10 @@ class mcp23009:
             else:
                 val = val&(0xFF^(1<<bits[ibit]))
 
-            # Write new register value
-            self.iicbus.write_byte(reg, val)
+        # Write new register value
+        self.iicbus.write_byte(reg, val)
+
+        #print("Setting reg {} with val {:08b}".format(reg, val))
 
     # Read register for I2C R/W test
     # Register chosen controls the mask value for the interupt which won't affect any behaviors

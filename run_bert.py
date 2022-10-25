@@ -1,26 +1,27 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
+from fit_bert import FitData
+from wagoneer import Wagon
 from Test import Test
 
 import os
+import json
 
 parser = ArgumentParser()
 
 parser.add_argument("-m", "--module", action="store", type=int, dest="module", help="Module to use PRBS for bit error rate test", default=None)
-parser.add_argument("-o", "--output", action="store", type=str, dest="output", help="Output file name/path for BER data", default=None)
+parser.add_argument("-o", "--output", action="store", type=str, dest="output", help="Output file name/path for BER data", default="scans/BERT.csv")
 parser.add_argument("--long", action="store_true", dest="long", help="Run long BER scan (iskip required)", default=False)
 parser.add_argument("--delayskip", action="store", type=int, dest="iskip", help="Skip for delay (0 to 425)", default=1)
 parser.add_argument("--nbits", action="store", type=float, dest="nbits", help="Number of bits to collect for long scan (1e12 by default)", default=1e12)
 
 args = parser.parse_args()
 
-from wagoneer import Wagon
-
 class BERT(Test):
 
     def __init__(self, conn, board_sn=-1, tester=''):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
-
+        self.conn = conn
         Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=1, nbits=1e8, module=1)
 
     def bert(self, **kwargs):
@@ -32,7 +33,7 @@ class BERT(Test):
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
         self.reset_zeros()
-        self.setup_links()
+        self.setup_links(self.info_dict['board_sn'])
         self.set_prbs(1)
 
         self.run_long_scan(kwargs['iskip'], kwargs['nbits'], kwargs['output'])
@@ -48,8 +49,15 @@ class BERT(Test):
             self.print_qp_info(co)
         """
 
+        fitdata = FitData("BERT.csv", self.conn, do_all=True)
+
+        results = fitdata.get_results()
+
         self.passed = True
-        self.data = {"Eye opening width": 172, "Best Delay": 242}
+        self.data = {}
+        for i,r in enumerate(results):
+            self.data[str(i)] = r
+        print(self.data)
         self.conn.send("Done.")
         return self.passed, self.data
 
@@ -64,8 +72,9 @@ class BERT(Test):
             self.wagon.set_tx_mode(i, PRBS)
         
 
-    def setup_links(self):
-        self.set_crosspoint()
+    def setup_links(self, board_sn):
+        self.link_dict = self.get_links(board_sn)
+        self.set_crosspoint(self.link_dict)
         self.set_inverts()
 
     def set_inverts(self):
@@ -75,12 +84,10 @@ class BERT(Test):
             else:
                 self.wagon.clear_invert(i)
 
-    def set_crosspoint(self):
-        if self.mod:
-            os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(self.mod))
-        else:
-            for mod in range(0,3):
-                os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs 3 2 1 0".format(mod))
+    def set_crosspoint(self, link_dict):
+        for mod in link_dict.keys():
+            print("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
+            os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
 
         #This should work but there is a weird python version thing going on that I can't solve right now
         '''for mod in range(0,3):
@@ -92,15 +99,54 @@ class BERT(Test):
     #def run_test(self, iskip):
     #    return self.wagon.scan(iskip)
 
+    def get_links(self, board_sn="3205WEDBG100001", cfg_path = "./static/wagontypes.json"):
+        self.subtype = board_sn[4:-5]
+        print(self.subtype)
+
+        with open(cfg_path, "r") as json_file:
+            data = json.load(json_file)
+        json_file.close()
+
+        self.wag_info = data[self.subtype]
+
+        link_dict = {}
+        
+        for mod in range(1,self.wag_info["NumMod"]+1):
+            inputs = self.wag_info["Mod{}".format(mod)]["Inputs"]
+            outputs = self.wag_info["Mod{}".format(mod)]["Outputs"]
+
+            nin = len(inputs.keys())
+            nout = len(outputs.keys())
+
+            if nin == 1:
+                link_dict[str(mod)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[0], inputs.keys()[0]]
+            elif nin == 2:
+                link_dict[str(mod)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[1], inputs.keys()[1]]
+            elif nin == 3:
+                link_dict[str(mod)] = [inputs.keys()[0], inputs.keys()[1], inputs.keys()[2], inputs.keys()[2]]
+
+        print(link_dict)
+        return link_dict
+
     def run_long_scan(self, iskip=1, max_bit=1e8, output=""):
         i_bit = 0
-        BIT_PER_SCAN = 80000000
+        BIT_PER_SCAN = 100000008
         self.long_scan = []
         start = datetime.now()
         i = 1
         while i_bit < max_bit:
             self.conn.send("Running scan {} of {}".format(i, int(max_bit/BIT_PER_SCAN)+1))
+            
+            
+            # Long process that prints all of the numbers to the server console
+            # Approx. 30 seconds to complete
+            self.conn.send("Wait 30 seconds until this stage is complete...")
             current_scan = self.wagon.scan(iskip)
+
+            self.conn.send("30 second stage complete")
+
+
+
             self.sum_scans(current_scan)
        
             i_bit += BIT_PER_SCAN
@@ -148,6 +194,8 @@ class BERT(Test):
         return crossovers
                 
     def long_scan_to_csv(self, iskip, output):
+        
+        self.conn.send("Beginning to map to csv...")
         to_csv = map(list, zip(*self.long_scan))
 
         with open(output, 'w') as f:
@@ -156,6 +204,8 @@ class BERT(Test):
                 for word in line:
                     out += "{0: <13}".format(word)
                 f.write(out + "\n")
+                
+
 
         f.close()
 
