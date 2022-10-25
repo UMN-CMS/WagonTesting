@@ -1,32 +1,38 @@
 #!/usr/bin/python
 
-import matplotlib as mpl
-mpl.use('tkagg')
+#import matplotlib as mpl
+#mpl.use('tkagg')
 
 from math import sqrt, isnan
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from lmfit import Model
-from lmfit.lineshapes import step
 from scipy.special import erf
 from pandas import read_csv
 from argparse import ArgumentParser
 
 class FitData:
     
-    def __init__(self, path_data, scan_idx=-1, num_scan=-1, do_all=False):
+    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, do_all=False):
         self.all_data = read_csv(path_data, header=None, delim_whitespace=True)
         self.path = path_data
         self.num_scan = num_scan        
         self.scan_idx = scan_idx
+        self.conn = conn
 
         if self.scan_idx is not -1:
             self.single_scan = self.get_one_scan(self.scan_idx)
             self.do_fit(scan_idx, self.single_scan)
         elif do_all:
-            for i in range(0, 10):
+            self.results = []
+            for i in range(1, 12):
+                self.conn.send("Fitting BER Scan #{}...".format(i))
                 i_scan = self.get_one_scan(i)
-                self.do_fit(i, i_scan)
+                res = self.do_fit(i, i_scan)
+                self.results.append(res)
+
+
+    def get_results(self):
+        return self.results
 
     def do_fit(self, scan_idx, scan):
         self.guess = []
@@ -40,8 +46,12 @@ class FitData:
 
         fit_params = self.fit_scan(scan, i_fit, guess)
 
-        self.plot_scan(scan, scan_idx, fit_params)
-
+        if fit_params is not None:
+            data = self.plot_scan(scan, scan_idx, fit_params)
+        else:
+            return None       
+ 
+        return data
 
     def get_one_scan(self, iscan):
         scan = {'xdata': [], 'ydata': []}
@@ -74,7 +84,9 @@ class FitData:
     def plot_scan(self, scan, scan_idx, fit_params):
         x1, w1, TD1, x2, w2, TD2 = fit_params
 
-        fig, axs = plt.subplots(2, gridspec_kw={'height_ratios': [2, 1]})
+        return {"Eye Opening": round(x2-x1), "Midpoint": round((x2+x1)/2)}
+
+        '''fig, axs = plt.subplots(2, gridspec_kw={'height_ratios': [2, 1]})
         axs[0].scatter(scan['xdata'], scan['ydata'], label="BERT Data", s=10)
         axs[0].set_yscale('log')
         axs[0].grid(color="black", linestyle=':')
@@ -91,6 +103,7 @@ class FitData:
         self.plot_residuals(scan, fit_params, axs[1])
         plt.savefig("figures/{}_elink{}.png".format(self.path.split("/")[1][:-4], scan_idx))
         plt.show()
+        '''
 
 
     def plot_residuals(self, scan, fit_params, ax):
@@ -105,6 +118,9 @@ class FitData:
     def get_window(self, scan):
         start = scan['ydata'].index(max(scan['ydata'][:len(scan['ydata'])//2]))
         end = scan['ydata'].index(max(scan['ydata'][len(scan['ydata'])//2:]))
+
+        if start == end:
+            end = 424
 
         return start, end
 
@@ -134,8 +150,11 @@ class FitData:
         return TD1 * (1 - (1 + erf((x - x1) / w1))/2) + TD2 * (1 + erf((x-x2) / w2))/2
 
     def fit_scan(self, scan, i_fit, guess):
-        params, _ = curve_fit(self.fit_func, scan['xdata'], scan['ydata'], p0 = guess, maxfev=5000)        
-
+        try:
+            params, _ = curve_fit(self.fit_func, scan['xdata'], scan['ydata'], p0 = guess, maxfev=5000)        
+        except:
+            print("Bad Scan, moving to next")
+            return None
         if i_fit == 0:
             return params
         else:
@@ -143,14 +162,14 @@ class FitData:
 
         return params
 
-parser = ArgumentParser(description='Run fit on rising and falling edge for Wagon bit error rate data')
-parser.add_argument('-i', '--input', action="store", type=str, dest="input", default="", help='Input path containing BER csv file')
-parser.add_argument('-n', '--numscan', action="store", type=float, dest="num_scan", default=0.0, help='Number of Bits Scanned')
-parser.add_argument('--all', action="store_true", dest="do_all", default=False, help='Run fit for all scans in file')
-parser.add_argument('--scan_idx', action="store", dest="scan_idx", type=int, default=-1, help='Index of elink to fit (None if fitting all)')
+#parser = ArgumentParser(description='Run fit on rising and falling edge for Wagon bit error rate data')
+#parser.add_argument('-i', '--input', action="store", type=str, dest="input", default="", help='Input path containing BER csv file')
+#parser.add_argument('-n', '--numscan', action="store", type=float, dest="num_scan", default=0.0, help='Number of Bits Scanned')
+#parser.add_argument('--all', action="store_true", dest="do_all", default=False, help='Run fit for all scans in file')
+#parser.add_argument('--scan_idx', action="store", dest="scan_idx", type=int, default=-1, help='Index of elink to fit (None if fitting all)')
 
-args = parser.parse_args()
-
-FitData(args.input, scan_idx=args.scan_idx, num_scan=args.num_scan, do_all=args.do_all)
+#args = parser.parse_args()
+if __name__ == "__main__":
+    FitData("BERT.csv", do_all=True)
 
 

@@ -9,7 +9,7 @@
 from asyncore import write
 import time, zmq, json, logging, os, sys
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", filemode='w', format=FORMAT, level=logging.DEBUG)
+logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", filemode='w', format=FORMAT, level=logging.INFO)
 
 import multiprocessing as mp
 #from tkinter import NONE
@@ -19,7 +19,7 @@ from PUBServer import PUBServer
 from GenResTest import GenResTest
 from IDResTest import IDResTest
 from BitRateTest import BitRateTest
-# from StressScript import StressScript
+from StressScript import StressScript
 
 sys.path.append("/home/HGCAL_dev/sw")
 from run_iic_check import IIC_Check 
@@ -48,8 +48,8 @@ class REPServer():
         except Exception as e:
             logging.debug(e)
 
+        print("\n\n\tReply Server has started!\n\n")
         logging.info("Reply Server has started.")
-        time.sleep(1)
 
 
         try:
@@ -57,19 +57,19 @@ class REPServer():
             while 1>0:
                 #  Wait for next request from client
                 # string = socket.recv_string().lower()
-                logging.info("Waiting for request...")
+                logging.debug("Waiting for request...")
                 self.desired_test, self.serial, self.tester = socket.recv_string().split(";")
-                logging.info("Received request: %s " % self.desired_test)
+                logging.debug("Received request: %s " % self.desired_test)
 
                 # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
-                socket.send_string("Request receieved for %s. Starting test." % self.desired_test)
+                socket.send_string("Request receieved for a test. Starting test.")
                 self.begin_processes(self.desired_test)
                 self.desired_test = ''               
                                         
         # Keyboard interrupt with ZMQ has a bug when on BOTH Windows AND Python at the same time.
         # This code should allow for CTRL + C interrupt for the server on any non-windows system.
         except KeyboardInterrupt:
-            logging.info("Keyboard interrupt detected.")
+            logging.debug("Keyboard interrupt detected.")
             logging.info("Closing the server...")
             try:
                 socket.close()
@@ -99,19 +99,19 @@ class REPServer():
         elif desired_test == 'test4':
             test_BERT = BERT(conn, **test_info)
         elif desired_test == 'STRESS':
-            test_STRESS = StressScript(conn)
+            test_STRESS = StressScript(conn, **test_info)
         else:
             conn.send("Invalid request. String does not match any test type.")
             logging.debug("Invalid request. Strings must match exactly.")
 
     # The target function for process_PUBServer being created in begin_process
     def task_PUBServer(self, conn):
-        logging.info("Initializing the pub server...")
+        logging.debug("Initializing the pub server...")
         pub_server = PUBServer(conn)
 
     # Starts up the test and PUBServer as separate processes
     def begin_processes(self, desired_test):
-        logging.info("Starting processes")
+        logging.debug("Starting processes")
         conn_test, conn_PUBServer = mp.Pipe()
         process_test = mp.Process(target = self.task_test, args=(conn_test, desired_test,))
         process_PUBServer = mp.Process(target = self.task_PUBServer, args=(conn_PUBServer,))
@@ -122,12 +122,12 @@ class REPServer():
         process_PUBServer.start()
 
         # Prevents the code from continuing here until both processes have ended.
-        logging.info("Waiting until process_test is completed to continue")
+        logging.debug("Waiting until process_test is completed to continue")
         process_test.join()
-        logging.info("Waiting until process_PUBServer is completed to continue")
+        logging.debug("Waiting until process_PUBServer is completed to continue")
         process_PUBServer.join()
 
-        logging.info("Processes have ended.")
+        logging.debug("Processes have ended.")
 
 # Having an odd bug where it trys to instantiate the server twice, this prevents anything weird from happening
 try:

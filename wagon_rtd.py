@@ -4,6 +4,7 @@ from Test import Test
 
 import argparse
 from datetime import datetime
+import time
 import json
 
 
@@ -42,7 +43,7 @@ class module_ADS124:
         self.chip = ADS124(bus=1, device=module)
         self.chip.reset()
         self.module = module + 1
-        self.targets = [[3,1],[3,1],[3,1],[20,1],[2,1]] #placeholder
+        self.targets = [[10,4000],[10,4000],[10,4000],[10,4000],[249000,251000]] #placeholder
         self.chip.reset_POR_flag()
         self.data={}
 
@@ -60,45 +61,54 @@ class module_ADS124:
         resistance = self.chip.read_volts(vref=2000,ave=4)
         self.data[line] = resistance[0]
         self.conn.send("line %s resistance is %.2f ohms" % (line, resistance[0]))
+        print("line %s resistance is %.2f ohms" % (line, resistance[0]))
 
         self.chip.setup_mux(self.RTD, self.VMON_LVS) # measuring resistance between lines RTD and VMON_LVS  line = 'RTD -> VMON_LVS'                                  
         line = 'RTD -> VMON_LVS'                                  
         resistance = self.chip.read_volts(vref=2000,ave=4)
         passed, message = check_value(resistance[0], self.targets[0][0], self.targets[0][1])
+        print(passed, message)
         if not passed:
             all_passed = False
         self.data[line] = resistance[0]
         self.conn.send(("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message)))
+        print(("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message)))
 
         self.chip.setup_mux(self.PWR_EN, self.PG_LDO) # measuring resistance between lines PWR_EN and PG_LDO      
         line = 'PWR_EN -> PG_LDO'                   
         resistance = self.chip.read_volts(vref=2000,ave=4)
         passed, message = check_value(resistance[0], self.targets[1][0], self.targets[1][1])
+        print(passed, message)
 
         if not passed:
             all_passed = False
         self.data[line] = (resistance[0], message)
         self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
+        print("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
 
         self.chip.setup_mux(self.PG_DCDC, self.ECON_RE_Hb) # measuring resistance between lines PG_DCDC and ECON_RE_Hb
         line = 'PG_DCDC -> ECON_RE_Hb'                           
         resistance = self.chip.read_volts(vref=2000,ave=4)
         passed, message = check_value(resistance[0], self.targets[2][0], self.targets[2][1])
+        print(passed, message)
         
         if not passed:
             all_passed = False
 
         self.data[line] = (resistance[0], message)
         self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
+        print("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
 
         self.chip.setup_mux(self.ECON_RE_Sb, self.HGCROC_RE_Sb) # measuring resistance between lines ECON_RE_Sb and HGCROC_RE_Sb   
         line = 'ECON_RE_Sb -> HGCROC_RE_Sb'            
         resistance = self.chip.read_volts(vref=2000,ave=4)
         passed, message = check_value(resistance[0], self.targets[3][0], self.targets[3][1])
+        print(passed, message)
         if not passed:
             all_passed = False
         self.data[line] = (resistance[0], message)
         self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
+        print("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
 
         self.chip.ref_input(2) # use internal 2.5V reference                                                                                     
         self.chip.set_idac_channel(self.IDAC2,13)
@@ -109,12 +119,18 @@ class module_ADS124:
         line = 'HGCROC_RE_Hb -> HGCROC_RE_Sb'
         volts = self.chip.read_volts(vref=2.5, ave=4)   
 
+        print(volts)
+
         resistance = [ volts[0] / ((10**-6)*self.chip.get_idac_current()), volts[1] / ((10**-6) * self.chip.get_idac_current()) ]  
         passed, message = check_value(resistance[0], self.targets[4][0], self.targets[4][1])
+        print(passed, message)
         if not passed:
             all_passed = False
         self.data[line] = (resistance[0], message) 
         self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
+        print("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
+
+        print("Did all pass? : {}".format(all_passed))
 
         return all_passed
 
@@ -161,6 +177,8 @@ class id_ADS124:
         line = 'VMON_REF0 -> PROBE_DC'
         resistance = self.chip.read_volts(vref=2000,ave=4)
         passed, message = check_value(resistance[0], self.targets[0][0], self.targets[0][1])
+        time.sleep(5)
+
         if not passed:
             all_passed = False
         self.data[line] = (resistance[0], message)
@@ -205,10 +223,12 @@ class id_ADS124:
         self.chip.set_idac_current(500)
         self.chip.setup_mux(self.WAGON_TYPE,self.GND)
         line = 'WAGON_TYPE -> GND'
+        print(line)
         voltage = self.chip.read_volts(vref=2.5, ave=4)
         resistance = [ voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
         self.data[line] = resistance[0]
         self.conn.send("line %s resistance is %.2f ohms" % (line, resistance[0]))
+        print("line %s resistance is %.2f ohms" % (line, resistance[0]))
 
         return all_passed
 

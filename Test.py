@@ -39,7 +39,7 @@ class Test():
 
     # Dump results in JSON format for uploading to the database
     def dump_results(self):
-        self.conn.send("Dumping results")
+        # This used to conn.send("Dumping Results.") but that was clogging the pipe for the results.
         return json.dumps(self.results)
 
     # Save JSON file under <serial_number>_<test_name>.json
