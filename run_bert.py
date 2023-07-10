@@ -3,9 +3,11 @@ from datetime import datetime, timedelta
 from fit_bert import FitData
 from wagoneer import Wagon
 from Test import Test
+from collections import OrderedDict
 
 import os
 import json
+import time
 
 parser = ArgumentParser()
 
@@ -19,21 +21,24 @@ args = parser.parse_args()
 
 class BERT(Test):
 
-    def __init__(self, conn, board_sn=-1, tester=''):
+    def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=1, nbits=1e8, module=1)
+        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=1, nbits=1e8, module=module, clock=clock)
 
     def bert(self, **kwargs):
         self.scans = []
         self.crossovers = []
         self.wagon = Wagon()
         self.mod = kwargs['module']
+        self.clock = kwargs['clock']
 
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
         self.reset_zeros()
-        self.setup_links(self.info_dict['board_sn'])
+        self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
+        self.rxs = [idx for idx, val in enumerate(self.scan_mask) if val != 0]
+        self.set_prbs_len()
         self.set_prbs(1)
 
         self.run_long_scan(kwargs['iskip'], kwargs['nbits'], kwargs['output'])
@@ -49,15 +54,28 @@ class BERT(Test):
             self.print_qp_info(co)
         """
 
-        fitdata = FitData("BERT.csv", self.conn, do_all=True)
+        self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
+        fitdata = FitData("BERT.csv", self.conn, scan_mask=self.scan_mask)
 
         results = fitdata.get_results()
 
         self.passed = True
         self.data = {}
         for i,r in enumerate(results):
-            self.data[str(i)] = r
+
+            
+            self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5 + 0.5 * (i/float(len(results)))))
+            if r is None:
+                print("Bad scan found on RX {}".format(self.rxs[i]))
+                continue
+            r['passed'] = True
+            if not r["Eye Opening"] > 180 or r["Midpoint Errors"] != 0:
+                r['passed'] = False
+                self.passed = False
+            self.data[self.link_names[self.rxs[i]]] = r
         print(self.data)
+        self.conn.send("LCD ; Passed:{} Test:4".format(self.passed))
+        time.sleep(0.1)
         self.conn.send("Done.")
         return self.passed, self.data
 
@@ -66,16 +84,21 @@ class BERT(Test):
         for i in range(0,5):
             self.wagon.set_tx_mode(i, ZERO_MODE)
 
+    def set_prbs_len(self):
+        self.wagon.set_prbs_len(30000000)
+
     def set_prbs(self, tx):
         PRBS = 1
         for i in range(0,5):
             self.wagon.set_tx_mode(i, PRBS)
         
 
-    def setup_links(self, board_sn):
-        self.link_dict = self.get_links(board_sn)
+    def setup_links(self, board_sn, module, clock):
+        self.link_dict, scan_mask, link_names = self.get_links(board_sn, module=module, clock=clock)
         self.set_crosspoint(self.link_dict)
-        self.set_inverts()
+        #self.set_inverts()
+
+        return scan_mask, link_names
 
     def set_inverts(self):
         for (i,inv) in enumerate(self.invert_map):
@@ -99,8 +122,8 @@ class BERT(Test):
     #def run_test(self, iskip):
     #    return self.wagon.scan(iskip)
 
-    def get_links(self, board_sn="3205WEDBG100001", cfg_path = "./static/wagontypes.json"):
-        self.subtype = board_sn[4:-5]
+    def get_links(self, board_sn="3205WEDBG100001", cfg_path = "/home/HGCAL_dev/sw/static/wagontypes.json", module=None, clock=True):
+        self.subtype = board_sn[3:-6]
         print(self.subtype)
 
         with open(cfg_path, "r") as json_file:
@@ -110,23 +133,111 @@ class BERT(Test):
         self.wag_info = data[self.subtype]
 
         link_dict = {}
-        
-        for mod in range(1,self.wag_info["NumMod"]+1):
-            inputs = self.wag_info["Mod{}".format(mod)]["Inputs"]
-            outputs = self.wag_info["Mod{}".format(mod)]["Outputs"]
+       
+        if module is not None:
+
+            inputs = self.wag_info["Mod{}".format(module)]["Inputs"]
+            print(inputs)
+            outputs = self.wag_info["Mod{}".format(module)]["Outputs"]
+            print(outputs)
 
             nin = len(inputs.keys())
             nout = len(outputs.keys())
 
             if nin == 1:
-                link_dict[str(mod)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[0], inputs.keys()[0]]
+                link_dict[str(module)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[0], inputs.keys()[0]]
             elif nin == 2:
-                link_dict[str(mod)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[1], inputs.keys()[1]]
+                link_dict[str(module)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[1], inputs.keys()[1]]
             elif nin == 3:
-                link_dict[str(mod)] = [inputs.keys()[0], inputs.keys()[1], inputs.keys()[2], inputs.keys()[2]]
+                link_dict[str(module)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[1], inputs.keys()[1]]
+ 
+        else:
 
-        print(link_dict)
-        return link_dict
+            inputs = OrderedDict()
+            outputs = OrderedDict()
+            for mod in range(1,self.wag_info["NumMod"]+1):
+                inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
+                outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
+
+                in_dict = self.wag_info["Mod{}".format(mod)]["Inputs"]
+
+                new_in_dict = {}
+                for key,i in in_dict.items():
+                    if "XING" not in i["Elink"] and "TRIG4" not in i["Elink"]:
+                        new_in_dict[key] = i
+
+                out_dict = self.wag_info["Mod{}".format(mod)]["Outputs"]
+
+                nin = len(new_in_dict.keys())
+                nout = len(out_dict.keys())
+                print("Module {} has {} inputs and {} outputs".format(mod, nin, nout))
+
+                if nin == 1:
+                    link_dict[str(mod)] = [new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[0]]
+                elif nin == 2:
+                    link_dict[str(mod)] = [new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[1], new_in_dict.keys()[1]]
+                elif nin == 3:
+                    link_dict[str(mod)] = [new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[1], new_in_dict.keys()[1]]
+
+        scan_mask = [0] * 12
+        
+        link_names = {}
+
+        with open("/home/HGCAL_dev/sw/static/txrx.json") as link_file:
+
+            txrx = json.load(link_file)
+            
+            if module is not None:
+
+                for rx in txrx["RX"]:
+
+                    idx = int(rx["num"])
+
+                    for out in outputs.values():
+
+                        if rx["link"] == out["Elink"]:
+                            
+                            scan_mask[idx+1] = module
+                            link_names[idx+1] = rx["link"]
+            else: 
+       
+                for mod in range(1,self.wag_info["NumMod"]+1):
+     
+                    for rx in txrx["RX"]:
+
+                        idx = int(rx["num"])
+
+                        for out in outputs[mod].values():
+
+                            if rx["link"] == out["Elink"]:
+                                
+                                scan_mask[idx+1] = mod
+                                link_names[idx+1] = rx["link"]
+
+
+        # We will always have the first modules clock
+        if clock:
+
+            if module is not None:
+                scan_mask [7 + module] = module
+                link_names[7 + module] = "CLK{}".format(module-1) 
+
+            else:
+                scan_mask[8] = 1
+                link_names[8] = "CLK0"
+
+                if self.wag_info["NumMod"] >= 2:
+                    scan_mask[9] = 2
+                    link_names[9] = "CLK1"
+
+                if self.wag_info["NumMod"] == 3:
+                    scan_mask[10] = 3
+                    link_names[10] = "CLK2"
+
+        link_file.close()
+        print(scan_mask)
+
+        return link_dict, scan_mask, link_names
 
     def run_long_scan(self, iskip=1, max_bit=1e8, output=""):
         i_bit = 0
@@ -140,10 +251,10 @@ class BERT(Test):
             
             # Long process that prints all of the numbers to the server console
             # Approx. 30 seconds to complete
-            self.conn.send("Wait 30 seconds until this stage is complete...")
+            self.conn.send("Wait 1 minute until this stage is complete...")
             current_scan = self.wagon.scan(iskip)
 
-            self.conn.send("30 second stage complete")
+            self.conn.send("1 minute stage complete")
 
 
 

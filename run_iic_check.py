@@ -12,14 +12,15 @@ import logging
 
 class IIC_Check(Test):
     
-    def __init__(self, conn, board_sn=-1, tester=""):
+    def __init__(self, conn, board_sn=-1, tester="", module=None):
 
         self.info_dict = {'name': "IIC Check", 'board_sn': board_sn, 'tester': tester}
         
         # Initialization of a memebr of the Test class will automatically run the test
         # Make sure that all of the arguments necessary are passed as kwargs to the
         # super().__init__() function below
-        Test.__init__(self, self.iic_check, self.info_dict, conn, ibus=1, n_check=10000)
+        
+        Test.__init__(self, self.iic_check, self.info_dict, conn, numMod=self.get_num_mod(), n_check=10000, module=module)
 
         self.conn.send("Initializing a IIC_Check test")
 
@@ -28,42 +29,107 @@ class IIC_Check(Test):
         self.conn.send("Beginning the iic_check...")
 
         i2c = iic.iic()
+        numMod = kwargs['numMod']
+        module = kwargs['module']
+        data = {}
 
-        ibus = kwargs['ibus'] 
-        n_check = kwargs['n_check']
+        if module is not None:
 
-        code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
-        if code < 0:
-            self.conn.send("UH OH!! Bad connection")
+            passed_list = [False]
 
-        ctl = mcp23009.mcp23009(i2c,0x20)
+            ibus = module
+            n_check = kwargs['n_check']
 
-        # Setup the pins (0=SIN1, 1=SIN0, 2=SOUT1, 3=SOUT0, 4=CONFIG, 5=LOAD)
-        correct = 0
-        for i in range(0, n_check):
-            temp = random.randrange(256)
+            code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
+            if code < 0:
+                self.conn.send("UH OH!! Bad connection")
 
-            ctl.setByte(temp)
+            ctl = mcp23009.mcp23009(i2c,0x20)
 
-            if temp == ctl.readByte():
-                correct += 1
+            # Setup the pins (0=SIN1, 1=SIN0, 2=SOUT1, 3=SOUT0, 4=CONFIG, 5=LOAD)
+            correct = 0
+            print("Running I2C check for module {}".format(ibus))
+            for i in range(0, n_check):
+                temp = random.randrange(256)
 
-            if i % 1000 == 0:
-                print("IIC Check Number: {}".format(i))
+                ctl.setByte(temp)
 
-                print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
-                self.conn.send("IIC Check Number: {}".format(i))
-                self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+                if temp == ctl.readByte():
+                    correct += 1
 
-        self.conn.send("Total correct: {}".format(correct))
+                if i % 1000 == 0:
+                    print("IIC Check Number: {}".format(i))
 
-        passed = False
-        if correct == n_check:
-            passed = True
+                    print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+                    self.conn.send("IIC Check Number: {}".format(i))
+                    self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+            ctl.setByte(0)
 
-        data = {"num_iic_checks": n_check, "num_iic_correct": correct}
+            data["num_iic_checks_mod{}".format(i)] = n_check
+            data["num_iic_correct_mod{}".format(ibus)] = correct
 
+            self.conn.send("Total correct: {}".format(correct))
+
+            if correct == n_check:
+                passed_list[0] = True
+
+
+        else:
+
+            passed_list = [False] * numMod
+
+            for ib in range(0,numMod):
+
+                ibus = ib + 1
+                n_check = kwargs['n_check']
+
+                code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
+                if code < 0:
+                    self.conn.send("UH OH!! Bad connection")
+
+                ctl = mcp23009.mcp23009(i2c,0x20)
+
+                # Setup the pins (0=SIN1, 1=SIN0, 2=SOUT1, 3=SOUT0, 4=CONFIG, 5=LOAD)
+                correct = 0
+                print("Running I2C check for module {}".format(ibus))
+                for i in range(0, n_check):
+                    temp = random.randrange(256)
+
+                    ctl.setByte(temp)
+
+                    if temp == ctl.readByte():
+                        correct += 1
+
+                    if i % 1000 == 0:
+                        print("IIC Check Number: {}".format(i))
+                        self.conn.send("LCD ; Percent:{:3f} Test:3".format((ib * n_check + i)/float(numMod * n_check)))
+
+                        print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+                        self.conn.send("IIC Check Number: {}".format(i))
+                        self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+                ctl.setByte(0)
+
+                data["num_iic_checks_mod{}".format(i)] = n_check
+                data["num_iic_correct_mod{}".format(ib)] = correct
+
+                self.conn.send("Total correct: {}".format(correct))
+
+                if correct == n_check:
+                    passed_list[ib] = True
+
+        passed = all(passed_list)
+
+        self.conn.send("LCD ; Passed:{} Test:3".format(passed))
         i2c.close()
         self.conn.send("Done.")
         return passed, data
+
+    def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/static/wagontypes.json"):
+        self.subtype = self.info_dict["board_sn"][3:-6]
+
+        with open(cfg_path, "r") as json_file:
+            data = json.load(json_file)
+        json_file.close()
+
+        return data[self.subtype]["NumMod"]
 

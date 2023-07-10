@@ -32,18 +32,18 @@ def program_output(nin, nout):
    ctl.setMany([4,5,6,7],[0,0,0,0])
    ctl.setMany([0,1,2,3],[(nin&0x2),(nin&0x1),(nout&0x2),(nout&0x1)])
    ctl.setMany([4,5],[1,0])
-   #ctl.setMany([4,5],[0,0])
+   ctl.setMany([4,5],[0,0])
    ctl.setMany([4,5],[0,1])
-   #ctl.setMany([4,5],[0,0])
+   ctl.setMany([4,5],[0,0])
 
 if args.outputs is not None:
   for ii in range(0,4):
     program_output(args.outputs[ii],ii)
 
 if args.all>=0:
-  ctl.setMany([0,1],[(args.all&0x2),(args.all&0x1)])
   ctl.setMany([4,5],[0,0])
   ctl.setMany([4,5],[1,1])
+  ctl.setMany([0,1],[(args.all&0x2),(args.all&0x1)])
 
 if args.status:
     reg_vals = ctl.readAllBytes() 

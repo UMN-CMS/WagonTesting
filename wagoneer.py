@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import sys
+print(sys.version)
 import argparse
 import uhal
 
@@ -199,9 +200,9 @@ class Wagon:
                 print("%2d %d"%(irx,bers[irx]))
         else: return bers
 
-    def scan(self, iskip=1):
+    def scan(self, iskip=5):
         scan = [] 
-        for delay in range(0,425, iskip):
+        for delay in range(0,511, iskip):
             bers = []
             for irx in range(0,self.nrx+self.ntxrx):
                 self.wagon.getNode("INPUT_%d.CAPTURE_DELAY"%(irx)).write(delay)      
@@ -211,7 +212,7 @@ class Wagon:
             print("%4d"%(delay),end='')
             for irx in range(0,self.nrx+self.ntxrx):
                 bers.append(int("%8d"%res[irx]))
-                print(" %8d "%(res[irx]),end='')
+                print(" %9d "%(res[irx]),end='')
             print()
             scan.append(bers)
 
@@ -332,7 +333,7 @@ if __name__ == "__main__":
         wagoneer.do_ber(True)
 
     if args.scan:
-        wagoneer.scan(True)
+        wagoneer.scan()
 
     if args.prbslen > 0:
         wagoneer.set_prbs_len(args.prbslen)
