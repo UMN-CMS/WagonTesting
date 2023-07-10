@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import sys
 #import matplotlib as mpl
 #mpl.use('tkagg')
 
@@ -12,7 +12,7 @@ from argparse import ArgumentParser
 
 class FitData:
     
-    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, do_all=False):
+    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, scan_mask=None):
         self.all_data = read_csv(path_data, header=None, delim_whitespace=True)
         self.path = path_data
         self.num_scan = num_scan        
@@ -22,13 +22,19 @@ class FitData:
         if self.scan_idx is not -1:
             self.single_scan = self.get_one_scan(self.scan_idx)
             self.do_fit(scan_idx, self.single_scan)
-        elif do_all:
+        elif scan_mask is not None:
             self.results = []
-            for i in range(1, 12):
-                self.conn.send("Fitting BER Scan #{}...".format(i))
-                i_scan = self.get_one_scan(i)
-                res = self.do_fit(i, i_scan)
-                self.results.append(res)
+            for i,mask_val in enumerate(scan_mask):
+                if mask_val:
+                    self.conn.send("Fitting BER Scan #{}...".format(i))
+                    i_scan = self.get_one_scan(i)
+                    res = self.do_fit(i, i_scan)
+                    if res is None:
+                        res = {'Midpoint': -999, 'Eye Opening': -999, 'Midpoint Errors': -999}
+                    res["Module"] = mask_val
+                    self.results.append(res)
+                else:
+                    print("Skipping unused ELINK with RX index {}".format(i))
 
 
     def get_results(self):
@@ -37,8 +43,24 @@ class FitData:
     def do_fit(self, scan_idx, scan):
         self.guess = []
 
-        guess = self.get_guess(scan)
-        xmin, xmax = self.get_window(scan)
+        scan = self.invert_check(scan)
+        #scan, good_scan = self.wrap_check(scan)
+        maxes = self.get_peaks(scan)
+
+        if len(maxes) > 2:
+            maxes = maxes[:2]
+
+        if len(maxes) < 2:
+            self.conn.send("Bad scan with index {}, double check that this line is connected".format(scan_idx))
+            return {"Eye Opening": -999, "Midpoint": -999, "Midpoint Errors": -999}
+
+        #if not good_scan:
+        #    self.conn.send("Bad scan with index {}, double check that this line is connected".format(scan_idx))
+        #    return {"Eye Opening": -999, "Midpoint": -999, "Midpoint Errors": -999}
+
+        guess = self.get_guess(scan, maxes)
+        #xmin, xmax = self.get_window(scan)
+        xmin, xmax = maxes
         scan = self.trim_scan(scan, xmin, xmax)
         scan = self.pad_scan(scan, 50)
 
@@ -53,6 +75,43 @@ class FitData:
  
         return data
 
+    def invert_check(self, scan):
+        # If the line needs to be inverted, we can simply invert the data by subtraction
+
+        temp_ydata = scan["ydata"]
+        temp_xdata = scan["xdata"]
+
+        if 240000008 in temp_ydata:
+            temp_ydata = [240000008 - x for x in temp_ydata]
+
+        scan['ydata'] = temp_ydata
+        scan['xdata'] = temp_xdata
+
+        return scan
+
+    def wrap_check(self, scan):
+        # Function to fix data if your crossover occurs across 499 -> 0
+        temp_ydata = scan["ydata"]
+        temp_xdata = scan["xdata"]
+        if not (temp_ydata[0] > 0 and temp_ydata[499] > 0):
+            pass
+
+        else:
+            first_zero = -1
+            for i,x in enumerate(temp_ydata):
+                if x == 0:
+                    first_zero = i 
+                    break
+            if first_zero == -1:
+                print("No delays with zero bit errors; bad line or not connected")
+                return scan, False
+            temp_ydata = temp_ydata[first_zero:] + temp_ydata[:first_zero]
+            temp_xdata = temp_xdata[first_zero:] + [x + 499 for x in temp_xdata[:first_zero]]
+            scan["ydata"] = temp_ydata
+            scan["xdata"] = temp_xdata
+
+        return scan, True
+
     def get_one_scan(self, iscan):
         scan = {'xdata': [], 'ydata': []}
         for i in range(len(self.all_data[0])):
@@ -61,30 +120,39 @@ class FitData:
             
         return scan
 
-    def get_guess(self, scan):
+    def get_guess(self, scan, maxes):
         max_y = max(scan['ydata'])
         x1 = 0
         x2 = 0
+        mid = maxes[1] - maxes[0]
         least_diff = 1e12
         for (x,y) in zip(scan['xdata'],scan['ydata']):
+            if x < maxes[0] or x > maxes[1]: continue
             diff = abs(max_y/2 - y)
             if diff < least_diff:
                 least_diff = diff
-                if x < 210:
+                if x < mid:
                     x1 = x
                 else:
                     x2 = x
-            if x == 210:
+            if x == mid:
                 least_diff = 1e12
 
-        guess = [x1, 5, max_y, x2, 5, max_y]
+        guess = [maxes[0], 5, max_y, maxes[1], 5, max_y]
         
         return guess
 
     def plot_scan(self, scan, scan_idx, fit_params):
         x1, w1, TD1, x2, w2, TD2 = fit_params
 
-        return {"Eye Opening": round(x2-x1), "Midpoint": round((x2+x1)/2)}
+        width = round(x2 - x1)
+        mid = round((x2+x1)/2)
+        if mid > 0 and mid < 499:
+            mid_err = scan["ydata"][scan['xdata'].index(int(mid))]
+        else:
+            mid_err = -1
+
+        return {"Eye Opening": round(x2-x1), "Midpoint": round((x2+x1)/2), "Midpoint Errors": mid_err}
 
         '''fig, axs = plt.subplots(2, gridspec_kw={'height_ratios': [2, 1]})
         axs[0].scatter(scan['xdata'], scan['ydata'], label="BERT Data", s=10)
@@ -115,12 +183,35 @@ class FitData:
             res.append(val)
         ax.scatter(scan['xdata'], res, s=10)
 
+    def get_peaks(self, scan):
+        
+        maxes = []
+
+        for (x,y) in zip(scan['xdata'], scan['ydata']):
+            if x < 2 or x >= scan['xdata'][-2]:
+                continue
+           
+            one_back = scan['ydata'][x-1]
+            two_back = scan['ydata'][x-2]
+            one_forward = scan['ydata'][x+1]
+            two_forward = scan['ydata'][x+2]
+ 
+            if one_back <= y and two_back <= y and one_forward <= y and two_forward <= y and y != 0:
+                if x-1 not in maxes and x-2 not in maxes: 
+                    maxes.append(x)
+
+        return maxes            
+
+
     def get_window(self, scan):
         start = scan['ydata'].index(max(scan['ydata'][:len(scan['ydata'])//2]))
         end = scan['ydata'].index(max(scan['ydata'][len(scan['ydata'])//2:]))
+        if start <= 50:
+            start = scan['ydata'].index(max(scan['ydata'][50:len(scan['ydata'])//2 + 50]))
+            end = scan['ydata'].index(max(scan['ydata'][len(scan['ydata'])//2 + 50:]))
 
         if start == end:
-            end = 424
+            end = 499
 
         return start, end
 

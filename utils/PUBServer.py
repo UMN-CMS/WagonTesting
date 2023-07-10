@@ -47,10 +47,13 @@ class PUBServer():
                     break
                 else:
                     logging.debug("String variable prints did not equal 'done'")
-                    prints = "print ; " + prints
-                    logging.debug("'print' topic added to prints variable.")
-                    pub_socket.send_string(prints)
-                    logging.debug("Sent print statement.")
+                    if "LCD ; " in prints:
+                        pub_socket.send_string(prints)
+                    else:
+                        prints = "print ; " + prints
+                        logging.debug("'print' topic added to prints variable.")
+                        pub_socket.send_string(prints)
+                        logging.debug("Sent print statement.")
             
             logging.debug("Loop has been broken.")
         except:
