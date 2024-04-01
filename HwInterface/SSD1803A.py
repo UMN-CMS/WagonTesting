@@ -5,6 +5,7 @@
 from iic import iic
 import time
 import os
+import binascii
 
 
 # Defining command values
@@ -140,7 +141,7 @@ class SSD1803A:
 
         commands = [COM_8BIT_4LINE_RE0_IS0, COM_SET_DDRAM_ADDR | position]
 
-        asciiCode = [int(x.encode("hex"),16) for x in line]
+        asciiCode = [int(binascii.hexlify(str.encode(x)),16) for x in line]
 
         self.write(commands)
         self.write(asciiCode)
@@ -165,7 +166,7 @@ class SSD1803A:
         
         line = "J" + line
 
-        asciiCode = [int(x.encode("hex"),16) for x in line]
+        asciiCode = [int(binascii.hexlify(str.encode(x)),16) for x in line]
 
         self.clear()        
 

@@ -145,11 +145,11 @@ class BERT(Test):
             nout = len(outputs.keys())
 
             if nin == 1:
-                link_dict[str(module)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[0], inputs.keys()[0]]
+                link_dict[str(module)] = [list(inputs.keys())[0], list(inputs.keys())[0], list(inputs.keys())[0], list(inputs.keys())[0]]
             elif nin == 2:
-                link_dict[str(module)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[1], inputs.keys()[1]]
+                link_dict[str(module)] = [list(inputs.keys())[0], list(inputs.keys())[0], list(inputs.keys())[1], list(inputs.keys())[1]]
             elif nin == 3:
-                link_dict[str(module)] = [inputs.keys()[0], inputs.keys()[0], inputs.keys()[1], inputs.keys()[1]]
+                link_dict[str(module)] = [list(inputs.keys())[0], list(inputs.keys())[0], list(inputs.keys())[1], list(inputs.keys())[1]]
  
         else:
 
@@ -173,11 +173,11 @@ class BERT(Test):
                 print("Module {} has {} inputs and {} outputs".format(mod, nin, nout))
 
                 if nin == 1:
-                    link_dict[str(mod)] = [new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[0]]
+                    link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[0]]
                 elif nin == 2:
-                    link_dict[str(mod)] = [new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[1], new_in_dict.keys()[1]]
+                    link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[1], list(new_in_dict.keys())[1]]
                 elif nin == 3:
-                    link_dict[str(mod)] = [new_in_dict.keys()[0], new_in_dict.keys()[0], new_in_dict.keys()[1], new_in_dict.keys()[1]]
+                    link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[1], list(new_in_dict.keys())[1]]
 
         scan_mask = [0] * 12
         

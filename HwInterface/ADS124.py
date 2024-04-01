@@ -58,6 +58,7 @@ class ADS124:
             n=1
             value = [value]
         to_send = [(1<<6|reg_number), n-1] + value
+        to_send = [int(x) for x in to_send]
         self.spi.xfer2(to_send)
 
     def close(self):
@@ -87,6 +88,7 @@ class ADS124:
     def read_data(self):
         """ Request chip to read out data. Uses RDATA command reads data from a buffer with no concern for timing issues corrupting the read """
         data = self.spi.xfer2([self.RDATA, 0,0,0])
+        data = [int(x) for x in data]
         return data[1:4]
 
     def direct_data_read():
@@ -269,7 +271,7 @@ class ADS124:
         if not negative:
             setting = setting|(1<<4)
         self.write_reg(self.REF_REG,setting)
-
+         
     def ref_input(self, ref_in=0):
         """
         Selects the reference input source for the ADC.
@@ -281,7 +283,7 @@ class ADS124:
         setting = (setting|(0b11<<2))^(0b11<<2)
         setting = setting|(ref_in<<2)
         self.write_reg(self.REF_REG,setting)
-
+         
     def ref_config(self, ref_conf=0):
         """
         Configures the behavior of the internal voltage reference.
@@ -292,24 +294,26 @@ class ADS124:
         setting = self.read_reg(self.REF_REG)[0]
         setting = (setting|(0b11))^(0b11)
         setting = setting|ref_conf
+        #setting = int(setting)
         self.write_reg(self.REF_REG,setting)
-
+        #print(setting,self.read_reg(self.REF_REG)[0])
+         
     ### Excitation Current settings
-
+         
     def PGA_out_monitor(self, enable=False):
         """ Enables the PGA output voltage rail monitor circuit. """
         setting = self.read_reg(self.IDACMAG_REG)[0]
         setting = (setting|(1<<7))^(1<<7)
         setting = setting|(enable<<7)
         self. write_reg(self.IDACMAG_REG,setting)
-
+         
     def lowside_psw(self, open_psw=True):
         """ Controls the low-side power switch. """
         setting = self.read_reg(self.IDACMAG_REG)[0]
         setting = (setting|(1<<6))^(1<<6)
         setting = setting|(open_psw<<6)
         self.write_reg(self.IDACMAG_REG,setting)
-
+         
     def set_idac_current(self, current=0):
         """Set the magnitude of current for both IDAC's in micro amps. Takes values in the range [0,2000]"""
         currents = [10,50,100,250,500,750,1000,1500,2000]
@@ -477,7 +481,10 @@ if __name__=="__main__":
     parser.add_argument('--cshigh',action='store_true',help='cs pin high')
     parser.add_argument('--max_speed',type=int,default=5000000,help='max speed')
     parser.add_argument('--read_reg',action='store_true')
+    parser.add_argument('--read_all',action='store_true')
     parser.add_argument('--write_reg',action='store_true')
+    parser.add_argument('--self_test',action='store_true')
+    parser.add_argument('--reset',action='store_true')
     parser.add_argument('--register',type=int,default=None)
     parser.add_argument('--value',type=int,default=None)
     args=parser.parse_args()
@@ -489,83 +496,103 @@ if __name__=="__main__":
 
     if args.read_reg:
         data = thisADS124.read_reg(args.register)
-        print(data)
+        print("%d : 0x%02x"%(args.register,data[0]))
+
+    if args.read_all:
+        for i in range(0,18):
+            data = thisADS124.read_reg(i)
+            print("%2d : 0x%02x"%(i,data[0]))
+
+    if args.reset:
+        thisADS124.wakeup()
+        thisADS124.reset()
 
 
-    thisADS124.reset()
-    print('resetting POR flag')
-    thisADS124.reset_POR_flag()
-    print('status register: '+ str(bin(thisADS124.read_reg(thisADS124.STATUS_REG)[0])))
+    if args.self_test:
+        thisADS124.wakeup()
+        thisADS124.reset()
+        print('resetting POR flag')
+        thisADS124.reset_POR_flag()
+        print('status register: '+ str(bin(thisADS124.read_reg(thisADS124.STATUS_REG)[0])))
+        
+        thisADS124.ref_input(2)
+        thisADS124.ref_config(2)    
+        print(thisADS124.read_reg(thisADS124.REF_REG)[0])
+        thisADS124.self_offset_cal()
+        thisADS124.set_gain(gain=1)
+        print(thisADS124.read_reg(thisADS124.REF_REG)[0])
+        
+        thisADS124.conversion_mode(continuous=False)
+        print('set to single shot conversion mode')
+        #thisADS124.conversion_mode(continuous=True)
+        #print(thisADS124.read_reg(thisADS124.REF_REG)[0])
+        #print('or not')
+        #print('datarate register: ' + str(bin(thisADS124.read_reg(thisADS124.DATARATE_REG)[0])))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 1')
+        thisADS124.sys_monitor_config(config=1)
+        thisADS124.start()
+        print(thisADS124.read_reg(thisADS124.REF_REG)[0])
+        print('PGA inputs shorted to (AVDD + AVSS) / 2 and disconnected from AINx and the multiplexer; gain is set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.3f volts '%(thisADS124.read_volts()))
+        print('raw result: ' + str(thisADS124.read_data()))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 2')
+        #thisADS124.write_reg(thisADS124.REF_REG,0x3)
+        #print(thisADS124.read_reg(thisADS124.REF_REG)[0])
+        thisADS124.sys_monitor_config(config=2)
+        thisADS124.start()
+        print('Internal temperature sensor measurement; gain set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.3f degrees (F) '%(thisADS124.read_volts()*(10.0**5)*(1.0/403.0)*9.0/5.0 + 32.0) )
+        print('raw result: ' +str(thisADS124.read_data()))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 3')
+        thisADS124.sys_monitor_config(config=3)
+        thisADS124.start()
+        
+        print('(AVDD - AVSS) / 4 measurement; gain set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.3f volts'%(thisADS124.read_volts()))
+        print('raw result: ' +str(thisADS124.read_data()))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 4')
+        thisADS124.sys_monitor_config(config=4)
+        thisADS124.start()
+        print('DVDD / 4 measurement; gain set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.3f volts'%(thisADS124.read_volts()))
+        print('raw result: ' + str(thisADS124.read_data()))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 5')
+        thisADS124.sys_monitor_config(config=5)
+        thisADS124.start()
+        print('Burn-out current sources enabled, 0.2-mu A setting; gain set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.4f volts'%(thisADS124.read_volts()))
+        print('raw result: ' + str(thisADS124.read_data()))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 6')
+        thisADS124.sys_monitor_config(config=6)
+        thisADS124.start()
+        print('Burn-out current sources enabled, 1-mu A setting; gain set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.4f volts'%(thisADS124.read_volts()))
+        print('raw result: ' +str(thisADS124.read_data()))
+        print('-------------------------------------------------------')
+        
+        print('set to system monitor mode 7')
+        thisADS124.sys_monitor_config(config=7)
+        thisADS124.start()
+        print('Burn-out current sources enabled, 10-mu A setting; gain set to ' + str(thisADS124.get_gain()) )
+        #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
+        print('result: %.4f volts'%(thisADS124.read_volts()))
+        print('raw result: ' +str(thisADS124.read_data()))
 
-    thisADS124.ref_input(2)
-    thisADS124.ref_config(2)    
-    thisADS124.self_offset_cal()
-    thisADS124.set_gain(gain=1)
-
-    thisADS124.conversion_mode(continuous=False)
-    print('set to single shot conversion mode')
-    #print('datarate register: ' + str(bin(thisADS124.read_reg(thisADS124.DATARATE_REG)[0])))
-    print('-------------------------------------------------------')
-
-    print('set to system monitor mode 1')
-    thisADS124.sys_monitor_config(config=1)
-    thisADS124.start()
-    print('PGA inputs shorted to (AVDD + AVSS) / 2 and disconnected from AINx and the multiplexer; gain is set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.3f volts '%(thisADS124.read_volts()))
-    print('raw result: ' + str(thisADS124.read_data()))
-    print('-------------------------------------------------------')
-    
-    print('set to system monitor mode 2')
-    thisADS124.sys_monitor_config(config=2)
-    thisADS124.start()
-    print('Internal temperature sensor measurement; gain set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.3f degrees (F) '%(thisADS124.read_volts()*(10.0**5)*(1.0/403.0)*9.0/5.0 + 32.0) )
-    print('raw result: ' +str(thisADS124.read_data()))
-    print('-------------------------------------------------------')
-
-    print('set to system monitor mode 3')
-    thisADS124.sys_monitor_config(config=3)
-    thisADS124.start()
-
-    print('(AVDD - AVSS) / 4 measurement; gain set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.3f volts'%(thisADS124.read_volts()))
-    print('raw result: ' +str(thisADS124.read_data()))
-    print('-------------------------------------------------------')
-
-    print('set to system monitor mode 4')
-    thisADS124.sys_monitor_config(config=4)
-    thisADS124.start()
-    print('DVDD / 4 measurement; gain set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.3f volts'%(thisADS124.read_volts()))
-    print('raw result: ' + str(thisADS124.read_data()))
-    print('-------------------------------------------------------')
-
-    print('set to system monitor mode 5')
-    thisADS124.sys_monitor_config(config=5)
-    thisADS124.start()
-    print('Burn-out current sources enabled, 0.2-mu A setting; gain set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.4f volts'%(thisADS124.read_volts()))
-    print('raw result: ' + str(thisADS124.read_data()))
-    print('-------------------------------------------------------')
-
-    print('set to system monitor mode 6')
-    thisADS124.sys_monitor_config(config=6)
-    thisADS124.start()
-    print('Burn-out current sources enabled, 1-mu A setting; gain set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.4f volts'%(thisADS124.read_volts()))
-    print('raw result: ' +str(thisADS124.read_data()))
-    print('-------------------------------------------------------')
-
-    print('set to system monitor mode 7')
-    thisADS124.sys_monitor_config(config=7)
-    thisADS124.start()
-    print('Burn-out current sources enabled, 10-mu A setting; gain set to ' + str(thisADS124.get_gain()) )
-    #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
-    print('result: %.4f volts'%(thisADS124.read_volts()))
-    print('raw result: ' +str(thisADS124.read_data()))

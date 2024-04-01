@@ -333,7 +333,7 @@ if __name__ == "__main__":
         wagoneer.do_ber(True)
 
     if args.scan:
-        wagoneer.scan()
+        wagoneer.scan(1)
 
     if args.prbslen > 0:
         wagoneer.set_prbs_len(args.prbslen)

@@ -152,26 +152,25 @@ class FitData:
         else:
             mid_err = -1
 
-        return {"Eye Opening": round(x2-x1), "Midpoint": round((x2+x1)/2), "Midpoint Errors": mid_err}
 
-        '''fig, axs = plt.subplots(2, gridspec_kw={'height_ratios': [2, 1]})
-        axs[0].scatter(scan['xdata'], scan['ydata'], label="BERT Data", s=10)
-        axs[0].set_yscale('log')
-        axs[0].grid(color="black", linestyle=':')
-        axs[0].axis([min(scan['xdata'])-15, max(scan['xdata'])+15, 0.1, 1e13])
-        y_fit = [self.fit_func(x, x1, w1, TD1, x2, w2, TD2) for x in scan['xdata']]
-        axs[0].plot(scan['xdata'], y_fit, color="red", label="Fit")
-        axs[1].set_xlabel("Time Delay")
-        axs[1].grid(color='black', linestyle=":")
-        axs[0].set_ylabel("BER Count")
-        axs[1].set_ylabel("Fit Pull")
-        fig.suptitle("BER Scan for TRIG_ELINK_{} ({:e} PRBS per delay)".format(scan_idx, self.num_scan))
-        axs[0].legend(loc="upper center")
-        axs[0].set_title("Eye-Opening Width: {}".format(round(x2 - x1, 1)))
-        self.plot_residuals(scan, fit_params, axs[1])
-        plt.savefig("figures/{}_elink{}.png".format(self.path.split("/")[1][:-4], scan_idx))
-        plt.show()
-        '''
+        #fig, axs = plt.subplots(2, gridspec_kw={'height_ratios': [2, 1]})
+        #axs[0].scatter(scan['xdata'], scan['ydata'], label="BERT Data", s=10)
+        #axs[0].set_yscale('log')
+        #axs[0].grid(color="black", linestyle=':')
+        #axs[0].axis([min(scan['xdata'])-15, max(scan['xdata'])+15, 0.1, 1e13])
+        #y_fit = [self.fit_func(x, x1, w1, TD1, x2, w2, TD2) for x in scan['xdata']]
+        #axs[0].plot(scan['xdata'], y_fit, color="red", label="Fit")
+        #axs[1].set_xlabel("Time Delay")
+        #axs[1].grid(color='black', linestyle=":")
+        #axs[0].set_ylabel("BER Count")
+        #axs[1].set_ylabel("Fit Pull")
+        #fig.suptitle("BER Scan for TRIG_ELINK_{} ({:e} PRBS per delay)".format(scan_idx, self.num_scan))
+        #axs[0].legend(loc="upper center")
+        #axs[0].set_title("Eye-Opening Width: {}".format(round(x2 - x1, 1)))
+        #self.plot_residuals(scan, fit_params, axs[1])
+        #plt.savefig("figures/{}_elink{}.png".format(self.path.split("/")[1][:-4], scan_idx))
+        
+        return {"Eye Opening": round(x2-x1), "Midpoint": round((x2+x1)/2), "Midpoint Errors": mid_err}
 
 
     def plot_residuals(self, scan, fit_params, ax):
@@ -199,7 +198,7 @@ class FitData:
             if one_back <= y and two_back <= y and one_forward <= y and two_forward <= y and y != 0:
                 if x-1 not in maxes and x-2 not in maxes: 
                     maxes.append(x)
-
+        print(maxes)
         return maxes            
 
 
