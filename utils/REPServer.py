@@ -31,6 +31,7 @@ from StressScript import StressScript
 from LCD_SUBClient import LCD_SUBClient
 
 sys.path.append("/home/HGCAL_dev/sw")
+from run_adc_self_test import ADC
 from run_iic_check import IIC_Check 
 from run_bert import BERT
 from wagon_rtd import gen_resist_test, id_resist_test
@@ -59,6 +60,8 @@ class REPServer():
             socket.bind("tcp://*:5555")
         except Exception as e:
             logging.debug(e)
+            print("COULD NOT CREATE REP SERVER! Make sure all REPserver.py processes are killed before rerunning.")
+            return 
 
         print("\n\n\tReply Server has started!\n\n")
         logging.info("Reply Server has started.")
@@ -80,6 +83,7 @@ class REPServer():
                 # string = socket.recv_string().lower()
                 logging.debug("Waiting for request...")
                 self.desired_test, self.serial, self.tester = socket.recv_string().split(";")
+                print(self.desired_test)
                 logging.debug("Received request: %s " % self.desired_test)
 
                 # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
@@ -110,15 +114,17 @@ class REPServer():
         logging.debug("Testing the desired_test variable to see if it matches a test name.")
 
         test_info = {'board_sn': self.serial, 'tester': self.tester}
-
+        
         if desired_test == 'test0':
-            self.lcd.set_stage()
-            test1 = gen_resist_test(conn, **test_info)
+            #self.lcd.set_stage()
+            test1 = ADC(conn,**test_info) 
         elif desired_test == 'test1':
-            test2 = id_resist_test(conn, **test_info)
+            test2 = gen_resist_test(conn, **test_info)
         elif desired_test == 'test2':
-            test_IIC = IIC_Check(conn, **test_info)
+            test3 = id_resist_test(conn, **test_info)
         elif desired_test == 'test3':
+            test_IIC = IIC_Check(conn, **test_info)
+        elif desired_test == 'test4':
             test_BERT = BERT(conn, **test_info)
         elif desired_test == 'STRESS':
             test_STRESS = StressScript(conn, **test_info)
@@ -138,7 +144,7 @@ class REPServer():
     def begin_processes(self, desired_test):
         logging.debug("Starting processes")
         conn_test, conn_PUBServer = mp.Pipe()
-        self.lcd.loading_bar(int(desired_test[-1])+1,0)
+        #self.lcd.loading_bar(int(desired_test[-1])+1,0)
         process_test = mp.Process(target = self.task_test, args=(conn_test, desired_test,))
         process_PUBServer = mp.Process(target = self.task_PUBServer, args=(conn_PUBServer,))
         process_LCD = mp.Process(target = self.task_LCD)

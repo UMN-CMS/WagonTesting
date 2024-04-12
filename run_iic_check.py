@@ -52,7 +52,12 @@ class IIC_Check(Test):
             for i in range(0, n_check):
                 temp = random.randrange(256)
 
-                ctl.setByte(temp)
+                try:
+                    ctl.setByte(temp)
+                except:
+                    self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. If this problem persists, contact the expert on-hand.")
+                    self.conn.send("Hit stop to retest")
+                    break
 
                 if temp == ctl.readByte():
                     correct += 1
@@ -83,7 +88,13 @@ class IIC_Check(Test):
                 ibus = ib + 1
                 n_check = kwargs['n_check']
 
-                code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
+                try:
+                    code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
+                except:
+                    print("Bad I2C connection")
+                    self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. \nIf this problem persists, contact the expert on-hand.")
+                    self.conn.send("Hit stop to retest")
+
                 if code < 0:
                     self.conn.send("UH OH!! Bad connection")
 
@@ -95,7 +106,14 @@ class IIC_Check(Test):
                 for i in range(0, n_check):
                     temp = random.randrange(256)
 
-                    ctl.setByte(temp)
+                    try:
+                        ctl.setByte(temp)
+                    except:
+                        print("First read write failed")
+                        self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. If this problem persists, contact the expert on-hand.")
+                        self.conn.send("Hit stop to retest")
+                        break
+                        
 
                     if temp == ctl.readByte():
                         correct += 1
@@ -107,8 +125,11 @@ class IIC_Check(Test):
                         print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
                         self.conn.send("IIC Check Number: {}".format(i))
                         self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
-                ctl.setByte(0)
-
+                try:
+                    ctl.setByte(0)
+                except:
+                    print("Last write failed")
+                
                 data["num_iic_checks_mod{}".format(i)] = n_check
                 data["num_iic_correct_mod{}".format(ib)] = correct
 
