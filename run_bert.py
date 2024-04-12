@@ -5,6 +5,7 @@ from wagoneer import Wagon
 from Test import Test
 from collections import OrderedDict
 
+import numpy as np
 import os
 import json
 import time
@@ -24,7 +25,7 @@ class BERT(Test):
     def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=1, nbits=1e8, module=module, clock=clock)
+        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
 
     def bert(self, **kwargs):
         self.scans = []
@@ -32,6 +33,7 @@ class BERT(Test):
         self.wagon = Wagon()
         self.mod = kwargs['module']
         self.clock = kwargs['clock']
+        self.iskip = kwargs['iskip']
 
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
@@ -55,7 +57,7 @@ class BERT(Test):
         """
 
         self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
-        fitdata = FitData("BERT.csv", self.conn, scan_mask=self.scan_mask)
+        fitdata = FitData("BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
 
         results = fitdata.get_results()
 
@@ -77,11 +79,9 @@ class BERT(Test):
 
         self.copy = {}
         for key1, d in self.data.items():
-            if type(d) == int or type(d) == bool:
-                self.copy[key1] = d
-            for key2, x in d.values():
-                print(x)
-                if type(x) == type(np.int64()):
+            self.copy[key1] = {}
+            for key2, x in d.items():
+                if isinstance(x, (int, np.integer)):
                     self.copy[key1][key2] = int(x)
                 else:
                     self.copy[key1][key2] = x

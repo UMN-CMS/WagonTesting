@@ -72,7 +72,7 @@ class REPServer():
         myiic = iic()
         myiic.connect(dev="/dev/i2c-{}".format(I2C_BUS), addr=LCD_ADDRESS)
 
-        #self.lcd = SSD1803A(myiic, LCD_ADDRESS)
+        self.lcd = SSD1803A(myiic, LCD_ADDRESS)
 
         try:
             logging.debug("REPServer: Beginning while loop to stay on forever.")

@@ -12,12 +12,13 @@ from argparse import ArgumentParser
 
 class FitData:
     
-    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, scan_mask=None):
+    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, scan_mask=None, iskip=1):
         self.all_data = read_csv(path_data, header=None, delim_whitespace=True)
         self.path = path_data
         self.num_scan = num_scan        
         self.scan_idx = scan_idx
         self.conn = conn
+        self.iskip = iskip
 
         if self.scan_idx is not -1:
             self.single_scan = self.get_one_scan(self.scan_idx)
@@ -146,7 +147,7 @@ class FitData:
         x1, w1, TD1, x2, w2, TD2 = fit_params
 
         width = round(x2 - x1)
-        mid = round((x2+x1)/2)
+        mid = self.iskip*round((x2+x1)/(2*self.iskip))
         if mid > 0 and mid < 499:
             mid_err = scan["ydata"][scan['xdata'].index(int(mid))]
         else:
@@ -187,16 +188,16 @@ class FitData:
         maxes = []
 
         for (x,y) in zip(scan['xdata'], scan['ydata']):
-            if x < 2 or x >= scan['xdata'][-2]:
+            if x < scan['xdata'][1] or x >= scan['xdata'][-2]:
                 continue
            
-            one_back = scan['ydata'][x-1]
-            two_back = scan['ydata'][x-2]
-            one_forward = scan['ydata'][x+1]
-            two_forward = scan['ydata'][x+2]
+            one_back = scan['ydata'][scan['xdata'].index(x)-1]
+            two_back = scan['ydata'][scan['xdata'].index(x)-2]
+            one_forward = scan['ydata'][scan['xdata'].index(x)+1]
+            two_forward = scan['ydata'][scan['xdata'].index(x)+2]
  
             if one_back <= y and two_back <= y and one_forward <= y and two_forward <= y and y != 0:
-                if x-1 not in maxes and x-2 not in maxes: 
+                if x-self.iskip not in maxes and x-2*self.iskip not in maxes: 
                     maxes.append(x)
         print(maxes)
         return maxes            
@@ -215,10 +216,13 @@ class FitData:
         return start, end
 
     def trim_scan(self, scan, xmin, xmax):
-        return {'xdata': scan['xdata'][xmin:xmax], 'ydata': scan['ydata'][xmin:xmax]}
+        min_idx = scan['xdata'].index(xmin)
+        max_idx = scan['xdata'].index(xmax)
+        return {'xdata': scan['xdata'][min_idx:max_idx], 'ydata': scan['ydata'][min_idx:max_idx]}
 
     
     def pad_scan(self, scan, pad):
+
         iskip = scan['xdata'][1] - scan['xdata'][0]
 
         start = scan['xdata'][0]
