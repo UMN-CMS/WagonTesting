@@ -19,12 +19,12 @@ def run_tests(test_info):
     #id_resist_test(c1, **test_info)
     #print("Running IIC Check")
     #IIC_Check(c1, module = module, **test_info)
-    #print("Running BERT")
-    #BERT(c1, module = module, clock=True, **test_info) 
-    ADC(c1, **test_info)
-    print("All tests done")
+    print("Running BERT")
+    BERT(c1, module = module, clock=True, **test_info) 
+    #ADC(c1, **test_info)
+    #print("All tests done")
 
-test_info = {'board_sn': '320WE30A1000005', 'tester': "Bryan"}
+test_info = {'board_sn': '320WE10A1000004', 'tester': "Bryan"}
 #test_info = {'board_sn': '320WW10A1000008', 'tester': "Seth"}
 run_tests(test_info)
 

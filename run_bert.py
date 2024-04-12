@@ -74,6 +74,20 @@ class BERT(Test):
                 self.passed = False
             self.data[self.link_names[self.rxs[i]]] = r
         print(self.data)
+
+        self.copy = {}
+        for key1, d in self.data.items():
+            if type(d) == int or type(d) == bool:
+                self.copy[key1] = d
+            for key2, x in d.values():
+                print(x)
+                if type(x) == type(np.int64()):
+                    self.copy[key1][key2] = int(x)
+                else:
+                    self.copy[key1][key2] = x
+             
+        self.data = self.copy
+       
         self.conn.send("LCD ; Passed:{} Test:4".format(self.passed))
         time.sleep(0.1)
         self.conn.send("Done.")
