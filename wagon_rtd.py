@@ -1,5 +1,5 @@
 #!/usr/bin/python                                                               
-from ADS124 import ADS124
+from HwInterface.ADS124 import ADS124
 from Test import Test 
 
 import argparse
@@ -39,12 +39,16 @@ class module_ADS124:
 
     def __init__(self, conn, module=None, targets=None):
         self.conn = conn
-        self.chip = ADS124(bus=1, device=module)
+        self.chip = ADS124(bus=3, device=module)
+        self.chip.powerdown()
         self.chip.wakeup()
         self.chip.reset()
         self.module = module + 1
         self.targets = [[0.1,100],[0.1,100],[0.1,100],[0.1,100],[495,505]] #placeholder
         self.chip.reset_POR_flag()
+        print(f"Status Register: {self.chip.read_reg(0x01)}")
+        self.chip.read_all()
+
         self.data={}
 
     def get_resistances(self):
@@ -207,7 +211,7 @@ class id_ADS124:
         # Initalizing the PIPE as an attribute
         self.conn = conn
 
-        self.chip = ADS124(bus=1, device=3)
+        self.chip = ADS124(bus=3, device=3)
         self.chip.wakeup()
         self.chip.reset()
         self.targets = [[495,505]] #placeholder
@@ -343,7 +347,7 @@ class gen_resist_test(Test):
         self.conn.send("Done.") 
         return passed, data
 
-    def get_num_modules(self, path="/home/HGCAL_dev/sw/static/wagontypes.json"):
+    def get_num_modules(self, path="./static/wagontypes.json"):
         
         subtype = self.info_dict["board_sn"][3:-6]
 

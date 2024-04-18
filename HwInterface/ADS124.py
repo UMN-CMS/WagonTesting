@@ -14,6 +14,8 @@ class ADS124:
         self.spi.mode = 1
         self.spi.max_speed_hz = max_speed
 
+        print(f"bus: {bus}\ndevice: {device}\ncshigh {cshigh}\nmax_speed: {max_speed}")
+
     def encode(self):
         return {'chip':'ADS124S08'}
 
@@ -473,6 +475,15 @@ class ADS124:
         data = (data|(1<<pin))^(1<<pin)
         data = data|(high<<pin)
 
+    def read_all(self):
+       
+        print("="*30)
+        for i in range(0,18):
+            data = self.read_reg(i)
+            print("%2d : 0x%02x"%(i,data[0]))
+        print("="*30)
+
+
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description="ADS124 chip")
@@ -510,11 +521,34 @@ if __name__=="__main__":
 
     if args.self_test:
         thisADS124.wakeup()
+
+        #print("="*30)
+        #print("After wakeup")
+        #print("="*30)
+        #for i in range(0,18):
+        #    data = thisADS124.read_reg(i)
+        #    print("%2d : 0x%02x"%(i,data[0]))
+
         thisADS124.reset()
+        
+        #print("="*30)
+        #print("After reset")
+        #print("="*30)
+        #for i in range(0,18):
+        #    data = thisADS124.read_reg(i)
+        #    print("%2d : 0x%02x"%(i,data[0]))
+
         print('resetting POR flag')
         thisADS124.reset_POR_flag()
         print('status register: '+ str(bin(thisADS124.read_reg(thisADS124.STATUS_REG)[0])))
         
+        #print("="*30)
+        #print("After reset POR flag")
+        #print("="*30)
+        #for i in range(0,18):
+        #    data = thisADS124.read_reg(i)
+        #    print("%2d : 0x%02x"%(i,data[0]))
+
         thisADS124.ref_input(2)
         thisADS124.ref_config(2)    
         print(thisADS124.read_reg(thisADS124.REF_REG)[0])

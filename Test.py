@@ -7,6 +7,7 @@ This class assumes that your results dictionary stores only certain fields.
 Make sure that you are syncronizing your return from the test function with that of the test class.
 '''
 
+import os
 import json
 
 class Test():
@@ -45,6 +46,13 @@ class Test():
     # Save JSON file under <serial_number>_<test_name>.json
     def save_results(self):
         self.conn.send("\nSaving results...\n")
+
+        if not os.path.exists("/home/HGCAL_dev/sw/jsons"):
+            os.makedirs("/home/HGCAL_dev/sw/jsons")
+
+        if not os.path.exists("/home/HGCAL_dev/sw/jsons/{0}".format(self.name.replace(" ", ""))):
+            os.makedirs("/home/HGCAL_dev/sw/jsons/{0}".format(self.name.replace(" ", "")))
+
         with open("/home/HGCAL_dev/sw/jsons/{0}/{0}_{1}.json".format(self.name.replace(" ",""), self.board_sn), "w") as f:
             f.write(self.dump_results())
 
