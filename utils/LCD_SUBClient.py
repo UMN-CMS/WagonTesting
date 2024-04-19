@@ -51,6 +51,8 @@ class LCD_SUBClient():
                                 break
 
                         break
+                    elif "Exit." in self.message:
+                        break
 
 
                 else: pass
@@ -59,6 +61,9 @@ class LCD_SUBClient():
         except Exception as e:
             print(e)
 
-        if "4" in test:
-            time.sleep(5)
-            lcd.home()
+        try:
+            if "4" in test:
+                time.sleep(5)
+                lcd.home()
+        except:
+            pass

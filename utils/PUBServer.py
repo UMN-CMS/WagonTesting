@@ -45,6 +45,13 @@ class PUBServer():
                     logging.debug("JSON sent.")
                     # Breaks the loop once it sends the JSON so the server will shut down
                     break
+                elif prints == "Exit.":
+                    logging.debug("REPServer encountered error, exiting gracefully")
+                    prints = "print ; " + prints
+                    pub_socket.send_string(prints)
+                    prints = "LCD ; Exit."
+                    pub_socket.send_string(prints)
+                    break
                 else:
                     logging.debug("String variable prints did not equal 'done'")
                     if "LCD ; " in prints:

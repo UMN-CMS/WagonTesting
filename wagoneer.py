@@ -200,9 +200,12 @@ class Wagon:
                 print("%2d %d"%(irx,bers[irx]))
         else: return bers
 
-    def scan(self, iskip=5):
+    def scan(self, iskip=5, conn=None):
         scan = [] 
         for delay in range(0,511, iskip):
+
+            if conn is not None:
+                conn.send("Scanning BERT phase {}".format(delay))
             bers = []
             for irx in range(0,self.nrx+self.ntxrx):
                 self.wagon.getNode("INPUT_%d.CAPTURE_DELAY"%(irx)).write(delay)      

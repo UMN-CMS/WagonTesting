@@ -6,7 +6,7 @@ Utility class for running tests on wagon tester
 This class assumes that your results dictionary stores only certain fields.
 Make sure that you are syncronizing your return from the test function with that of the test class.
 '''
-
+import time
 import json
 
 class Test():
@@ -14,6 +14,8 @@ class Test():
     def __init__(self, test_func, info_dict, conn, **kwargs):
 
         self.conn = conn
+
+        time.sleep(1)
 
         self.conn.send("Initializing a test")
 
@@ -26,16 +28,22 @@ class Test():
             self.conn.send("Please provide the name of the test, board serial number, and tester name")
 
         # Info that will be provided from running the test
-        self.passed, self.data = self.run_test(test_func, **kwargs)
+        try:
+            self.passed, self.data = self.run_test(test_func, **kwargs)
 
-        # Package up results into a dictionary for parsing into a JSON
-        self.results = {'name': self.name, 'board_sn': self.board_sn, 'tester': self.tester, 'pass': self.passed, 'data': self.data}
+            # Package up results into a dictionary for parsing into a JSON
+            self.results = {'name': self.name, 'board_sn': self.board_sn, 'tester': self.tester, 'pass': self.passed, 'data': self.data}
 
-        self.conn.send(self.dump_results())
-        
-        self.save_results()
+            self.conn.send(self.dump_results())
+            
+            self.save_results()
 
-        self.send_results()
+            self.send_results()
+
+        except:
+
+            self.conn.send(f'Issue running test "{info_dict["name"]}". Try rerunning')
+            self.conn.send("Exit.")
 
     # Dump results in JSON format for uploading to the database
     def dump_results(self):
