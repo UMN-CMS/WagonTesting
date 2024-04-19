@@ -88,7 +88,9 @@ class REPServer():
 
                 # Immediately sends a response to the GUI, begins the test and PUBServer, then resets the message variable.
                 socket.send_string("Request receieved for a test. Starting test.")
+                print("Beginning processes")
                 self.begin_processes(self.desired_test)
+                print("After beginning processes")
                 self.desired_test = ''               
                                         
         # Keyboard interrupt with ZMQ has a bug when on BOTH Windows AND Python at the same time.
@@ -116,7 +118,7 @@ class REPServer():
         test_info = {'board_sn': self.serial, 'tester': self.tester}
         
         if desired_test == 'test0':
-            #self.lcd.set_stage()
+            self.lcd.set_stage()
             test1 = ADC(conn,**test_info) 
         elif desired_test == 'test1':
             test2 = gen_resist_test(conn, **test_info)
@@ -160,6 +162,7 @@ class REPServer():
         process_test.join()
         logging.debug("Waiting until process_PUBServer is completed to continue")
         process_PUBServer.join()
+        logging.debug("Pub server joined")
         process_LCD.join()
 
         logging.debug("Processes have ended.")

@@ -266,7 +266,7 @@ class BERT(Test):
             # Long process that prints all of the numbers to the server console
             # Approx. 30 seconds to complete
             self.conn.send("Wait 1 minute until this stage is complete...")
-            current_scan = self.wagon.scan(iskip)
+            current_scan = self.wagon.scan(iskip, self.conn)
 
             self.conn.send("1 minute stage complete")
 
