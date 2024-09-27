@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 '''
 Utility class for running tests on wagon tester
 
@@ -8,6 +7,7 @@ Make sure that you are syncronizing your return from the test function with that
 '''
 import time
 import json
+import os
 
 class Test():
     
@@ -35,13 +35,14 @@ class Test():
             self.results = {'name': self.name, 'board_sn': self.board_sn, 'tester': self.tester, 'pass': self.passed, 'data': self.data}
 
             self.conn.send(self.dump_results())
-            
             self.save_results()
 
             self.send_results()
 
-        except:
+        except Exception as e:
 
+            print(f"Encountered exception when running test: {e}")
+           
             self.conn.send(f'Issue running test "{info_dict["name"]}". Try rerunning')
             self.conn.send("Exit.")
 
@@ -52,8 +53,11 @@ class Test():
 
     # Save JSON file under <serial_number>_<test_name>.json
     def save_results(self):
+        if not os.path.exists("/home/HGCAL_dev/sw/WagonTesting/jsons/{}".format(self.name.replace(" ", ""))):
+            os.makedirs("/home/HGCAL_dev/sw/WagonTesting/jsons/{}".format(self.name.replace(" ", "")))
+
         self.conn.send("\nSaving results...\n")
-        with open("/home/HGCAL_dev/sw/jsons/{0}/{0}_{1}.json".format(self.name.replace(" ",""), self.board_sn), "w") as f:
+        with open("/home/HGCAL_dev/sw/WagonTesting/jsons/{0}/{0}_{1}.json".format(self.name.replace(" ",""), self.board_sn), "w") as f:
             f.write(self.dump_results())
 
         f.close()

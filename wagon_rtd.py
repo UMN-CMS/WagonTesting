@@ -1,5 +1,5 @@
 #!/usr/bin/python                                                               
-from ADS124 import ADS124
+from HwInterface.ADS124 import ADS124
 from Test import Test 
 
 import argparse
@@ -39,7 +39,7 @@ class module_ADS124:
 
     def __init__(self, conn, module=None, targets=None):
         self.conn = conn
-        self.chip = ADS124(bus=1, device=module)
+        self.chip = ADS124(bus=3, device=module)
         self.chip.wakeup()
         self.chip.reset()
         self.module = module + 1
@@ -129,7 +129,7 @@ class module_ADS124:
             passed, message = check_value(resistance[0], self.targets[1][0], self.targets[1][1])
             if not passed:
                 all_passed = False
-            self.data[line] = (resistance[0], message)
+            self.data[line] = [resistance[0], message]
             self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
             print("line %s resistance is %.2f ohms (1 + wire); %s" % (line, resistance[0], message))
 
@@ -139,7 +139,7 @@ class module_ADS124:
             passed, message = check_value(resistance[0], self.targets[2][0], self.targets[2][1])
             if not passed:
                 all_passed = False
-            self.data[line] = (resistance[0], message)
+            self.data[line] = [resistance[0], message]
             self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
             print("line %s resistance is %.2f ohms (1 + wire); %s" % (line, resistance[0], message))
 
@@ -149,7 +149,7 @@ class module_ADS124:
             passed, message = check_value(resistance[0], self.targets[3][0], self.targets[3][1])
             if not passed:
                 all_passed = False
-            self.data[line] = (resistance[0], message)
+            self.data[line] = [resistance[0], message]
             self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
             print("line %s resistance is %.2f ohms (18 + wire); %s" % (line, resistance[0], message))
 
@@ -167,7 +167,7 @@ class module_ADS124:
             passed, message = check_value(resistance[0], self.targets[4][0], self.targets[4][1])
             if not passed:
                 all_passed = False
-            self.data[line] = (resistance[0], message) 
+            self.data[line] = [resistance[0], message]
             self.conn.send("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
             print("line %s resistance is %.2f ohms; %s" % (line, resistance[0], message))
 
@@ -207,7 +207,7 @@ class id_ADS124:
         # Initalizing the PIPE as an attribute
         self.conn = conn
 
-        self.chip = ADS124(bus=1, device=3)
+        self.chip = ADS124(bus=3, device=3)
         self.chip.wakeup()
         self.chip.reset()
         self.targets = [[495,505]] #placeholder
@@ -324,26 +324,28 @@ class gen_resist_test(Test):
             self.module_chips[0] = module_ADS124(self.conn, module-1)
             if not self.module_chips[0].get_resistances(): passed = False   
             data.update({'module ' + str(module): self.module_chips[0].data})
-            print(data)
 
         else:
             for i in range(len(self.module_chips)):
-                print("Testing module {}".format(i))
+                print("Testing module {}".format(i+1))
                 self.module_chips[i] = module_ADS124(self.conn, i)
-                self.conn.send("LCD ; Percent:{:3f} Test:1".format(i/float(len(self.module_chips))))
+                self.module_chips[i].data["Module"] = i+1
+                #self.conn.send("LCD ; Percent:{:3f} Test:1".format(i/float(len(self.module_chips))))
                 passed = self.module_chips[i].get_resistances()
                 #if not res_val: passed = False   
                 #elif res_val > 100 or res_val < 0.1: passed = False
                 data.update({'module ' + str(i+1): self.module_chips[i].data})
-                print(data)
     
         
-        self.conn.send("LCD ; Passed:{} Test:1".format(passed))
+        #self.conn.send("LCD ; Passed:{} Test:1".format(passed))
         print("Finishing test...")
         self.conn.send("Done.") 
+        print('Done.')
+        self.conn.send({"pass": passed, "data": data})
+        print({"pass": passed, "data": data})
         return passed, data
 
-    def get_num_modules(self, path="/home/HGCAL_dev/sw/static/wagontypes.json"):
+    def get_num_modules(self, path="/home/HGCAL_dev/sw/WagonTesting/static/wagontypes.json"):
         
         subtype = self.info_dict["board_sn"][3:-6]
 
@@ -385,6 +387,9 @@ class id_resist_test(Test):
         print("Sending message about passing wagon ID")
         self.conn.send("LCD ; Passed:{} Test:2".format(passed))
         self.conn.send("Done.")
+        print('Done.')
+        self.conn.send({"pass": passed, "data": data})
+        print({"pass": passed, "data": data})
         return passed, data
 
 

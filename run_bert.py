@@ -1,24 +1,28 @@
+#!/usr/bin/python
+
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from fit_bert import FitData
 from wagoneer import Wagon
 from Test import Test
 from collections import OrderedDict
+from multiprocessing import Pipe
 
 import numpy as np
 import os
 import json
 import time
+import sys
 
-parser = ArgumentParser()
-
-parser.add_argument("-m", "--module", action="store", type=int, dest="module", help="Module to use PRBS for bit error rate test", default=None)
-parser.add_argument("-o", "--output", action="store", type=str, dest="output", help="Output file name/path for BER data", default="scans/BERT.csv")
-parser.add_argument("--long", action="store_true", dest="long", help="Run long BER scan (iskip required)", default=False)
-parser.add_argument("--delayskip", action="store", type=int, dest="iskip", help="Skip for delay (0 to 425)", default=1)
-parser.add_argument("--nbits", action="store", type=float, dest="nbits", help="Number of bits to collect for long scan (1e12 by default)", default=1e12)
-
-args = parser.parse_args()
+#parser = ArgumentParser()
+#
+#parser.add_argument("-m", "--module", action="store", type=int, dest="module", help="Module to use PRBS for bit error rate test", default=None)
+#parser.add_argument("-o", "--output", action="store", type=str, dest="output", help="Output file name/path for BER data", default="scans/BERT.csv")
+#parser.add_argument("--long", action="store_true", dest="long", help="Run long BER scan (iskip required)", default=False)
+#parser.add_argument("--delayskip", action="store", type=int, dest="iskip", help="Skip for delay (0 to 425)", default=1)
+#parser.add_argument("--nbits", action="store", type=float, dest="nbits", help="Number of bits to collect for long scan (1e12 by default)", default=1e12)
+#
+#args = parser.parse_args()
 
 class BERT(Test):
 
@@ -60,22 +64,25 @@ class BERT(Test):
         fitdata = FitData("BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
 
         results = fitdata.get_results()
-
         self.passed = True
         self.data = {}
         for i,r in enumerate(results):
-
-            
-            self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5 + 0.5 * (i/float(len(results)))))
+        #    self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5 + 0.5 * (i/float(len(results)))))
             if r is None:
                 print("Bad scan found on RX {}".format(self.rxs[i]))
                 continue
             r['passed'] = True
-            if not r["Eye Opening"] > 180 or r["Midpoint Errors"] != 0:
+            if not r["Eye Opening"] >= 180 or r["Midpoint Errors"] != 0:
                 r['passed'] = False
                 self.passed = False
-            self.data[self.link_names[self.rxs[i]]] = r
-        print(self.data)
+            link_name = self.link_names[self.rxs[i]]
+            self.data[link_name] = r
+            link_mod = r['Module']
+            for sub_dict in self.wag_info[f'Mod{link_mod}']:
+                for sub_dict2 in self.wag_info[f'Mod{link_mod}'][sub_dict]:
+                    if self.wag_info[f'Mod{link_mod}'][sub_dict][sub_dict2]["Eng_Elink"] == link_name:
+                        self.data[link_name].update({"Mod_Elink": self.wag_info[f'Mod{link_mod}'][sub_dict][sub_dict2]['Mod_Elink']})
+                        break
 
         self.copy = {}
         for key1, d in self.data.items():
@@ -88,9 +95,11 @@ class BERT(Test):
              
         self.data = self.copy
        
-        self.conn.send("LCD ; Passed:{} Test:4".format(self.passed))
+        #self.conn.send("LCD ; Passed:{} Test:4".format(self.passed))
         time.sleep(0.1)
         self.conn.send("Done.")
+        print('Done.')
+        print({"pass": self.passed, "data": self.data})
         return self.passed, self.data
 
     def reset_zeros(self):
@@ -103,7 +112,7 @@ class BERT(Test):
 
     def set_prbs(self, tx):
         PRBS = 1
-        for i in range(0,5):
+        for i in range(0,8):
             self.wagon.set_tx_mode(i, PRBS)
         
 
@@ -136,7 +145,7 @@ class BERT(Test):
     #def run_test(self, iskip):
     #    return self.wagon.scan(iskip)
 
-    def get_links(self, board_sn="3205WEDBG100001", cfg_path = "/home/HGCAL_dev/sw/static/wagontypes.json", module=None, clock=True):
+    def get_links(self, board_sn="3205WEDBG100001", cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagontypes.json", module=None, clock=True):
         self.subtype = board_sn[3:-6]
         print(self.subtype)
 
@@ -177,7 +186,7 @@ class BERT(Test):
 
                 new_in_dict = {}
                 for key,i in in_dict.items():
-                    if "XING" not in i["Elink"] and "TRIG4" not in i["Elink"]:
+                    if "XING" not in i["Eng_Elink"] and "TRIG4" not in i["Eng_Elink"]:
                         new_in_dict[key] = i
 
                 out_dict = self.wag_info["Mod{}".format(mod)]["Outputs"]
@@ -197,7 +206,7 @@ class BERT(Test):
         
         link_names = {}
 
-        with open("/home/HGCAL_dev/sw/static/txrx.json") as link_file:
+        with open("/home/HGCAL_dev/sw/WagonTesting/static/txrx.json") as link_file:
 
             txrx = json.load(link_file)
             
@@ -209,7 +218,7 @@ class BERT(Test):
 
                     for out in outputs.values():
 
-                        if rx["link"] == out["Elink"]:
+                        if rx["link"] == out["Eng_Elink"]:
                             
                             scan_mask[idx+1] = module
                             link_names[idx+1] = rx["link"]
@@ -223,7 +232,7 @@ class BERT(Test):
 
                         for out in outputs[mod].values():
 
-                            if rx["link"] == out["Elink"]:
+                            if rx["link"] == out["Eng_Elink"]:
                                 
                                 scan_mask[idx+1] = mod
                                 link_names[idx+1] = rx["link"]
@@ -354,3 +363,12 @@ class BERT(Test):
             
 
 #BERT(args.output, args.iskip, args.nbits, args.module)
+
+if __name__ == '__main__':
+
+    c1, c2 = Pipe()
+    sn = sys.argv[1]
+    tester = sys.argv[2]
+
+    test_info = {'board_sn': str(sn), 'tester': tester}
+    BERT(c1, module = None, clock=True, **test_info) 
