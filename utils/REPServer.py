@@ -9,7 +9,9 @@
 from asyncore import write
 import time, zmq, json, logging, os, sys
 
-REPServerLogPath = "home/HGCAL_dev/sw/logs/"
+homedir = os.environ["HOME"]
+
+REPServerLogPath = f"{homedir}/logs/"
 
 if not os.path.exists(REPServerLogPath):
     os.makedirs(REPServerLogPath)
@@ -17,7 +19,7 @@ if not os.path.exists(REPServerLogPath):
 logging.FileHandler(REPServerLogPath + "REPServer.log", mode='a')
 
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="/home/HGCAL_dev/sw/WagonTesting/logs/REPServer.log", filemode='a', format=FORMAT, level=logging.DEBUG)
+logging.basicConfig(filename=f"{REPServerLogPath}/REPServer.log", filemode='a', format=FORMAT, level=logging.DEBUG)
 
 import multiprocessing as mp
 #from tkinter import NONE
