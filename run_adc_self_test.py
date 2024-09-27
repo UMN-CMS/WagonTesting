@@ -1,9 +1,13 @@
+#!/usr/bin/python
+
 from Test import Test
 from HwInterface.ADS124 import ADS124
+from multiprocessing import Pipe
+import sys
 
 class ADC(Test):
     
-    def __init__(self, conn, board_sn=-1, tester='', device=1, bus=1, cshigh=False, max_speed=5000000, read_reg=False, write_reg=False, register=None, value=None):
+    def __init__(self, conn, board_sn=-1, tester='', device=1, bus=3, cshigh=False, max_speed=5000000, read_reg=False, write_reg=False, register=None, value=None):
         self.info_dict = {'name': "ADC Self Test", 'board_sn': board_sn, 'tester': tester}
 
         self.conn = conn
@@ -141,9 +145,23 @@ class ADC(Test):
 
             self.passed &= all(passed_list)
              
-            self.conn.send("LCD ; Passed:{} Test:1".format(self.passed))
+            #self.conn.send("LCD ; Passed:{} Test:1".format(self.passed))
 
             thisADS124.close()
 
         self.conn.send("Done.")
+        print('Done.')
+        print({"pass": self.passed, "data": self.test_data})
         return self.passed, self.test_data
+
+
+if __name__ == '__main__':
+
+    c1, c2 = Pipe()
+    sn = sys.argv[1]
+    tester = sys.argv[2]
+
+    test_info = {'board_sn': str(sn), 'tester': tester}
+    ADC(c1, **test_info)
+        
+

@@ -31,13 +31,18 @@ class Wagon:
     def status(self):
         print("Firmware : %04x"%(int(self.fw)))
 
+        half_speed = self.wagon.getNode("CTL.LINKS_HALF_SPEED").read()
+        print("="*30)
+        print("Running TXs at half speed: %s" % (half_speed))
+        print("="*30)
+
         #pe = self.wagon.getNode("CTL.POWER_ENABLE").read()
         #self.hw.dispatch()
 
         #self.pe = int(pe)
 
         #print(" Power status: %d %d %d"%(((self.pe>>2)&0x1),((self.pe>>1)&0x1),((self.pe>>0)&0x1)))
-        print(" Output (%d) Modes: "%(self.ntx))
+        #print(" Output (%d) Modes: "%(self.ntx))
 
         self.txmode = []
         for itx in range(0,int(self.ntx)):
@@ -107,6 +112,14 @@ class Wagon:
         print("----------------")
         print("RX Spy Pointer: {}".format(self.rx_spy_ptr))
         print("PRBS Length (BX): {}".format(self.prbs_len))
+
+    def toggle_speed(self):
+        current = self.wagon.getNode("CTL.LINKS_HALF_SPEED").read()
+        if current == 1:
+            print("Setting links to full speed")
+        elif current == 0:
+            print("Setting links to half speed")
+        self.wagon.getNode("CTL.LINKS_HALF_SPEED").write(abs(1-current))
 
     def set_tx_mode(self, tx, mode):
         print("Setting output %d to mode 0x%04x (%s)"%(tx,mode,self.txmap[mode]))
@@ -287,6 +300,7 @@ if __name__ == "__main__":
     parser.add_argument('--prbsclear',action='store_true',help='Clear PRBS')
     parser.add_argument('--prbslen',type=int,default=-1,help='set PRBS Length')
     parser.add_argument('--bitslip',type=int,default=-1,help='set bit slip')
+    parser.add_argument('--togglespeed',action='store_true',help='toggle speed of links')
 
     args=parser.parse_args()
 
@@ -343,5 +357,8 @@ if __name__ == "__main__":
     
     if args.prbsclear:
         wagoneer.clear_prbs()
-     
+
+    if args.togglespeed:
+        wagoneer.toggle_speed()
+
     #wagoneer.dispatch()

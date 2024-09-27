@@ -37,6 +37,8 @@ class FitData:
                 else:
                     print("Skipping unused ELINK with RX index {}".format(i))
 
+        print("Done fitting")
+        print("going back to run_bert.py")
 
     def get_results(self):
         return self.results

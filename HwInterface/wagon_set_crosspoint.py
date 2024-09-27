@@ -18,7 +18,7 @@ args=parser.parse_args()
 
 iic = iic.iic()
 
-ibus = args.module 
+ibus = args.module + 1
 
 iic.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
 

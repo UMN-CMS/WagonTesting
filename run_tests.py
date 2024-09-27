@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import sys
+
 from wagon_rtd import gen_resist_test
 from wagon_rtd import id_resist_test
 from run_iic_check import IIC_Check
@@ -12,19 +14,21 @@ c1, c2 = Pipe()
 
 def run_tests(test_info):
    
-    module = None 
-    #print("Running General Resistance")
-    #gen_resist_test(c1, module = module, **test_info)
-    #print("Running ID Resistance Check")
-    #id_resist_test(c1, **test_info)
-    #print("Running IIC Check")
-    #IIC_Check(c1, module = module, **test_info)
-    #print("Running BERT")
-    #BERT(c1, module = module, clock=True, **test_info) 
+    module = None
+    print("Running ADC Self Test")
     ADC(c1, **test_info)
-    print("All tests done")
+    print("Running General Resistance")
+    gen_resist_test(c1, module = module, **test_info)
+    print("Running ID Resistance Check")
+    id_resist_test(c1, **test_info)
+    print("Running IIC Check")
+    IIC_Check(c1, module = module, **test_info)
+    print("Running BERT")
+    BERT(c1, module = module, clock=True, **test_info) 
 
-test_info = {'board_sn': '320WE10A1000004', 'tester': "Bryan"}
+sn = sys.argv[1]
+
+test_info = {'board_sn': str(sn), 'tester': "Jocie"}
 #test_info = {'board_sn': '320WW10A1000008', 'tester': "Seth"}
 run_tests(test_info)
 

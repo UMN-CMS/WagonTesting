@@ -5,6 +5,8 @@ import HwInterface.mcp23009 as mcp23009
 
 from Test import Test 
 from math import fabs
+from multiprocessing import Pipe
+import sys
 
 import time, json
 import random
@@ -37,7 +39,7 @@ class IIC_Check(Test):
 
             passed_list = [False]
 
-            ibus = module
+            ibus = module + 1
             n_check = kwargs['n_check']
 
             code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
@@ -48,7 +50,8 @@ class IIC_Check(Test):
 
             # Setup the pins (0=SIN1, 1=SIN0, 2=SOUT1, 3=SOUT0, 4=CONFIG, 5=LOAD)
             correct = 0
-            print("Running I2C check for module {}".format(ibus))
+            print("Running I2C check for module {}".format(module))
+
             for i in range(0, n_check):
                 temp = random.randrange(256)
 
@@ -85,7 +88,7 @@ class IIC_Check(Test):
 
             for ib in range(0,numMod):
 
-                ibus = ib + 1
+                ibus = ib + 2
                 n_check = kwargs['n_check']
 
                 try:
@@ -102,7 +105,7 @@ class IIC_Check(Test):
 
                 # Setup the pins (0=SIN1, 1=SIN0, 2=SOUT1, 3=SOUT0, 4=CONFIG, 5=LOAD)
                 correct = 0
-                print("Running I2C check for module {}".format(ibus))
+                print("Running I2C check for module {}".format(ibus-1))
                 for i in range(0, n_check):
                     temp = random.randrange(256)
 
@@ -120,7 +123,7 @@ class IIC_Check(Test):
 
                     if i % 1000 == 0:
                         print("IIC Check Number: {}".format(i))
-                        self.conn.send("LCD ; Percent:{:3f} Test:3".format((ib * n_check + i)/float(numMod * n_check)))
+                        #self.conn.send("LCD ; Percent:{:3f} Test:3".format((ib * n_check + i)/float(numMod * n_check)))
 
                         print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
                         self.conn.send("IIC Check Number: {}".format(i))
@@ -130,7 +133,7 @@ class IIC_Check(Test):
                 except:
                     print("Last write failed")
                 
-                data["num_iic_checks_mod{}".format(i)] = n_check
+                data["num_iic_checks_mod{}".format(ib)] = n_check
                 data["num_iic_correct_mod{}".format(ib)] = correct
 
                 self.conn.send("Total correct: {}".format(correct))
@@ -139,13 +142,16 @@ class IIC_Check(Test):
                     passed_list[ib] = True
 
         passed = all(passed_list)
-
-        self.conn.send("LCD ; Passed:{} Test:3".format(passed))
+        
+        #self.conn.send("LCD ; Passed:{} Test:3".format(passed))
         i2c.close()
         self.conn.send("Done.")
+        print('Done.')
+        self.conn.send({"pass": passed, "data": data})
+        print({"pass": passed, "data": data})
         return passed, data
 
-    def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/static/wagontypes.json"):
+    def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagontypes.json"):
         self.subtype = self.info_dict["board_sn"][3:-6]
 
         with open(cfg_path, "r") as json_file:
@@ -154,3 +160,12 @@ class IIC_Check(Test):
 
         return data[self.subtype]["NumMod"]
 
+
+if __name__ == '__main__':
+
+    c1, c2 = Pipe()
+    sn = sys.argv[1]
+    tester = sys.argv[2]
+
+    test_info = {'board_sn': str(sn), 'tester': tester}
+    IIC_Check(c1, module = None, **test_info)

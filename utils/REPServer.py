@@ -17,7 +17,7 @@ if not os.path.exists(REPServerLogPath):
 logging.FileHandler(REPServerLogPath + "REPServer.log", mode='a')
 
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="/home/HGCAL_dev/sw/logs/REPServer.log", filemode='a', format=FORMAT, level=logging.DEBUG)
+logging.basicConfig(filename="/home/HGCAL_dev/sw/WagonTesting/logs/REPServer.log", filemode='a', format=FORMAT, level=logging.DEBUG)
 
 import multiprocessing as mp
 #from tkinter import NONE
@@ -27,17 +27,17 @@ from PUBServer import PUBServer
 from GenResTest import GenResTest
 from IDResTest import IDResTest
 from BitRateTest import BitRateTest
-from StressScript import StressScript
-from LCD_SUBClient import LCD_SUBClient
+#from StressScript import StressScript
+#from LCD_SUBClient import LCD_SUBClient
 
-sys.path.append("/home/HGCAL_dev/sw")
+sys.path.append("/home/HGCAL_dev/sw/WagonTesting")
 from run_adc_self_test import ADC
 from run_iic_check import IIC_Check 
 from run_bert import BERT
 from wagon_rtd import gen_resist_test, id_resist_test
 
-sys.path.append("/home/HGCAL_dev/sw/HwInterface")
-from SSD1803A import SSD1803A
+sys.path.append("/home/HGCAL_dev/sw/WagonTesting/HwInterface")
+#from SSD1803A import SSD1803A
 from iic import iic
 
 
@@ -67,12 +67,12 @@ class REPServer():
         logging.info("Reply Server has started.")
 
         I2C_BUS = 5
-        LCD_ADDRESS = 0x3d
+        #LCD_ADDRESS = 0x3d
 
         myiic = iic()
-        myiic.connect(dev="/dev/i2c-{}".format(I2C_BUS), addr=LCD_ADDRESS)
+        #myiic.connect(dev="/dev/i2c-{}".format(I2C_BUS), addr=LCD_ADDRESS)
 
-        self.lcd = SSD1803A(myiic, LCD_ADDRESS)
+        #self.lcd = SSD1803A(myiic, LCD_ADDRESS)
 
         try:
             logging.debug("REPServer: Beginning while loop to stay on forever.")
@@ -118,7 +118,7 @@ class REPServer():
         test_info = {'board_sn': self.serial, 'tester': self.tester}
         
         if desired_test == 'test0':
-            self.lcd.set_stage()
+            #self.lcd.set_stage()
             test1 = ADC(conn,**test_info) 
         elif desired_test == 'test1':
             test2 = gen_resist_test(conn, **test_info)
@@ -139,8 +139,8 @@ class REPServer():
         logging.debug("Initializing the pub server...")
         pub_server = PUBServer(conn)
 
-    def task_LCD(self):
-        LCD_SUBClient(self.lcd)
+    #def task_LCD(self):
+    #    LCD_SUBClient(self.lcd)
 
     # Starts up the test and PUBServer as separate processes
     def begin_processes(self, desired_test):
@@ -149,13 +149,13 @@ class REPServer():
         #self.lcd.loading_bar(int(desired_test[-1])+1,0)
         process_test = mp.Process(target = self.task_test, args=(conn_test, desired_test,))
         process_PUBServer = mp.Process(target = self.task_PUBServer, args=(conn_PUBServer,))
-        process_LCD = mp.Process(target = self.task_LCD)
+        #process_LCD = mp.Process(target = self.task_LCD)
         
         logging.debug("Launching the process_test process")
         process_test.start()
         logging.debug("Launching the process_PUBServer process")
         process_PUBServer.start()
-        process_LCD.start()
+        #process_LCD.start()
 
         # Prevents the code from continuing here until both processes have ended.
         logging.debug("Waiting until process_test is completed to continue")
@@ -163,7 +163,7 @@ class REPServer():
         logging.debug("Waiting until process_PUBServer is completed to continue")
         process_PUBServer.join()
         logging.debug("Pub server joined")
-        process_LCD.join()
+        #process_LCD.join()
 
         logging.debug("Processes have ended.")
 

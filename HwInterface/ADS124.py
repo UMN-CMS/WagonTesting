@@ -7,7 +7,7 @@ import time
 
 class ADS124:
 
-    def __init__(self, bus=0, device=0, cshigh=False, max_speed=500000):
+    def __init__(self, bus=3, device=0, cshigh=False, max_speed=500000):
         self.spi = spidev.SpiDev()
         print(bus, device)
         self.spi.open(bus,device)
