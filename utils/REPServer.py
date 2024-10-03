@@ -26,6 +26,8 @@ import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
 
+sys.path.append(str(Path(__file__).parent.parent.absolute()))
+
 from PUBServer import PUBServer
 from GenResTest import GenResTest
 from IDResTest import IDResTest
@@ -39,7 +41,6 @@ from run_iic_check import IIC_Check
 from run_bert import BERT
 from wagon_rtd import gen_resist_test, id_resist_test
 
-sys.path.append(str(Path(__file__).parent.absolute()))
 #from SSD1803A import SSD1803A
 from HWInterface.iic import iic
 
