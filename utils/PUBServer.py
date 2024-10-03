@@ -1,7 +1,8 @@
 # Importing necessary modules
 import zmq, signal, logging, os
+from pathlib import Path
 
-homedir = os.environ["HOME"]
+homedir = Path.home()
 
 REPServerLogPath = f"{homedir}/logs/"
 
