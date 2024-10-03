@@ -10,7 +10,7 @@ from asyncore import write
 import time, zmq, json, logging, os, sys
 from pathlib import Path
 
-homedir = os.environ["HOME"]
+homedir = Path.home()
 
 REPServerLogPath = f"{homedir}/logs/"
 
