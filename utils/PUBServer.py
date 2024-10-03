@@ -1,10 +1,14 @@
 # Importing necessary modules
 import zmq, signal, logging, os
 
-if not os.path.isdir("logs"):
-    os.makedirs("logs")
+homedir = os.environ["HOME"]
 
-logging.basicConfig(filename='/home/HGCAL_dev/sw/utils/logs/REPServer.log', filemode='w', level=logging.INFO, format='%(asctime)s %(message)s')
+REPServerLogPath = f"{homedir}/logs/"
+
+if not os.path.exists(REPServerLogPath):
+    os.makedirs(REPServerLogPath)
+
+logging.basicConfig(filename=f'{REPServerLogPath}/REPServer.log', filemode='w', level=logging.INFO, format='%(asctime)s %(message)s')
 
 # Creates the class for the PUBServer
 class PUBServer():
