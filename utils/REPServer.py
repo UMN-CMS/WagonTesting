@@ -42,7 +42,7 @@ from run_bert import BERT
 from wagon_rtd import gen_resist_test, id_resist_test
 
 #from SSD1803A import SSD1803A
-from HWInterface.iic import iic
+from HwInterface.iic import iic
 
 
 # Makes the REPServer a class
