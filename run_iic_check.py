@@ -147,7 +147,7 @@ class IIC_Check(Test):
         i2c.close()
         self.conn.send("Done.")
         print('Done.')
-        self.conn.send({"pass": passed, "data": data})
+        #self.conn.send({"pass": passed, "data": data})
         print({"pass": passed, "data": data})
         return passed, data
 

@@ -69,7 +69,6 @@ class Test():
 
     # Send results via the PUB Server
     def send_results(self):
-        print(type(self.dump_results()))
         self.conn.send(self.dump_results())
 
     # Function for running your test, kwargs must agree with defined kwargs for your test
