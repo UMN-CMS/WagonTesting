@@ -151,7 +151,7 @@ class ADC(Test):
 
         self.conn.send("Done.")
         print('Done.')
-        print({"pass": self.passed, "data": self.test_data})
+        #print({"pass": self.passed, "data": self.test_data})
         return self.passed, self.test_data
 
 

@@ -341,7 +341,7 @@ class gen_resist_test(Test):
         print("Finishing test...")
         self.conn.send("Done.") 
         print('Done.')
-        self.conn.send({"pass": passed, "data": data})
+        #self.conn.send({"pass": passed, "data": data})
         print({"pass": passed, "data": data})
         return passed, data
 
@@ -388,7 +388,7 @@ class id_resist_test(Test):
         self.conn.send("LCD ; Passed:{} Test:2".format(passed))
         self.conn.send("Done.")
         print('Done.')
-        self.conn.send({"pass": passed, "data": data})
+        #self.conn.send({"pass": passed, "data": data})
         print({"pass": passed, "data": data})
         return passed, data
 
