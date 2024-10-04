@@ -8,6 +8,7 @@ from Test import Test
 from collections import OrderedDict
 from multiprocessing import Pipe
 from pathlib import Path
+from HwInterface.set_crosspoint import set_crosspoint
 
 import numpy as np
 import os
@@ -133,8 +134,10 @@ class BERT(Test):
 
     def set_crosspoint(self, link_dict):
         for mod in link_dict.keys():
-            print("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
-            os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
+            #print("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
+            #os.system("python3 HwInterface/wagon_set_crosspoint.py --module {} --outputs {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
+            print("Setting crosspoint on module {}: {} {} {} {}".format(mod, link_dict[mod][0], link_dict[mod][1], link_dict[mod][2], link_dict[mod][3]))
+            set_crosspoint(mod, link_dict[mod])
 
         #This should work but there is a weird python version thing going on that I can't solve right now
         '''for mod in range(0,3):
