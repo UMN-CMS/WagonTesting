@@ -35,7 +35,7 @@ class Test():
             self.results = {'name': self.name, 'board_sn': self.board_sn, 'tester': self.tester, 'pass': self.passed, 'data': self.data}
 
             self.conn.send(self.dump_results())
-            self.save_results()
+            #self.save_results()
 
             self.send_results()
 
