@@ -148,7 +148,7 @@ class BERT(Test):
     #def run_test(self, iskip):
     #    return self.wagon.scan(iskip)
 
-    def get_links(self, board_sn="3205WEDBG100001", cfg_path = Path.cwd() / "static" / "wagontypes.json", module=None, clock=True):
+    def get_links(self, board_sn="3205WEDBG100001", cfg_path = Path(__file__).parent / "static" / "wagontypes.json", module=None, clock=True):
         self.subtype = board_sn[3:-6]
         print(self.subtype)
 
@@ -209,7 +209,7 @@ class BERT(Test):
         
         link_names = {}
 
-        with open(Path.cwd() / 'static' /'txrx.json') as link_file:
+        with open(Path(__file__).parent / 'static' /'txrx.json') as link_file:
 
             txrx = json.load(link_file)
             
