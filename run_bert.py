@@ -30,8 +30,7 @@ class BERT(Test):
     def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        #Test.__init__(self, self.bert, self.info_dict, conn, output='/home/HGCAL_pro/BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
-        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
+        Test.__init__(self, self.bert, self.info_dict, conn, output='/home/HGCAL_pro/BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
 
     def bert(self, **kwargs):
         self.scans = []
@@ -63,8 +62,7 @@ class BERT(Test):
         """
 
         self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
-        #fitdata = FitData("/home/HGCAL_pro/BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
-        fitdata = FitData("BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
+        fitdata = FitData("/home/HGCAL_pro/BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
 
         results = fitdata.get_results()
         self.passed = True
