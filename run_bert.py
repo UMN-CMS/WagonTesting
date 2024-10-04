@@ -7,6 +7,7 @@ from wagoneer import Wagon
 from Test import Test
 from collections import OrderedDict
 from multiprocessing import Pipe
+from pathlib import Path
 
 import numpy as np
 import os
@@ -29,7 +30,8 @@ class BERT(Test):
     def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        Test.__init__(self, self.bert, self.info_dict, conn, output='/home/HGCAL_pro/BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
+        #Test.__init__(self, self.bert, self.info_dict, conn, output='/home/HGCAL_pro/BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
+        Test.__init__(self, self.bert, self.info_dict, conn, output='BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
 
     def bert(self, **kwargs):
         self.scans = []
@@ -61,7 +63,8 @@ class BERT(Test):
         """
 
         self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
-        fitdata = FitData("/home/HGCAL_pro/BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
+        #fitdata = FitData("/home/HGCAL_pro/BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
+        fitdata = FitData("BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
 
         results = fitdata.get_results()
         self.passed = True
@@ -145,7 +148,7 @@ class BERT(Test):
     #def run_test(self, iskip):
     #    return self.wagon.scan(iskip)
 
-    def get_links(self, board_sn="3205WEDBG100001", cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagontypes.json", module=None, clock=True):
+    def get_links(self, board_sn="3205WEDBG100001", cfg_path = Path.cwd() / "static" / "wagontypes.json", module=None, clock=True):
         self.subtype = board_sn[3:-6]
         print(self.subtype)
 
@@ -206,7 +209,7 @@ class BERT(Test):
         
         link_names = {}
 
-        with open("/home/HGCAL_dev/sw/WagonTesting/static/txrx.json") as link_file:
+        with open(Path.cwd() / 'static' /'txrx.json') as link_file:
 
             txrx = json.load(link_file)
             
