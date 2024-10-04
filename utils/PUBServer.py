@@ -1,5 +1,6 @@
 # Importing necessary modules
 import zmq, signal, logging, os
+import json as js
 
 if not os.path.isdir("logs"):
     os.makedirs("logs")
@@ -37,7 +38,7 @@ class PUBServer():
                     pub_socket.send_string(prints)
                     logging.debug("Sent final print statement.")
                     logging.debug("Waiting for JSON on Pipe")
-                    json = conn.recv()
+                    json = js.dumps(conn.recv())
                     logging.debug("JSON receieved.")
                     json = "JSON ; " + json 
                     logging.debug("JSON topic added to json string")
@@ -63,7 +64,7 @@ class PUBServer():
                         logging.debug("Sent print statement.")
             
             logging.debug("Loop has been broken.")
-        except:
+        except Exception as e:
             logging.critical("PUBServer has crashed.")
 
         # Closes the server once the loop is broken so that there is no hang-up in the code
