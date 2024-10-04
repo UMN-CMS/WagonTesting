@@ -8,8 +8,9 @@
 # importing necessary modules
 from asyncore import write
 import time, zmq, json, logging, os, sys
+from pathlib import Path
 
-homedir = os.environ["HOME"]
+homedir = Path.home()
 
 REPServerLogPath = f"{homedir}/logs/"
 
@@ -25,6 +26,8 @@ import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
 
+sys.path.append(str(Path(__file__).parent.parent.absolute()))
+
 from PUBServer import PUBServer
 from GenResTest import GenResTest
 from IDResTest import IDResTest
@@ -32,15 +35,14 @@ from BitRateTest import BitRateTest
 #from StressScript import StressScript
 #from LCD_SUBClient import LCD_SUBClient
 
-sys.path.append("/home/HGCAL_dev/sw/WagonTesting")
+sys.path.append(str(Path(__file__).parent.absolute()))
 from run_adc_self_test import ADC
 from run_iic_check import IIC_Check 
 from run_bert import BERT
 from wagon_rtd import gen_resist_test, id_resist_test
 
-sys.path.append("/home/HGCAL_dev/sw/WagonTesting/HwInterface")
 #from SSD1803A import SSD1803A
-from iic import iic
+from HwInterface.iic import iic
 
 
 # Makes the REPServer a class
