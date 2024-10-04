@@ -31,10 +31,10 @@ class Wagon:
     def status(self):
         print("Firmware : %04x"%(int(self.fw)))
 
-        half_speed = self.wagon.getNode("CTL.LINKS_HALF_SPEED").read()
-        print("="*30)
-        print("Running TXs at half speed: %s" % (half_speed))
-        print("="*30)
+        #half_speed = self.wagon.getNode("CTL.LINKS_HALF_SPEED").read()
+        #print("="*30)
+        #print("Running TXs at half speed: %s" % (half_speed))
+        #print("="*30)
 
         #pe = self.wagon.getNode("CTL.POWER_ENABLE").read()
         #self.hw.dispatch()
