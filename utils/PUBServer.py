@@ -38,7 +38,7 @@ class PUBServer():
                     pub_socket.send_string(prints)
                     logging.debug("Sent final print statement.")
                     logging.debug("Waiting for JSON on Pipe")
-                    json = js.dumps(conn.recv())
+                    json = js.dumps(js.loads(conn.recv()))
                     logging.debug("JSON receieved.")
                     json = "JSON ; " + json 
                     logging.debug("JSON topic added to json string")
