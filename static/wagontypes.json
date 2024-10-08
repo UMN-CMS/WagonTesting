@@ -363,14 +363,13 @@
     "WW11A1": {
         "Mod1":{
             "Inputs": {
-                "1": {"Eng_Elink": "DAQ0", "Mod_Elink": "DAQ0", "Invert": 0},
-                "2": {"Eng_Elink": "DAQ2", "Mod_Elink": "DAQ1", "Invert": 0}
+                "1": {"Eng_Elink": "DAQ0", "Mod_Elink": "DAQ0", "Invert": 0}
             },
             "Outputs": {
                 "1": {"Eng_Elink": "TRIG0", "Mod_Elink": "TRIG0", "Invert": 0},
                 "2": {"Eng_Elink": "TRIG1", "Mod_Elink": "TRIG1", "Invert": 0},
-                "3": {"Eng_Elink": "TRIG4", "Mod_Elink": "TRIG2", "Invert": 0},
-                "4": {"Eng_Elink": "TRIG5", "Mod_Elink": "TRIG3", "Invert": 0}
+                "3": {"Eng_Elink": "TRIG2", "Mod_Elink": "TRIG2", "Invert": 0},
+                "4": {"Eng_Elink": "TRIG3", "Mod_Elink": "TRIG3", "Invert": 0}
             }
         },
         "NumMod": 2,
@@ -379,8 +378,8 @@
                 "1": {"Eng_Elink": "DAQ1", "Mod_Elink": "DAQ0", "Invert": 0}
              },
             "Outputs": {
-                "3": {"Eng_Elink": "TRIG2", "Mod_Elink": "TRIG0", "Invert": 0},
-                "2": {"Eng_Elink": "TRIG3", "Mod_Elink": "TRIG1", "Invert": 0}
+                "3": {"Eng_Elink": "TRIG4", "Mod_Elink": "TRIG0", "Invert": 0},
+                "2": {"Eng_Elink": "TRIG5", "Mod_Elink": "TRIG1", "Invert": 0}
             }
         }
     }
