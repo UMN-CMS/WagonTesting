@@ -345,7 +345,7 @@ class gen_resist_test(Test):
         print({"pass": passed, "data": data})
         return passed, data
 
-    def get_num_modules(self, path="/home/HGCAL_dev/sw/WagonTesting/static/wagontypes.json"):
+    def get_num_modules(self, path="/home/HGCAL_dev/sw/WagonTesting/static/wagonConfig.json"):
         
         subtype = self.info_dict["board_sn"][3:-6]
 

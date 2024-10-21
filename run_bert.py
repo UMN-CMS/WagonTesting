@@ -149,7 +149,7 @@ class BERT(Test):
     #def run_test(self, iskip):
     #    return self.wagon.scan(iskip)
 
-    def get_links(self, board_sn="3205WEDBG100001", cfg_path = Path(__file__).parent / "static" / "wagontypes.json", module=None, clock=True):
+    def get_links(self, board_sn="3205WEDBG100001", cfg_path = Path(__file__).parent / "static" / "wagonConfig.json", module=None, clock=True):
         self.subtype = board_sn[3:-6]
         print(self.subtype)
 

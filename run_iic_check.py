@@ -151,7 +151,7 @@ class IIC_Check(Test):
         print({"pass": passed, "data": data})
         return passed, data
 
-    def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagontypes.json"):
+    def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagonConfig.json"):
         self.subtype = self.info_dict["board_sn"][3:-6]
 
         with open(cfg_path, "r") as json_file:
