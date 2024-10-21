@@ -31,7 +31,7 @@ class BERT(Test):
     def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        self.output = Path(__file__).parent / "BERT.csv"
+        self.output = Path().home() / "BERT.csv"
         Test.__init__(self, self.bert, self.info_dict, conn, output=self.output, iskip=5, nbits=1e8, module=module, clock=clock)
 
     def bert(self, **kwargs):
