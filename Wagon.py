@@ -6,7 +6,7 @@ import json
 class Wagon:
     '''
     Class to handle the setup of the crosspoints for different wagon types
-    Used in conjunction with the wagontypes.json file
+    Used in conjunction with the wagonConfig.json file
     '''    
 
     def __init__(self, serial_num):
@@ -19,7 +19,7 @@ class Wagon:
         self.get_crosspoint_cfg(cfg_dict)
        
     # Get configuration from json file
-    def get_config(self, cfg_file="./static/wagontypes.json"):
+    def get_config(self, cfg_file="./static/wagonConfig.json"):
         with open(cfg_file) as f:
             wagon_cfg = json.load(f)
 

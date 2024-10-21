@@ -26,10 +26,10 @@ def run_tests(test_info):
     print("Running BERT")
     BERT(c1, module = module, clock=True, **test_info) 
 
-sn = sys.argv[1]
+#sn = sys.argv[1]
 
-test_info = {'board_sn': str(sn), 'tester': "Jocie"}
-#test_info = {'board_sn': '320WW10A1000008', 'tester': "Seth"}
+#test_info = {'board_sn': str(sn), 'tester': "Jocie"}
+test_info = {'board_sn': '320WE11A1000001', 'tester': "Bryan"}
 run_tests(test_info)
 
 #print("Running tests for east wagon")

@@ -1,0 +1,2868 @@
+{
+    "WE10A1": {
+        "NumMod": 1,
+        "Mod1": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG4",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ1",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE10B1": {
+        "NumMod": 1,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "XING1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "XING2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE11A1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE11B2": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE11C1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE12A1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE12B1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE20A1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING1",
+                    "Mod_Elink": "TRIG4",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ1",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE20B1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE20E1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21A1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21B1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21C1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21C2": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21C3": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21C4": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21C6": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE21D1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE30A1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE30A2": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE30A3": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE31A1": {
+        "NumMod": 4,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod4": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ4",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE31A3": {
+        "NumMod": 4,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod4": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ4",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE40A1": {
+        "NumMod": 4,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod4": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ4",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WE40A2": {
+        "NumMod": 4,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod4": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ4",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW10A1": {
+        "NumMod": 1,
+        "Mod1": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG4",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ1",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW11A1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW12A1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW12B1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW12C1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW20A1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING1",
+                    "Mod_Elink": "TRIG4",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ1",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW20B1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW20C1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                },
+                "0": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW20D1": {
+        "NumMod": 2,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21A1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21B1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21C1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21D1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21E1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21E2": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW21E3": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW30A1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW30A2": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW30B1": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    },
+    "WW30B2": {
+        "NumMod": 3,
+        "Mod1": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ0",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod2": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG2",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG3",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "Mod3": {
+            "Inputs": {
+                "1": {
+                    "Eng_Elink": "DAQ2",
+                    "Mod_Elink": "DAQ0",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "3": {
+                    "Eng_Elink": "TRIG4",
+                    "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        }
+    }
+}
