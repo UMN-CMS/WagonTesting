@@ -31,7 +31,8 @@ class BERT(Test):
     def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        Test.__init__(self, self.bert, self.info_dict, conn, output='/home/HGCAL_pro/BERT.csv', iskip=5, nbits=1e8, module=module, clock=clock)
+        self.output = Path(__file__).parent / "BERT.csv"
+        Test.__init__(self, self.bert, self.info_dict, conn, output=self.output, iskip=5, nbits=1e8, module=module, clock=clock)
 
     def bert(self, **kwargs):
         self.scans = []
@@ -63,7 +64,7 @@ class BERT(Test):
         """
 
         self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
-        fitdata = FitData("/home/HGCAL_pro/BERT.csv", self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
+        fitdata = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
 
         results = fitdata.get_results()
         self.passed = True
@@ -164,9 +165,9 @@ class BERT(Test):
         if module is not None:
 
             inputs = self.wag_info["Mod{}".format(module)]["Inputs"]
-            print(inputs)
+            print("Inputs", inputs)
             outputs = self.wag_info["Mod{}".format(module)]["Outputs"]
-            print(outputs)
+            print("Outputs", outputs)
 
             nin = len(inputs.keys())
             nout = len(outputs.keys())
@@ -190,10 +191,13 @@ class BERT(Test):
 
                 new_in_dict = {}
                 for key,i in in_dict.items():
-                    if "XING" not in i["Eng_Elink"] and "TRIG4" not in i["Eng_Elink"]:
+                    if "XING" not in i["Eng_Elink"] and "TRIG4" not in i["Mod_Elink"]:
                         new_in_dict[key] = i
 
                 out_dict = self.wag_info["Mod{}".format(mod)]["Outputs"]
+
+                print(new_in_dict)
+                print(out_dict)
 
                 nin = len(new_in_dict.keys())
                 nout = len(out_dict.keys())
@@ -251,15 +255,15 @@ class BERT(Test):
 
             else:
                 scan_mask[8] = 1
-                link_names[8] = "CLK0"
+                link_names[8] = "CLK1"
 
                 if self.wag_info["NumMod"] >= 2:
                     scan_mask[9] = 2
-                    link_names[9] = "CLK1"
+                    link_names[9] = "CLK2"
 
                 if self.wag_info["NumMod"] == 3:
                     scan_mask[10] = 3
-                    link_names[10] = "CLK2"
+                    link_names[10] = "CLK3"
 
         link_file.close()
         print(scan_mask)
