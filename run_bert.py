@@ -214,7 +214,14 @@ class BERT(Test):
         
         link_names = {}
 
-        with open(Path(__file__).parent / 'static' /'txrx.json') as link_file:
+        orientation = ""
+
+        if self.subtype[:2] == "WE":
+            orientation = "_east"
+        elif self.subtype[:2] == "WW":
+            orrientation = "_west"
+
+        with open(Path(__file__).parent / 'static' /'txrx{}.json'.format(orientation)) as link_file:
 
             txrx = json.load(link_file)
             
