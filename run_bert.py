@@ -219,7 +219,9 @@ class BERT(Test):
         if self.subtype[:2] == "WE":
             orientation = "_east"
         elif self.subtype[:2] == "WW":
-            orrientation = "_west"
+            orientation = "_west"
+
+
 
         with open(Path(__file__).parent / 'static' /'txrx{}.json'.format(orientation)) as link_file:
 
