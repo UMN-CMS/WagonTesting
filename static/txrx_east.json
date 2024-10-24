@@ -1,0 +1,27 @@
+{
+    "__description__": "This file is used to determine which TXs and RXs correspond to a given wagon elink. This is dependent on firmware version and may need to be updated if the firmware is updated.",
+    "TX": [
+        {"num": 0, "link": "CLK1"},
+        {"num": 1, "link": "CLK2"},
+        {"num": 2, "link": "CLK3"},
+        {"num": 4, "link": "DAQ0"},
+        {"num": 5, "link": "DAQ1"},
+        {"num": 6, "link": "DAQ2"},
+        {"num": 7, "link": "X_DAQ"}
+    ],
+    "RX": [
+        {"num": 0, "link": "TRIG6"},
+        {"num": 1, "link": "TRIG5"},
+        {"num": 2, "link": "TRIG4"},
+        {"num": 3, "link": "TRIG3"},
+        {"num": 4, "link": "TRIG2"},
+        {"num": 5, "link": "TRIG1"},
+        {"num": 6, "link": "TRIG0"},
+        {"num": 7, "link": "CTL1"},
+        {"num": 8, "link": "CTL2"},
+        {"num": 9, "link": "CTL3"},
+        {"num": 10, "link": ""},
+        {"num": 11, "link": ""},
+        {"num": 12, "link": ""}
+    ]
+}
