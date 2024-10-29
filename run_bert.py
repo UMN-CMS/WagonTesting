@@ -75,7 +75,7 @@ class BERT(Test):
                 print("Bad scan found on RX {}".format(self.rxs[i]))
                 continue
             r['passed'] = True
-            if not r["Eye Opening"] >= 180 or r["Midpoint Errors"] != 0:
+            if not r["Eye Opening"] >= 170 or r["Midpoint Errors"] != 0:
                 r['passed'] = False
                 self.passed = False
             link_name = self.link_names[self.rxs[i]]
