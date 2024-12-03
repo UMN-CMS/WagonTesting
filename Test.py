@@ -15,7 +15,7 @@ class Test():
 
         self.conn = conn
 
-        #time.sleep(1)
+        time.sleep(1)
 
         if self.conn is not None:
             self.conn.send("Initializing a test")
