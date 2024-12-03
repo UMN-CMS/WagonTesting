@@ -17,7 +17,19 @@ class ADC(Test):
         self.passed = True
         self.test_data = {}
         passed_list = [True for i in range(7)]
-         
+        
+        self.passing_criteria = {
+            'max_short_V': 0.01,
+            'min_temp': 80.,
+            'max_temp': 100.,
+            'min_avdd_to_avss_div_4': 0.82,
+            'max_avdd_to_avss_div_4': 0.84,
+            'min_dvdd_div_4': 0.82,
+            'max_dvdd_div_4': 0.82,
+        }
+
+        comments = []
+
         device = kwargs['device']
         bus = kwargs['bus']
         cshigh = kwargs['cshigh']
@@ -33,7 +45,8 @@ class ADC(Test):
 
             self.test_data["device_{}".format(device)] = {}
 
-            self.conn.send("Initializing test for device {}".format(device))
+            if self.conn is not None:
+                self.conn.send("Initializing test for device {}".format(device))
 
             thisADS124 = ADS124(bus, device, cshigh, max_speed)
 
@@ -66,10 +79,12 @@ class ADC(Test):
             print('PGA inputs shorted to (AVDD + AVSS) / 2 and disconnected from AINx and the multiplexer; gain is set to ' + str(thisADS124.get_gain()) )
             #print('system monitor register: ' + str(bin(thisADS124.read_reg(thisADS124.SYS_REG)[0])))
             result1 = thisADS124.read_volts()
-            if result1 > 0.01:
+            if result1 > self.passing_criteria['max_short_V']:
                 passed_list[0] = False
+                comments.append('Short to (AVDD + AVSS) / 2 failed with value {}'.format(result1))
             self.test_data["device_{}".format(device)]["test_1"] = {"Passed": passed_list[0], "Result": f'{result1:.3f} volts', "Raw_Result": str(thisADS124.read_data())}
-            self.conn.send("Result 1: {} V =< 0.01 V \t {}".format(result1, passed_list[0]))
+            if self.conn is not None:
+                self.conn.send("Result 1: {} V =< 0.01 V \t {}".format(result1, passed_list[0]))
             
             print(self.test_data["device_{}".format(device)]["test_1"])
             print('-------------------------------------------------------')
@@ -79,10 +94,12 @@ class ADC(Test):
             thisADS124.start()
             print('Internal temperature sensor measurement; gain set to ' + str(thisADS124.get_gain()) )
             result2 = thisADS124.read_volts()*(10.0**5)*(1.0/403.0)*9.0/5.0 + 32.0
-            if result2 >= 100 or result2 <= 80:
+            if result2 >= self.passing_criteria['max_temp'] or result2 <= self.passing_criteria['min_temp']:
                 passed_list[1] = False
+                comments.append('Temp outside of range: {}'.format(result2))
             self.test_data["device_{}".format(device)]["test_2"] = {"Passed": passed_list[1], "Result": f'{result2:.3f} degrees (F)', "Raw_Result": str(thisADS124.read_data())}
-            self.conn.send("Result 2: {} Degrees F \t {} ".format(result2, passed_list[1]))
+            if self.conn is not None:
+                self.conn.send("Result 2: {} Degrees F \t {} ".format(result2, passed_list[1]))
             print(self.test_data["device_{}".format(device)]["test_2"])
             print('-------------------------------------------------------')
 
@@ -91,10 +108,12 @@ class ADC(Test):
             thisADS124.start()
             print("Gain Set to: " + str(thisADS124.get_gain()) )
             result3 = thisADS124.read_volts()
-            if result3 >= 0.84 or result3 <= 0.82:
+            if result3 >= self.passing_criteria['max_avdd_to_avss_div_4'] or result3 <= self.passing_criteria['min_avdd_to_avss_div_4']:
                 passed_list[2] = False
+                comments.append('Check (AVDD - AVSS) / 4 failed with value {}'.format(result3))
             self.test_data["device_{}".format(device)]["test_3"] = {"Passed": passed_list[2], "Result": f'{result3:.3f} volts', "Raw_Result": str(thisADS124.read_data())}
-            self.conn.send("Result 3: {} V ~ 0.83 V \t {} ".format(result3, passed_list[2]))
+            if self.conn is not None:
+                self.conn.send("Result 3: {} V ~ 0.83 V \t {} ".format(result3, passed_list[2]))
             print(self.test_data["device_{}".format(device)]["test_3"])
             print('-------------------------------------------------------')
 
@@ -103,10 +122,12 @@ class ADC(Test):
             thisADS124.start()
             print('DVDD / 4 measurement; gain set to ' + str(thisADS124.get_gain()) )
             result4 = thisADS124.read_volts()
-            if result4 >= 0.84 or result4 <= 0.82:
+            if result4 >= self.passing_criteria['max_dvdd_div_4'] or result4 <= self.passing_criteria['min_dvdd_div_4']:
                 passed_list[3] = False
+                comments.append('Check DVDD / 4 failed with value {}'.format(result4))
             self.test_data["device_{}".format(device)]["test_4"] = {"Passed": passed_list[3], "Result": f'{result4:.3f} volts', "Raw_Result": str(thisADS124.read_data())}
-            self.conn.send("Result 4: {} V ~ 0.83 V \t {} ".format(result4, passed_list[3]))
+            if self.conn is not None:
+                self.conn.send("Result 4: {} V ~ 0.83 V \t {} ".format(result4, passed_list[3]))
             print(self.test_data["device_{}".format(device)]["test_4"])
             print('-------------------------------------------------------')
 
@@ -149,10 +170,16 @@ class ADC(Test):
 
             thisADS124.close()
 
-        self.conn.send("Done.")
+        comments = '\n'.join(comments)
+
+        if self.conn is not None:
+            self.conn.send("Done.")
+
+        self.data = {'test_data': self.test_data, 'passing_criteria': self.passing_criteria}
+
         print('Done.')
         #print({"pass": self.passed, "data": self.test_data})
-        return self.passed, self.test_data
+        return self.passed, self.data, comments
 
 
 if __name__ == '__main__':

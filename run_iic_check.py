@@ -24,11 +24,17 @@ class IIC_Check(Test):
         
         Test.__init__(self, self.iic_check, self.info_dict, conn, numMod=self.get_num_mod(), n_check=10000, module=module)
 
-        self.conn.send("Initializing a IIC_Check test")
+        if self.conn is not None:
+            self.conn.send("Initializing a IIC_Check test")
 
     def iic_check(self, **kwargs): #ibus=1, n_check=10000):
         
-        self.conn.send("Beginning the iic_check...")
+        if self.conn is not None:
+            self.conn.send("Beginning the iic_check...")
+
+        self.passing_criteria = {
+            'max_errors': 0,
+        }
 
         i2c = iic.iic()
         numMod = kwargs['numMod']
@@ -44,7 +50,8 @@ class IIC_Check(Test):
 
             code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
             if code < 0:
-                self.conn.send("UH OH!! Bad connection")
+                if self.conn is not None:
+                    self.conn.send("UH OH!! Bad connection")
 
             ctl = mcp23009.mcp23009(i2c,0x20)
 
@@ -58,8 +65,9 @@ class IIC_Check(Test):
                 try:
                     ctl.setByte(temp)
                 except:
-                    self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. If this problem persists, contact the expert on-hand.")
-                    self.conn.send("Hit stop to retest")
+                    if self.conn is not None:
+                        self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. If this problem persists, contact the expert on-hand.")
+                        self.conn.send("Hit stop to retest")
                     break
 
                 if temp == ctl.readByte():
@@ -69,14 +77,16 @@ class IIC_Check(Test):
                     print("IIC Check Number: {}".format(i))
 
                     print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
-                    self.conn.send("IIC Check Number: {}".format(i))
-                    self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+                    if self.conn is not None:
+                        self.conn.send("IIC Check Number: {}".format(i))
+                        self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
             ctl.setByte(0)
 
             data["num_iic_checks_mod{}".format(i)] = n_check
             data["num_iic_correct_mod{}".format(ibus)] = correct
 
-            self.conn.send("Total correct: {}".format(correct))
+            if self.conn is not None:
+                self.conn.send("Total correct: {}".format(correct))
 
             if correct == n_check:
                 passed_list[0] = True
@@ -85,6 +95,7 @@ class IIC_Check(Test):
         else:
 
             passed_list = [False] * numMod
+            comments = []
 
             for ib in range(0,numMod):
 
@@ -95,11 +106,15 @@ class IIC_Check(Test):
                     code = i2c.connect(dev="/dev/i2c-%s"%ibus,addr=0x20)
                 except:
                     print("Bad I2C connection")
-                    self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. \nIf this problem persists, contact the expert on-hand.")
-                    self.conn.send("Hit stop to retest")
+                    if self.conn is not None:
+                        self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. \nIf this problem persists, contact the expert on-hand.")
+                        self.conn.send("Hit stop to retest")
+
+                    comments.append('Bad connection on module {}'.format(ib))
 
                 if code < 0:
-                    self.conn.send("UH OH!! Bad connection")
+                    if self.conn is not None:
+                        self.conn.send("UH OH!! Bad connection")
 
                 ctl = mcp23009.mcp23009(i2c,0x20)
 
@@ -113,8 +128,9 @@ class IIC_Check(Test):
                         ctl.setByte(temp)
                     except:
                         print("First read write failed")
-                        self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. If this problem persists, contact the expert on-hand.")
-                        self.conn.send("Hit stop to retest")
+                        if self.conn is not None:
+                            self.conn.send("Unable to connect via I2C. Try reloading the firmware and rerunning. If this problem persists, contact the expert on-hand.")
+                            self.conn.send("Hit stop to retest")
                         break
                         
 
@@ -126,8 +142,9 @@ class IIC_Check(Test):
                         #self.conn.send("LCD ; Percent:{:3f} Test:3".format((ib * n_check + i)/float(numMod * n_check)))
 
                         print("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
-                        self.conn.send("IIC Check Number: {}".format(i))
-                        self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
+                        if self.conn is not None:
+                            self.conn.send("IIC Check Number: {}".format(i))
+                            self.conn.send("Written: {} \nRead: {} \nCorrect: {} \n".format(temp, ctl.readByte(), temp==ctl.readByte()))
                 try:
                     ctl.setByte(0)
                 except:
@@ -136,20 +153,28 @@ class IIC_Check(Test):
                 data["num_iic_checks_mod{}".format(ib)] = n_check
                 data["num_iic_correct_mod{}".format(ib)] = correct
 
-                self.conn.send("Total correct: {}".format(correct))
+                if self.conn is not None:
+                    self.conn.send("Total correct: {}".format(correct))
 
-                if correct == n_check:
+                if n_check - correct > self.passing_criteria['max_errors']:
                     passed_list[ib] = True
+                else:
+                    comments.append('Number of incorrect bytes on module {}: {}'.format(ib, n_check - correct))
 
         passed = all(passed_list)
-        
+       
+        comments = '\n'.join(comments)
+
+        data = {'test_data': data, 'passing_criteria': self.passing_criteria}
+
         #self.conn.send("LCD ; Passed:{} Test:3".format(passed))
         i2c.close()
-        self.conn.send("Done.")
+        if self.conn is not None:
+            self.conn.send("Done.")
         print('Done.')
         #self.conn.send({"pass": passed, "data": data})
         print({"pass": passed, "data": data})
-        return passed, data
+        return passed, data, comments
 
     def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagonConfig.json"):
         self.subtype = self.info_dict["board_sn"][3:-6]
@@ -158,7 +183,7 @@ class IIC_Check(Test):
             data = json.load(json_file)
         json_file.close()
 
-        return data[self.subtype]["NumMod"]
+        return len(data[self.subtype].keys()) - 1
 
 
 if __name__ == '__main__':

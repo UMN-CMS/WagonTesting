@@ -28,26 +28,38 @@ import sys
 
 class BERT(Test):
 
-    def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True):
+    def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True, prbs_len=int(3e7), iskip=5, output=None, run=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
-        self.output = Path().home() / "BERT.csv"
-        Test.__init__(self, self.bert, self.info_dict, conn, output=self.output, iskip=5, nbits=1e8, module=module, clock=clock)
+        if output == None:
+            self.output = Path().home() / "BERT.csv"
+        else:
+            self.output = output
+        if run:
+            Test.__init__(self, self.bert, self.info_dict, conn, output=self.output, iskip=iskip, nbits=1e8, module=module, clock=clock, prbs_len=prbs_len)
 
     def bert(self, **kwargs):
+
+        self.passing_criteria = {
+            'min_fit_eo': 0.3,
+            'min_data_eo': 0.0,
+            'max_fit_qual': 0.01,
+        }
+
         self.scans = []
         self.crossovers = []
         self.wagon = Wagon()
         self.mod = kwargs['module']
         self.clock = kwargs['clock']
         self.iskip = kwargs['iskip']
+        self.prbs_len = kwargs['prbs_len']
 
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
         self.reset_zeros()
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
         self.rxs = [idx for idx, val in enumerate(self.scan_mask) if val != 0]
-        self.set_prbs_len()
+        self.set_prbs_len(self.prbs_len)
         self.set_prbs(1)
 
         self.run_long_scan(kwargs['iskip'], kwargs['nbits'], kwargs['output'])
@@ -63,21 +75,31 @@ class BERT(Test):
             self.print_qp_info(co)
         """
 
-        self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
-        fitdata = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip)
+        #self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5))
+        fitdata = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip, prbs_len=self.prbs_len)
 
         results = fitdata.get_results()
         self.passed = True
         self.data = {}
+        comments = []
         for i,r in enumerate(results):
         #    self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5 + 0.5 * (i/float(len(results)))))
             if r is None:
                 print("Bad scan found on RX {}".format(self.rxs[i]))
+                comments.append('Malformed scan for {}'.format(self.link_names[self.rxs[i]]))
                 continue
             r['passed'] = True
-            if not r["Eye Opening"] >= 170 or r["Midpoint Errors"] != 0:
+            #if not r["Fit Eye Opening"] >= 170 or r["Midpoint Errors"] != 0:
+            if not (r["Fit Eye Opening"] >= self.passing_criteria['min_fit_eo'] and r["Data Eye Opening"] > self.passing_criteria['min_data_eo'] and r['Fit Quality'] <= self.passing_criteria['max_fit_qual']):
                 r['passed'] = False
                 self.passed = False
+                if not r["Fit Eye Opening"] >= self.passing_criteria['min_fit_eo']:
+                    comments.append('Fit eye opening smaller than {} for {}'.format(self.passing_criteria['min_fit_eo'], self.link_names[self.rxs[i]]))
+                if not r["Data Eye Opening"] > self.passing_criteria['min_data_eo']:
+                    comments.append('Number of bit errors always greater than zero for {}'.format(self.link_names[self.rxs[i]]))
+                if not r['Fit Quality'] <= self.passing_criteria['max_fit_qual']:
+                    comments.append('Fit quality requirement failed for {}'.format(self.link_names[self.rxs[i]]))
+
             link_name = self.link_names[self.rxs[i]]
             self.data[link_name] = r
             link_mod = r['Module']
@@ -95,23 +117,26 @@ class BERT(Test):
                     self.copy[key1][key2] = int(x)
                 else:
                     self.copy[key1][key2] = x
+
+        comments = '\n'.join(comments)
              
-        self.data = self.copy
+        self.data = {'test_data': self.copy, 'passing_criteria': self.passing_criteria}
        
         #self.conn.send("LCD ; Passed:{} Test:4".format(self.passed))
         time.sleep(0.1)
-        self.conn.send("Done.")
+        if self.conn is not None:
+            self.conn.send("Done.")
         print('Done.')
-        print({"pass": self.passed, "data": self.data})
-        return self.passed, self.data
+
+        return self.passed, self.data, comments
 
     def reset_zeros(self):
         ZERO_MODE = 7
         for i in range(0,5):
             self.wagon.set_tx_mode(i, ZERO_MODE)
 
-    def set_prbs_len(self):
-        self.wagon.set_prbs_len(30000000)
+    def set_prbs_len(self, prbs_len):
+        self.wagon.set_prbs_len(prbs_len)
 
     def set_prbs(self, tx):
         PRBS = 1
@@ -119,9 +144,10 @@ class BERT(Test):
             self.wagon.set_tx_mode(i, PRBS)
         
 
-    def setup_links(self, board_sn, module, clock):
+    def setup_links(self, board_sn, module, clock, set_cp=True):
         self.link_dict, scan_mask, link_names = self.get_links(board_sn, module=module, clock=clock)
-        self.set_crosspoint(self.link_dict)
+        if set_cp:
+            self.set_crosspoint(self.link_dict)
         #self.set_inverts()
 
         return scan_mask, link_names
@@ -181,9 +207,11 @@ class BERT(Test):
  
         else:
 
+            num_mod = len(self.wag_info.keys()) - 1
+
             inputs = OrderedDict()
             outputs = OrderedDict()
-            for mod in range(1,self.wag_info["NumMod"]+1):
+            for mod in range(1,num_mod+1):
                 inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
                 outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
 
@@ -241,7 +269,7 @@ class BERT(Test):
                             link_names[idx+1] = rx["link"]
             else: 
        
-                for mod in range(1,self.wag_info["NumMod"]+1):
+                for mod in range(1,num_mod+1):
      
                     for rx in txrx["RX"]:
 
@@ -266,11 +294,11 @@ class BERT(Test):
                 scan_mask[8] = 1
                 link_names[8] = "CLK1"
 
-                if self.wag_info["NumMod"] >= 2:
+                if num_mod >= 2:
                     scan_mask[9] = 2
                     link_names[9] = "CLK2"
 
-                if self.wag_info["NumMod"] == 3:
+                if num_mod == 3:
                     scan_mask[10] = 3
                     link_names[10] = "CLK3"
 
@@ -286,15 +314,18 @@ class BERT(Test):
         start = datetime.now()
         i = 1
         while i_bit < max_bit:
-            self.conn.send("Running scan {} of {}".format(i, int(max_bit/BIT_PER_SCAN)+1))
+            if self.conn is not None:
+                self.conn.send("Running scan {} of {}".format(i, int(max_bit/BIT_PER_SCAN)+1))
             
             
             # Long process that prints all of the numbers to the server console
             # Approx. 30 seconds to complete
-            self.conn.send("Wait 1 minute until this stage is complete...")
+            if self.conn is not None:
+                self.conn.send("Wait 1 minute until this stage is complete...")
             current_scan = self.wagon.scan(iskip, self.conn)
 
-            self.conn.send("1 minute stage complete")
+            if self.conn is not None:
+                self.conn.send("1 minute stage complete")
 
 
 
@@ -309,7 +340,8 @@ class BERT(Test):
         
             self.long_scan_to_csv(iskip, output)
 
-            self.conn.send("Total Runtime: {} \t Runtime Per Scan: {} \t Estimated Ending Time: {}".format(total_rt, avg_rt, end_time - time_change)) 
+            if self.conn is not None:
+                self.conn.send("Total Runtime: {} \t Runtime Per Scan: {} \t Estimated Ending Time: {}".format(total_rt, avg_rt, end_time - time_change)) 
             i += 1
 
     def sum_scans(self, scan):
@@ -346,7 +378,8 @@ class BERT(Test):
                 
     def long_scan_to_csv(self, iskip, output):
         
-        self.conn.send("Beginning to map to csv...")
+        if self.conn is not None:
+            self.conn.send("Beginning to map to csv...")
         to_csv = map(list, zip(*self.long_scan))
 
         with open(output, 'w') as f:
@@ -361,22 +394,26 @@ class BERT(Test):
         f.close()
 
     def print_qp_info(self, co_info):
-        self.conn.send("\n")
-        self.conn.send("\n")
-        self.conn.send("-------------------------------")
-        self.conn.send("Delay Step Size: {}".format(co_info["delayStep"]))
-        self.conn.send("-------------------------------")
-        self.conn.send("\n")
+        if self.conn is not None:
+            self.conn.send("\n")
+            self.conn.send("\n")
+            self.conn.send("-------------------------------")
+            self.conn.send("Delay Step Size: {}".format(co_info["delayStep"]))
+            self.conn.send("-------------------------------")
+            self.conn.send("\n")
         for i in range(0,9):
-            self.conn.send("Printing Crossover info for Link {}".format(i))
-            self.conn.send("-----------------------------------")
+            if self.conn is not None:
+                self.conn.send("Printing Crossover info for Link {}".format(i))
+                self.conn.send("-----------------------------------")
             co1 = co_info["link{}".format(i)][0]
             co2 = co_info["link{}".format(i)][1]
             if co1 == [] or co2 == []:
-                self.conn.send("Oops! Something went wrong on this link, check connections\n")
+                if self.conn is not None:
+                    self.conn.send("Oops! Something went wrong on this link, check connections\n")
                 continue
-            self.conn.send("Quiet Period Length: {} ".format(co_info["delayStep"] * (co2[0] - co1[1])))
-            self.conn.send("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
+            if self.conn is not None:
+                self.conn.send("Quiet Period Length: {} ".format(co_info["delayStep"] * (co2[0] - co1[1])))
+                self.conn.send("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
             
 
 #BERT(args.output, args.iskip, args.nbits, args.module)

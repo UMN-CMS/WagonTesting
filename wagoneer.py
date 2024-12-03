@@ -215,6 +215,7 @@ class Wagon:
 
     def scan(self, iskip=5, conn=None):
         scan = [] 
+        print(conn)
         for delay in range(0,511, iskip):
 
             if conn is not None:
