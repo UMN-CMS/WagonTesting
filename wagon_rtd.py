@@ -352,7 +352,7 @@ class id_ADS124:
 class gen_resist_test(Test):
 
     def __init__(self, conn, board_sn=-1, tester="", module = None):
-        self.info_dict = {'name': "General Resistance Test", 'board_sn': board_sn, 'tester': tester}
+        self.info_dict = {'name': "Resistance Measurement", 'board_sn': board_sn, 'tester': tester}
 
         Test.__init__(self, self.rtd_test, self.info_dict, conn, east=False, module = module)
 
@@ -417,7 +417,7 @@ class gen_resist_test(Test):
 class id_resist_test(Test):
 
     def __init__(self, conn, board_sn=-1, tester=""):
-        self.info_dict = {'name': "ID Resistance Test", 'board_sn': board_sn, 'tester': tester}
+        self.info_dict = {'name': "ID Resistor Measurement", 'board_sn': board_sn, 'tester': tester}
         
         
         Test.__init__(self, self.run_ID_test, self.info_dict, conn, num_modules=1, east=False)

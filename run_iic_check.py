@@ -16,7 +16,7 @@ class IIC_Check(Test):
     
     def __init__(self, conn, board_sn=-1, tester="", module=None):
 
-        self.info_dict = {'name': "IIC Check", 'board_sn': board_sn, 'tester': tester}
+        self.info_dict = {'name': "I2C Read/Write", 'board_sn': board_sn, 'tester': tester}
         
         # Initialization of a memebr of the Test class will automatically run the test
         # Make sure that all of the arguments necessary are passed as kwargs to the
