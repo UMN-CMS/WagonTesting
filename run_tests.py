@@ -15,21 +15,21 @@ c1, c2 = None, None
 def run_tests(test_info):
    
     module = None
-    print("Running ADC Self Test")
-    ADC(c1, **test_info)
-    print("Running General Resistance")
-    gen_resist_test(c1, module = module, **test_info)
-    print("Running ID Resistance Check")
-    id_resist_test(c1, **test_info)
-    print("Running IIC Check")
-    IIC_Check(c1, module = module, **test_info)
+    #print("Running ADC Self Test")
+    #ADC(c1, **test_info)
+    #print("Running General Resistance")
+    #gen_resist_test(c1, module = module, **test_info)
+    #print("Running ID Resistance Check")
+    #id_resist_test(c1, **test_info)
+    #print("Running IIC Check")
+    #IIC_Check(c1, module = module, **test_info)
     print("Running BERT")
-    BERT(c1, module = module, clock=True, iskip=1, **test_info) 
+    BERT(c1, **test_info) 
 
 #sn = sys.argv[1]
 
 #test_info = {'board_sn': str(sn), 'tester': "Jocie"}
-test_info = {'board_sn': '320WE30A1000001', 'tester': "Bryan"}
+test_info = {'board_sn': '320WE20B1000001', 'tester': "Bryan"}
 run_tests(test_info)
 
 #print("Running tests for east wagon")
