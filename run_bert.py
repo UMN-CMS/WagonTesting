@@ -28,7 +28,7 @@ import sys
 
 class BERT(Test):
 
-    def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True, prbs_len=int(3e7), iskip=5, output=None, run=True):
+    def __init__(self, conn, board_sn=-1, tester='', module=None, clock=True, prbs_len=int(3e7), iskip=1, output=None, run=True):
         self.info_dict = {'name': "Bit Error Rate Test", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
         if output == None:
@@ -36,7 +36,7 @@ class BERT(Test):
         else:
             self.output = output
         if run:
-            Test.__init__(self, self.bert, self.info_dict, conn, output=self.output, iskip=iskip, nbits=1e8, module=module, clock=clock, prbs_len=prbs_len)
+            Test.__init__(self, self.bert, self.info_dict, conn, output=self.output, iskip=iskip, nbits=3e7, module=module, clock=clock, prbs_len=prbs_len)
 
     def bert(self, **kwargs):
 
@@ -89,6 +89,7 @@ class BERT(Test):
                 comments.append('Malformed scan for {}'.format(self.link_names[self.rxs[i]]))
                 continue
             r['passed'] = True
+            
             #if not r["Fit Eye Opening"] >= 170 or r["Midpoint Errors"] != 0:
             if not (r["Fit Eye Opening"] >= self.passing_criteria['min_fit_eo'] and r["Data Eye Opening"] > self.passing_criteria['min_data_eo'] and r['Fit Quality'] <= self.passing_criteria['max_fit_qual']):
                 r['passed'] = False

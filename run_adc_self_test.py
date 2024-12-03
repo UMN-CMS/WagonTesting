@@ -25,7 +25,7 @@ class ADC(Test):
             'min_avdd_to_avss_div_4': 0.82,
             'max_avdd_to_avss_div_4': 0.84,
             'min_dvdd_div_4': 0.82,
-            'max_dvdd_div_4': 0.82,
+            'max_dvdd_div_4': 0.84,
         }
 
         comments = []

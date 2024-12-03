@@ -37,7 +37,7 @@ class FitData:
                     i_scan = self.get_one_scan(i)
                     res = self.do_fit(i, i_scan)
                     if res is None:
-                        res = {'Midpoint': -999, 'Eye Opening': -999, 'Midpoint Errors': -999}
+                        res = {'Fit Eye Opening': -999, 'Data Eye Opening': -999, 'Fit Quality': 1.0}
                     res["Module"] = mask_val
                     self.results.append(res)
                 else:
@@ -62,7 +62,7 @@ class FitData:
         if len(maxes) < 2:
             if self.conn is not None:
                 self.conn.send("Bad scan with index {}, double check that this line is connected".format(scan_idx))
-            return {"Eye Opening": -999, "Midpoint": -999, "Midpoint Errors": -999}
+            return {'Fit Eye Opening': -999, 'Data Eye Opening': -999, 'Fit Quality': 1.0}
 
         #if not good_scan:
         #    self.conn.send("Bad scan with index {}, double check that this line is connected".format(scan_idx))

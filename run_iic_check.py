@@ -156,7 +156,7 @@ class IIC_Check(Test):
                 if self.conn is not None:
                     self.conn.send("Total correct: {}".format(correct))
 
-                if n_check - correct > self.passing_criteria['max_errors']:
+                if n_check - correct <= self.passing_criteria['max_errors']:
                     passed_list[ib] = True
                 else:
                     comments.append('Number of incorrect bytes on module {}: {}'.format(ib, n_check - correct))
