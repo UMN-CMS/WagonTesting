@@ -71,12 +71,14 @@ class BERT(Test):
         prbs_short = int(3e4)
 
         self.set_prbs_len(prbs_short)
-        self.set_prbs()
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
+        self.reset_zeros()
+        self.set_prbs()
         self.run_long_scan(iskip_short, prbs_short, kwargs['output'])
         temp_fit_data = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip, prbs_len=int(3e4), short=True)
         shift_map = temp_fit_data.get_shift_map()
 
+        #self.reset_zeros()
         self.set_prbs_len(self.prbs_len)
         self.set_prbs(shift_map=shift_map)
 
@@ -210,7 +212,7 @@ class BERT(Test):
                     cp_setup[cur_cp_output] = cur_cp_input
 
                     set_crosspoint(cur_mod, cp_setup)
-                    #self.reset_zeros()
+                    self.reset_zeros()
 
                     self.wagon.set_tx_mode(cur_tx, ONE_MODE)
                     #for i in range(10):
@@ -232,6 +234,7 @@ class BERT(Test):
 
 
     def reset_zeros(self):
+
         ZERO_MODE = 7
         for i in range(0,8):
             self.wagon.set_tx_mode(i, ZERO_MODE)
