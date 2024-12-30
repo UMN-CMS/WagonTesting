@@ -41,7 +41,7 @@ class BERT(Test):
     def bert(self, **kwargs):
 
         self.passing_criteria = {
-            'min_fit_eo': 0.3,
+            'min_fit_eo': 0.5,
             'min_data_eo': 0.0,
             'max_fit_qual': 0.01,
         }
@@ -56,11 +56,29 @@ class BERT(Test):
 
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
-        self.reset_zeros()
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
+        self.reset_zeros()
         self.rxs = [idx for idx, val in enumerate(self.scan_mask) if val != 0]
+
+        comments = []
+        self.passed = True
+        self.data = {}
+
+        res_elink, comments = self.elink_continuity_test(comments)
+
+        # Run short scan to check which mode the clock RX should run in (9 or 10)
+        iskip_short = 1
+        prbs_short = int(3e4)
+
+        self.set_prbs_len(prbs_short)
+        self.set_prbs()
+        self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
+        self.run_long_scan(iskip_short, prbs_short, kwargs['output'])
+        temp_fit_data = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip, prbs_len=int(3e4), short=True)
+        shift_map = temp_fit_data.get_shift_map()
+
         self.set_prbs_len(self.prbs_len)
-        self.set_prbs(1)
+        self.set_prbs(shift_map=shift_map)
 
         self.run_long_scan(kwargs['iskip'], kwargs['nbits'], kwargs['output'])
 
@@ -79,9 +97,6 @@ class BERT(Test):
         fitdata = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip, prbs_len=self.prbs_len)
 
         results = fitdata.get_results()
-        self.passed = True
-        self.data = {}
-        comments = []
         for i,r in enumerate(results):
         #    self.conn.send("LCD ; Percent:{:3f} Test:4".format(0.5 + 0.5 * (i/float(len(results)))))
             if r is None:
@@ -119,10 +134,15 @@ class BERT(Test):
                 else:
                     self.copy[key1][key2] = x
 
+        self.copy['elink_continuity'] = res_elink
+        self.passed &= res_elink['pass_continuity']
+
         comments = '\n'.join(comments)
              
         self.data = {'test_data': self.copy, 'passing_criteria': self.passing_criteria}
-       
+      
+        print(self.data, comments)
+
         #self.conn.send("LCD ; Passed:{} Test:4".format(self.passed))
         time.sleep(0.1)
         if self.conn is not None:
@@ -131,18 +151,119 @@ class BERT(Test):
 
         return self.passed, self.data, comments
 
+    def elink_continuity_test(self, comments):
+
+        tx_elink_map = {
+            'CLK1': 0,
+            'CLK2': 1,
+            'CLK3': 2,
+            'DAQ0': 4,
+            'DAQ1': 5,
+            'DAQ2': 6,
+            'X_DAQ': 7,
+        }
+
+        wagon_wheel_inputs = {
+            'TRIG4': 0,
+            'DAQ0': 1,
+            'DAQ1': 2, 
+            '': 3,
+        }
+
+        wagon_wheel_outputs = {
+            'TRIG0': 3,
+            'TRIG1': 2,
+            'TRIG2': 1,
+            'TRIG3': 0,
+        }
+
+        rx_elink_map = {v: k-1 for k, v in self.link_names.items()}
+
+        results = {}
+        for module in self.wag_info.keys():
+            ZERO_MODE = 7
+            ONE_MODE = 8
+
+            if module == 'IDResistor': continue
+
+            print('Checking Continuity on {}'.format(module))
+
+            inputs = self.wag_info[module]['Inputs']
+            outputs = self.wag_info[module]['Outputs']
+
+            for inp in inputs.values():
+
+                if 'XING' in inp['Eng_Elink']: continue
+
+                cur_mod = int(module[-1])
+                cur_tx = tx_elink_map[inp['Eng_Elink']]
+                cur_cp_input = wagon_wheel_inputs[inp['Mod_Elink']]
+
+                for outp in outputs.values():
+
+                    if 'XING' in outp['Eng_Elink']: continue
+
+                    cur_rx = rx_elink_map[outp['Eng_Elink']]
+                    cur_cp_output = wagon_wheel_outputs[outp['Mod_Elink']]
+
+                    cp_setup = [3] * 4
+                    cp_setup[cur_cp_output] = cur_cp_input
+
+                    set_crosspoint(cur_mod, cp_setup)
+                    #self.reset_zeros()
+
+                    self.wagon.set_tx_mode(cur_tx, ONE_MODE)
+                    #for i in range(10):
+                    #    self.wagon.spy(-1, 10, prnt=False)
+                    data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
+                    print([hex(d) for d in data[99]])
+                    cur_result = '0xff' == hex(data[99][cur_rx])
+                    zero_res = all(['0x0' == hex(d) for i, d in enumerate(data[99]) if i != cur_rx])
+                    results[outp['Eng_Elink']] = cur_result and zero_res
+
+                    if not cur_result:
+                        comments.append('Engine Elink mapping for {} (Mod {} Elink {}) does not match expected mapping'.format(outp['Eng_Elink'], cur_mod, outp['Mod_Elink']))
+
+                    self.wagon.set_tx_mode(cur_tx, ZERO_MODE)
+
+        results['pass_continuity'] = all([res for res in results.values()])
+
+        return results, comments
+
+
     def reset_zeros(self):
         ZERO_MODE = 7
-        for i in range(0,5):
+        for i in range(0,8):
             self.wagon.set_tx_mode(i, ZERO_MODE)
+
+        #for i in range(10):
+        #    self.wagon.spy(-1, 10, prnt=False)
+        values = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
+        values = [hex(v) for v in values[99]]
+
+        for i_rx, v in enumerate(values):
+            if v == '0xff':
+                #print('Need to invert on RX {}'.format(i_rx))
+                self.wagon.invert(i_rx)
+
+        for i_rx in range(7, 10):
+            self.wagon.set_half_speed(i_rx, mode=1)
 
     def set_prbs_len(self, prbs_len):
         self.wagon.set_prbs_len(prbs_len)
 
-    def set_prbs(self, tx):
+    def set_prbs(self, shift_map=[False] * 12):
         PRBS = 1
+        PRBS_HALFSPEED = 9
+        PRBS_HALFSPEED_SHIFT = 10
         for i in range(0,8):
             self.wagon.set_tx_mode(i, PRBS)
+
+        for i in range(0,3):
+            if shift_map[i+8]:
+                self.wagon.set_tx_mode(i, PRBS_HALFSPEED_SHIFT)
+            else:
+                self.wagon.set_tx_mode(i, PRBS_HALFSPEED)
         
 
     def setup_links(self, board_sn, module, clock, set_cp=True):
@@ -179,7 +300,6 @@ class BERT(Test):
 
     def get_links(self, board_sn="3205WEDBG100001", cfg_path = Path(__file__).parent / "static" / "wagonConfig.json", module=None, clock=True):
         self.subtype = board_sn[3:-6]
-        print(self.subtype)
 
         with open(cfg_path, "r") as json_file:
             data = json.load(json_file)
@@ -310,7 +430,7 @@ class BERT(Test):
 
     def run_long_scan(self, iskip=1, max_bit=1e8, output=""):
         i_bit = 0
-        BIT_PER_SCAN = 100000008
+        BIT_PER_SCAN = (max_bit + 1) * 8
         self.long_scan = []
         start = datetime.now()
         i = 1

@@ -9,9 +9,9 @@ import uhal
 class Wagon:
     
     def __init__(self):
-        self.txmap = ["0xF0F0F18","PRBS-15","QUAD-COUNTER","ZERO,COUNT,COUNT,0xFF",
+        self.txmap = ["0xF0F0F18","PRBS-7","QUAD-COUNTER","ZERO,COUNT,COUNT,0xFF",
            "COUNT,INV-COUNT,COUNT,INV-COUNT","CLK40","CLK40_SHORTHIGH","ZEROS",
-           "ONES","0xCC55CC55","0xCC55CC55","0xCC55CC55",
+           "ONES","PRBS (Half Speed)","PRBS (Half Speed, bit shift)","0xCC55CC55",
            "0xCC55CC55","0xCC55CC55","0xCC55CC55","0xCC55CC55"]
 
         self.config()
@@ -57,15 +57,17 @@ class Wagon:
         self.rxinv=[]
         self.rxberok=[]
         self.rxbitslip=[]
+        self.rxspeed=[]
         for irx in range(0,int(self.nrx)):
             self.rxdelay.append(self.wagon.getNode("INPUT_%d.CAPTURE_DELAY"%irx).read())
             self.rxinv.append(self.wagon.getNode("INPUT_%d.INVERT"%irx).read())
             self.rxberok.append(self.wagon.getNode("INPUT_%d.BER_LOCK"%irx).read())
             self.rxbitslip.append(self.wagon.getNode("INPUT_%d.BITSLIP"%irx).read())
+            self.rxspeed.append(self.wagon.getNode("INPUT_%d.HALF_SPEED"%irx).read())
         self.hw.dispatch()
 
         for irx in range(0,int(self.nrx)):
-            print("   %d : Delay %d Bitslip %d %s %s"%(irx,self.rxdelay[irx],self.rxbitslip[irx],"" if int(self.rxinv[irx])==0 else "Inverted","" if int(self.rxberok[irx])==0 else "BEROK"))
+            print("   %d : Delay %d Bitslip %d %s %s %s"%(irx,self.rxdelay[irx],self.rxbitslip[irx],"" if int(self.rxinv[irx])==0 else "Inverted","" if int(self.rxberok[irx])==0 else "BEROK", "" if int(self.rxspeed[irx])==0 else "Half Speed"))
 
         print(" Inouts (%d) "%(self.ntxrx))
         self.rxdelay=[]
@@ -168,10 +170,29 @@ class Wagon:
         self.wagon.getNode("INPUT_%d.BITSLIP"%effrx).write(bitslip)
         self.hw.dispatch()
  
-    def spy(self, effrx, spy):
-        self.wagon.getNode("CTL.SPY_RX_START").write(1)
-        self.wagon.getNode("CTL.SPY_RX_START").write(0)
-        self.hw.dispatch()
+    def set_half_speed(self, effrx, mode=None):
+        if mode is not None:
+            node = self.wagon.getNode("INPUT_%d.HALF_SPEED"%effrx)
+            node.write(mode)
+            self.hw.dispatch()
+            ilater = node.read()
+            self.hw.dispatch()
+        else:
+            node = self.wagon.getNode("INPUT_%d.HALF_SPEED"%effrx)
+            inow = node.read()
+            self.hw.dispatch()
+            if inow == 0: node.write(1)
+            else: node.write(0)
+            self.hw.dispatch()
+            ilater = node.read()
+            self.hw.dispatch()
+        print("RX {} Half Speed set to {}".format(effrx, ilater))
+
+    def spy(self, effrx, spy, prnt=True):
+        for i in range(10):
+            self.wagon.getNode("CTL.SPY_RX_START").write(1)
+            self.wagon.getNode("CTL.SPY_RX_START").write(0)
+            self.hw.dispatch()
         vals=[]
         pts=spy
         for i in range(0,pts):
@@ -184,16 +205,19 @@ class Wagon:
                 for itxrx in range(0,self.ntxrx):
                    vals.append(self.wagon.getNode("INPUT_%d.SPY"%(itxrx+self.nrx)).read())
         self.hw.dispatch()
-        if effrx>=0:
-            for i in range(0,pts):
-                print("  %02x"%(vals[i]))
-        else:
-            for i in range(0,pts):
-                for irx in range(0,self.nrx):
-                    print(" %02x"%(vals[i*(self.nrx+self.ntxrx)+irx]),end="")
-                for itxrx in range(0,self.ntxrx):
-                    print(" %02x"%(vals[i*(self.nrx+self.ntxrx)+self.nrx+itxrx]),end="")
-                print()
+        if prnt:
+            if effrx>=0:
+                for i in range(0,pts):
+                    print("  %02x"%(vals[i]))
+            else:
+                for i in range(0,pts):
+                    for irx in range(0,self.nrx):
+                        print(" %02x"%(vals[i*(self.nrx+self.ntxrx)+irx]),end="")
+                    for itxrx in range(0,self.ntxrx):
+                        print(" %02x"%(vals[i*(self.nrx+self.ntxrx)+self.nrx+itxrx]),end="")
+                    print()
+
+        return vals
 
     def do_ber(self, doprint):
         self.wagon.getNode("CTL.START_PRBS").write(1)
@@ -301,7 +325,7 @@ if __name__ == "__main__":
     parser.add_argument('--prbsclear',action='store_true',help='Clear PRBS')
     parser.add_argument('--prbslen',type=int,default=-1,help='set PRBS Length')
     parser.add_argument('--bitslip',type=int,default=-1,help='set bit slip')
-    parser.add_argument('--togglespeed',action='store_true',help='toggle speed of links')
+    parser.add_argument('--halfspeed',action='store_true',help='toggle speed of RX (use TX mode 9)')
 
     args=parser.parse_args()
 
@@ -315,6 +339,10 @@ if __name__ == "__main__":
 
     if args.reset:
         wagoneer.reset()
+
+    if args.mode is not None and args.tx<0:
+        for tx in range(0,wagoneer.ntx):
+            wagoneer.set_tx_mode(tx, args.mode)
 
     if args.mode is not None and args.tx>=0:
         wagoneer.set_tx_mode(args.tx, args.mode)
@@ -344,6 +372,9 @@ if __name__ == "__main__":
     if effrx>=0 and args.bitslip>=0:
         wagoneer.set_bitslip(effrx, args.bitslip)
 
+    if effrx>=0 and args.halfspeed:
+        wagoneer.set_half_speed(effrx)
+
     if args.spy>0:
         wagoneer.spy(effrx, args.spy)
 
@@ -359,7 +390,7 @@ if __name__ == "__main__":
     if args.prbsclear:
         wagoneer.clear_prbs()
 
-    if args.togglespeed:
-        wagoneer.toggle_speed()
+    #if args.togglespeed:
+    #    wagoneer.toggle_speed()
 
     #wagoneer.dispatch()

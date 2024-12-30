@@ -16,7 +16,7 @@ from argparse import ArgumentParser
 
 class FitData:
     
-    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, scan_mask=None, iskip=1, prbs_len=30000000, run=True):
+    def __init__(self, path_data, conn, scan_idx=-1, num_scan=-1, scan_mask=None, iskip=1, prbs_len=30000000, run=True, short=False):
         self.all_data = read_csv(path_data, header=None, delim_whitespace=True)
         self.path = path_data
         self.num_scan = num_scan        
@@ -24,6 +24,7 @@ class FitData:
         self.conn = conn
         self.iskip = iskip
         self.prbs_len = prbs_len
+        self.shift_map = []
 
         if self.scan_idx is not -1:
             self.single_scan = self.get_one_scan(self.scan_idx)
@@ -35,13 +36,18 @@ class FitData:
                     if self.conn is not None:
                         self.conn.send("Fitting BER Scan #{}...".format(i))
                     i_scan = self.get_one_scan(i)
-                    res = self.do_fit(i, i_scan)
+                    res = self.do_fit(i, i_scan, short=short)
+                    if short: 
+                        self.shift_map.append(res)
+                        continue
                     if res is None:
                         res = {'Fit Eye Opening': -999, 'Data Eye Opening': -999, 'Fit Quality': 1.0}
                     res["Module"] = mask_val
                     self.results.append(res)
                 else:
                     print("Skipping unused ELINK with RX index {}".format(i))
+                    if short:
+                        self.shift_map.append(False)
 
         print("Done fitting")
         print("going back to run_bert.py")
@@ -49,12 +55,18 @@ class FitData:
     def get_results(self):
         return self.results
 
-    def do_fit(self, scan_idx, scan, return_scan=False):
+    def get_shift_map(self):
+        return self.shift_map
+
+    def do_fit(self, scan_idx, scan, return_scan=False, short=False):
         self.guess = []
 
         scan = self.invert_check(scan)
         #scan, good_scan = self.wrap_check(scan)
-        maxes = self.get_peaks_temp(scan)
+        maxes = self.get_peaks_temp(scan, short=short)
+
+        if short:
+            return len(maxes) < 2
 
         if len(maxes) > 2:
             maxes = maxes[:2]
@@ -229,10 +241,11 @@ class FitData:
             res.append(val)
         ax.scatter(scan['xdata'], res, s=10)
 
-    def get_peaks_temp(self, scan):
+    def get_peaks_temp(self, scan, short=False):
 
-        peaks = find_peaks(scan['ydata'], width=20)[0]
+        peaks = find_peaks(scan['ydata'], width=10)[0]
 
+        print(peaks)
         return peaks
 
     def get_peaks(self, scan):
