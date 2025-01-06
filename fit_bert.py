@@ -243,7 +243,7 @@ class FitData:
 
     def get_peaks_temp(self, scan, short=False):
 
-        peaks = find_peaks(scan['ydata'], width=10)[0]
+        peaks = find_peaks(scan['ydata'], width=5)[0]
 
         print(peaks)
         return peaks
