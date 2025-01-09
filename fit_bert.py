@@ -63,7 +63,9 @@ class FitData:
 
         scan = self.invert_check(scan)
         #scan, good_scan = self.wrap_check(scan)
-        maxes = self.get_peaks_temp(scan, short=short)
+        maxes = self.get_peaks_temp(scan)
+        #maxes = self.get_peaks(scan)
+        #print(maxes)
 
         if short:
             return len(maxes) < 2
@@ -241,9 +243,19 @@ class FitData:
             res.append(val)
         ax.scatter(scan['xdata'], res, s=10)
 
-    def get_peaks_temp(self, scan, short=False):
+    def get_peaks_temp(self, scan):
 
-        peaks = find_peaks(scan['ydata'], width=5)[0]
+        peaks = list(find_peaks(scan['ydata'], width=5)[0])
+
+        # Catch for wrap around case with half speed clocks
+        # find_peaks width argument causes local max at edge
+        # of scan to be removed
+        # However, we need these maxes for the actual test
+        if len(peaks) == 1:
+            if peaks[0] < len(scan['xdata']) // 2 and scan['ydata'][-1] != 0:
+                peaks.append(scan['xdata'][-1])
+            elif peaks[0] > len(scan['xdata']) // 2 and scan['ydata'][0] != 0:
+                peaks.append(scan['xdata'][0])
 
         print(peaks)
         return peaks
