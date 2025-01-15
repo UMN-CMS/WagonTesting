@@ -220,7 +220,7 @@ class BERT(Test):
                     data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
                     print([hex(d) for d in data[99]])
                     cur_result = '0xff' == hex(data[99][cur_rx])
-                    zero_res = all(['0x0' == hex(d) for i, d in enumerate(data[99]) if i != cur_rx])
+                    zero_res = all([128 < int(d) for i, d in enumerate(data[99]) if i != cur_rx])
                     results[outp['Eng_Elink']] = cur_result and zero_res
 
                     if not cur_result:
