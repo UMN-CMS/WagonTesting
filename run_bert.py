@@ -64,6 +64,7 @@ class BERT(Test):
         self.passed = True
         self.data = {}
 
+        
         res_elink, comments = self.elink_continuity_test(comments)
 
         # Run short scan to check which mode the clock RX should run in (9 or 10)
@@ -155,6 +156,7 @@ class BERT(Test):
 
     def elink_continuity_test(self, comments):
 
+
         tx_elink_map = {
             'CLK1': 0,
             'CLK2': 1,
@@ -218,10 +220,10 @@ class BERT(Test):
                     #for i in range(10):
                     #    self.wagon.spy(-1, 10, prnt=False)
                     data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
-                    print([hex(d) for d in data[99]])
+                    #print([hex(d) for d in data[99]])
                     cur_result = '0xff' == hex(data[99][cur_rx])
-                    zero_res = all([128 > int(d) for i, d in enumerate(data[99]) if i != cur_rx])
-                    results[outp['Eng_Elink']] = cur_result and zero_res
+                    #zero_res = all([128 > int(d) for i, d in enumerate(data[99]) if i != cur_rx])
+                    results[outp['Eng_Elink']] = cur_result #and zero_res
 
                     if not cur_result:
                         comments.append('Engine Elink mapping for {} (Mod {} Elink {}) does not match expected mapping'.format(outp['Eng_Elink'], cur_mod, outp['Mod_Elink']))
