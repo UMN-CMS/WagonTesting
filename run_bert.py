@@ -182,6 +182,7 @@ class BERT(Test):
         }
 
         rx_elink_map = {v: k-1 for k, v in self.link_names.items()}
+        forbidden_inputs = ['XING', 'TRIG']
 
         results = {}
         for module in self.wag_info.keys():
@@ -197,12 +198,11 @@ class BERT(Test):
 
             for inp in inputs.values():
 
-                if 'XING' in inp['Eng_Elink']: continue
+                if any([x in inp['Eng_Elink'] for x in forbidden_inputs]): continue
 
                 cur_mod = int(module[-1])
                 cur_tx = tx_elink_map[inp['Eng_Elink']]
                 cur_cp_input = wagon_wheel_inputs[inp['Mod_Elink']]
-
                 for outp in outputs.values():
 
                     if 'XING' in outp['Eng_Elink']: continue
@@ -220,7 +220,7 @@ class BERT(Test):
                     #for i in range(10):
                     #    self.wagon.spy(-1, 10, prnt=False)
                     data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
-                    #print([hex(d) for d in data[99]])
+                    print([hex(d) for d in data[99]])
                     cur_result = '0xff' == hex(data[99][cur_rx])
                     zero_res = all(['0x0' == hex(d) for i, d in enumerate(data[99]) if i != cur_rx])
                     results[outp['Eng_Elink']] = cur_result and zero_res
