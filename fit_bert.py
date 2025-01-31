@@ -1,11 +1,11 @@
 #!/usr/bin/python
 import sys
-#import matplotlib as mpl
+import matplotlib as mpl
 #mpl.use('tkagg')
 
 from math import sqrt, isnan
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 #from scipy.optimize import curve_fit
 
 import lmfit
@@ -26,7 +26,7 @@ class FitData:
         self.prbs_len = prbs_len
         self.shift_map = []
 
-        if self.scan_idx is not -1:
+        if self.scan_idx != -1:
             self.single_scan = self.get_one_scan(self.scan_idx)
             self.do_fit(scan_idx, self.single_scan)
         elif scan_mask is not None:
@@ -63,12 +63,13 @@ class FitData:
 
         scan = self.invert_check(scan)
         #scan, good_scan = self.wrap_check(scan)
-        maxes = self.get_peaks_temp(scan)
+        maxes, peak_vals = self.get_peaks_group(scan)
+        #maxes = self.get_peaks_temp(scan)
         #maxes = self.get_peaks(scan)
         #print(maxes)
 
         if short:
-            return len(maxes) < 2
+            return len(maxes) <= 1
 
         if len(maxes) > 2:
             maxes = maxes[:2]
@@ -86,8 +87,8 @@ class FitData:
         #xmin, xmax = self.get_window(scan)
         scan, xmin, xmax = self.trim_scan(scan, xmin, xmax)
         maxes = (xmin, xmax)
-        scan = self.pad_scan(scan, 100)
-        guess = self.get_guess(scan, maxes)
+        scan = self.pad_scan(scan, 100, peak_vals)
+        guess = self.get_guess(scan, maxes, peak_vals)
 
         i_fit = 0
 
@@ -150,7 +151,7 @@ class FitData:
             
         return scan
 
-    def get_guess(self, scan, maxes):
+    def get_guess(self, scan, maxes, peak_vals):
         max_y = max(scan['ydata'])
         x1 = 0
         x2 = 0
@@ -168,7 +169,7 @@ class FitData:
             if x == mid:
                 least_diff = 1e12
 
-        guess = [maxes[0], 5, max_y, maxes[1], 5, max_y]
+        guess = [maxes[0], 5, peak_vals[0], maxes[1], 5, peak_vals[1]]
         
         return guess
 
@@ -211,7 +212,7 @@ class FitData:
         #axs[0].scatter(scan['xdata'], scan['ydata'], label="BERT Data", s=10)
         #axs[0].set_yscale('log')
         #axs[0].grid(color="black", linestyle=':')
-        #axs[0].axis([min(scan['xdata'])-15, max(scan['xdata'])+15, 0.1, 1e13])
+        #axs[0].axis([min(scan['xdata']), max(scan['xdata']), 0.1, 1e13])
         #y_fit = [self.fit_func(x, x1, w1, TD1, x2, w2, TD2) for x in scan['xdata']]
         #axs[0].plot(scan['xdata'], y_fit, color="red", label="Fit")
         #axs[1].set_xlabel("Time Delay")
@@ -222,7 +223,7 @@ class FitData:
         #axs[0].legend(loc="upper center")
         #axs[0].set_title("Eye-Opening Width: {}".format(round(x2 - x1, 1)))
         #self.plot_residuals(scan, fit_params, axs[1])
-        #plt.savefig("figures/{}_elink{}.png".format(self.path.split("/")[1][:-4], scan_idx))
+        #plt.savefig("figures/{}_elink{}.png".format(self.path.parts[1][:-4], scan_idx))
        
         results = {
             'Fit Eye Opening': round(eo_fit, 3),
@@ -243,6 +244,57 @@ class FitData:
             res.append(val)
         ax.scatter(scan['xdata'], res, s=10)
 
+
+    def get_peaks_group(self, scan):
+
+        x_data = np.array(scan['xdata'])
+        y_data = np.array(scan['ydata'])
+        zero_mask = y_data == 0
+        groups = []
+
+        # Find groups of nonzero values
+        # Peaks are defined as the maximum of that group
+        group_counter = 1
+        for i in range(len(zero_mask) - 1):
+
+            # If falling edge, increment group counter
+            if not zero_mask[i] and zero_mask[i+1]:
+                group_counter += 1
+            # Ignore entries with zeros
+            if zero_mask[i]: 
+                groups.append(0)
+            # All other cases (non-zero, not rising edge) append group value
+            else:
+                groups.append(group_counter)
+
+        # Last phase always assumed to be zero
+        groups.append(0)
+        groups = np.array(groups)
+
+        peaks = []
+        peak_vals = []
+
+        for i in range(1, group_counter + 1):
+            if np.sum(groups == i) < 10: continue
+            group_max = np.max(y_data[np.array(groups) == i])
+            if group_max > 1e4:
+                peaks.append(x_data[(y_data == group_max) & (groups == i)])
+                peak_vals.append(group_max)
+
+        if len(peaks) > 2:
+            if peak_vals[0] > peak_vals[2]:
+                peaks = peaks[0:2]
+                peak_vals = peak_vals[0:2]
+            else:
+                peaks = peaks[1:]
+                peak_vals = peak_vals[1:]
+
+        print(peaks)
+        print(peak_vals)
+
+        return peaks, peak_vals
+
+
     def get_peaks_temp(self, scan):
 
         peaks = list(find_peaks(scan['ydata'], width=5)[0])
@@ -251,11 +303,29 @@ class FitData:
         # find_peaks width argument causes local max at edge
         # of scan to be removed
         # However, we need these maxes for the actual test
+        vals = [scan['ydata'][i] for i in peaks]
+        print(f'Peaks before: {peaks}')
+        if len(peaks) > 1:
+            new_peaks = []
+            for i in range(1, len(peaks)):
+                diff = peaks[i] - peaks[i-1]
+                if diff < 100:
+                    new_val = peaks[vals.index(max(vals[i], vals[i-1]))]
+                    if new_val not in new_peaks:
+                        new_peaks.append(new_val)
+                else:
+                    if peaks[i-1] not in new_peaks:
+                        new_peaks.append(peaks[i-1])
+                    new_peaks.append(peaks[i])
+
+            peaks = new_peaks
+
         if len(peaks) == 1:
-            if peaks[0] < len(scan['xdata']) // 2 and scan['ydata'][-1] != 0:
+            if scan['ydata'][-1] != 0:
                 peaks.append(scan['xdata'][-1])
-            elif peaks[0] > len(scan['xdata']) // 2 and scan['ydata'][0] != 0:
+            elif scan['ydata'][0] != 0:
                 peaks.append(scan['xdata'][0])
+
 
         print(peaks)
         return peaks
@@ -305,15 +375,15 @@ class FitData:
 
         return temp, min(temp['xdata']), max(temp['xdata'])
     
-    def pad_scan(self, scan, pad):
+    def pad_scan(self, scan, pad, maxes):
 
         self.iskip = scan['xdata'][1] - scan['xdata'][0]
 
         start = scan['xdata'][0]
         end = scan['xdata'][-1]
 
-        front_y_padding = [max(scan['ydata'][:len(scan['ydata'])//2]) for i in range(pad)]
-        back_y_padding = [max(scan['ydata'][len(scan['ydata'])//2:]) for i in range(pad)]
+        front_y_padding = [maxes[0] for i in range(pad)]
+        back_y_padding = [maxes[1] for i in range(pad)]
         
         front_x_padding = [i for i in np.arange(start - pad*self.iskip, start, self.iskip)]
         back_x_padding = [i for i in np.arange(end, end + pad*self.iskip, self.iskip)]

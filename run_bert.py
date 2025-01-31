@@ -69,14 +69,14 @@ class BERT(Test):
 
         # Run short scan to check which mode the clock RX should run in (9 or 10)
         iskip_short = 1
-        prbs_short = int(3e4)
+        prbs_short = int(3e5)
 
         self.set_prbs_len(prbs_short)
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
         self.reset_zeros()
         self.set_prbs()
         self.run_long_scan(iskip_short, prbs_short, kwargs['output'])
-        temp_fit_data = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip, prbs_len=int(3e4), short=True)
+        temp_fit_data = FitData(self.output, self.conn, scan_mask=self.scan_mask, iskip=self.iskip, prbs_len=prbs_short, short=True)
         shift_map = temp_fit_data.get_shift_map()
 
         #self.reset_zeros()
@@ -220,7 +220,7 @@ class BERT(Test):
                     #for i in range(10):
                     #    self.wagon.spy(-1, 10, prnt=False)
                     data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
-                    print([hex(d) for d in data[99]])
+                    #print([hex(d) for d in data[99]])
                     cur_result = '0xff' == hex(data[99][cur_rx])
                     zero_res = all(['0x0' == hex(d) for i, d in enumerate(data[99]) if i != cur_rx])
                     results[outp['Eng_Elink']] = cur_result and zero_res
