@@ -251,8 +251,12 @@ class BERT(Test):
                 #print('Need to invert on RX {}'.format(i_rx))
                 self.wagon.invert(i_rx)
 
-        for i_rx in range(7, 10):
-            self.wagon.set_half_speed(i_rx, mode=1)
+        if self.subtype[:2] == 'WW':
+            for i_rx in range(7, 10):
+                self.wagon.set_half_speed(i_rx, mode=1)
+        else:
+            for i_rx in range(7, 10):
+                self.wagon.set_half_speed(i_rx, mode=0)
 
     def set_prbs_len(self, prbs_len):
         self.wagon.set_prbs_len(prbs_len)
@@ -264,11 +268,12 @@ class BERT(Test):
         for i in range(0,8):
             self.wagon.set_tx_mode(i, PRBS)
 
-        for i in range(0,3):
-            if shift_map[i+8]:
-                self.wagon.set_tx_mode(i, PRBS_HALFSPEED_SHIFT)
-            else:
-                self.wagon.set_tx_mode(i, PRBS_HALFSPEED)
+        if self.subtype[:2] == 'WW':
+            for i in range(0,3):
+                if shift_map[i+8]:
+                    self.wagon.set_tx_mode(i, PRBS_HALFSPEED_SHIFT)
+                else:
+                    self.wagon.set_tx_mode(i, PRBS_HALFSPEED)
         
 
     def setup_links(self, board_sn, module, clock, set_cp=True):
