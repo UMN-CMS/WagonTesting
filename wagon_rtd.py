@@ -416,8 +416,8 @@ class gen_resist_test(Test):
 
 class id_resist_test(Test):
 
-    def __init__(self, conn, board_sn=-1, tester=""):
-        self.info_dict = {'name': "ID Resistor Measurement", 'board_sn': board_sn, 'tester': tester}
+    def __init__(self, conn, board_sn=-1, tester="", name='ID Resistor Measurement'):
+        self.info_dict = {'name': name, 'board_sn': board_sn, 'tester': tester}
         
         
         Test.__init__(self, self.run_ID_test, self.info_dict, conn, num_modules=1, east=False)
@@ -425,8 +425,12 @@ class id_resist_test(Test):
 
 
     def run_ID_test(self, **kwargs):
-        
-        id_res = self.get_id_res()
+       
+        if self.info_dict['name'] != 'Zipper Resistance Measurement':
+            id_res = self.get_id_res()
+        else:
+            # Zippers should have a total resistance of about 80 ohms
+            id_res = 80
 
         self.id_chip = id_ADS124(self.conn, id_res)
 
