@@ -8,12 +8,20 @@
 # importing necessary modules
 from asyncore import write
 import time, zmq, json, logging, os, sys
+from pathlib import Path
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", filemode='w', format=FORMAT, level=logging.INFO)
+logging.basicConfig(filename=Path.home() / 'logs' / 'zipper.log', filemode='w', format=FORMAT, level=logging.INFO)
+
+if not os.path.exists(Path.home() / 'logs' / 'zipper.log'):
+    os.makedirs(Path.home() / 'logs' / 'zipper.log')
 
 import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
+
+sys.path.append(str(Path().cwd().parent.resolve()))
+sys.path.append(str(Path().cwd().parent.parent.resolve()))
+print(sys.path)
 
 from PUBServer import PUBServer
 from zip_res_test import ZipResTest
