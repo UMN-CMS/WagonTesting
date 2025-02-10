@@ -21,6 +21,7 @@ import multiprocessing as mp
 
 sys.path.append(str(Path(__file__).parent.resolve()))
 sys.path.append(str(Path(__file__).parent.parent.resolve()))
+sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 print(sys.path)
 
 from PUBServer import PUBServer
