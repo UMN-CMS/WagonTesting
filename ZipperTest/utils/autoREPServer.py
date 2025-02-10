@@ -19,8 +19,8 @@ import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
 
-sys.path.append(str(Path().cwd().parent.resolve()))
-sys.path.append(str(Path().cwd().parent.parent.resolve()))
+sys.path.append(str(Path(__file__).parent.resolve()))
+sys.path.append(str(Path(__file__).parent.parent.resolve()))
 print(sys.path)
 
 from PUBServer import PUBServer
