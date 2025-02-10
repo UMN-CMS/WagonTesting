@@ -128,6 +128,7 @@ class ZipBERT(Test):
         comments = '\n'.join(comments)
 
         print(results)
+        self.conn.send('Done')
 
         return self.passed, results, comments
         
