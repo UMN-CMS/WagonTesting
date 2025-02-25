@@ -226,11 +226,12 @@ class BERT(Test):
                     # Same requirement for each of the elinks which should be zero
                     # This resolves issues with noise that cause transient failures
 
-                    cur_result = ('0xff' == data[:, cur_rx].flatten()).sum() > 7
+                    cur_result = bool(('0xff' == data[:, cur_rx].flatten()).sum() > 7)
 
                     zero_cols = [i for i in range(len(data[0])) if i != cur_rx]
 
                     zero_res = all(('0x0' == data[:, zero_cols].T).astype(int).sum(axis=1) > 7)
+
                     results[outp['Eng_Elink']] = cur_result and zero_res
 
                     if not cur_result:
