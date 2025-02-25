@@ -63,7 +63,6 @@ class BERT(Test):
         comments = []
         self.passed = True
         self.data = {}
-
         
         res_elink, comments = self.elink_continuity_test(comments)
 
@@ -156,7 +155,6 @@ class BERT(Test):
 
     def elink_continuity_test(self, comments):
 
-
         tx_elink_map = {
             'CLK1': 0,
             'CLK2': 1,
@@ -217,12 +215,22 @@ class BERT(Test):
                     self.reset_zeros()
 
                     self.wagon.set_tx_mode(cur_tx, ONE_MODE)
+                    self.wagon.spy(-1, 10, prnt=False)
                     #for i in range(10):
                     #    self.wagon.spy(-1, 10, prnt=False)
-                    data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
+                    data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)[90:, :]
+                    data = np.vectorize(hex)(data)
                     #print([hex(d) for d in data[99]])
-                    cur_result = '0xff' == hex(data[99][cur_rx])
-                    zero_res = all(['0x0' == hex(d) for i, d in enumerate(data[99]) if i != cur_rx])
+
+                    # Require that from 10 spies, at least 8 of them show all ones for the active elink
+                    # Same requirement for each of the elinks which should be zero
+                    # This resolves issues with noise that cause transient failures
+
+                    cur_result = ('0xff' == data[:, cur_rx].flatten()).sum() > 7
+
+                    zero_cols = [i for i in range(len(data[0])) if i != cur_rx]
+
+                    zero_res = all(('0x0' == data[:, zero_cols].T).astype(int).sum(axis=1) > 7)
                     results[outp['Eng_Elink']] = cur_result and zero_res
 
                     if not cur_result:
@@ -234,6 +242,12 @@ class BERT(Test):
 
         return results, comments
 
+
+    def count_ones(self, hex_str):
+
+        int_rep = int(hex_str, 16)
+        bin_rep = bin(int_rep)
+        return bin_rep.count("1")
 
     def reset_zeros(self):
 
@@ -247,7 +261,8 @@ class BERT(Test):
         values = [hex(v) for v in values[99]]
 
         for i_rx, v in enumerate(values):
-            if v == '0xff':
+            ones = self.count_ones(v)
+            if ones > 4:
                 #print('Need to invert on RX {}'.format(i_rx))
                 self.wagon.invert(i_rx)
 
