@@ -12,7 +12,7 @@ class ZipBERT(Test):
     def __init__(self, conn, board_sn=-1, tester='', output=None):
 
         self.info_dict = {
-            'name': 'Zipper Bit Error Rate', 
+            'name': 'Zipper Bit Error Rate Test', 
             'board_sn': board_sn,
             'tester': tester
         }
@@ -128,7 +128,7 @@ class ZipBERT(Test):
         comments = '\n'.join(comments)
 
         print(results)
-        self.conn.send('Done')
+        self.conn.send('Done.')
 
         return self.passed, results, comments
         
