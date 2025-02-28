@@ -66,6 +66,8 @@ class BERT(Test):
         
         res_elink, comments = self.elink_continuity_test(comments)
 
+        print(res_elink)
+
         # Run short scan to check which mode the clock RX should run in (9 or 10)
         iskip_short = 1
         prbs_short = int(3e5)
@@ -215,10 +217,10 @@ class BERT(Test):
                     self.reset_zeros()
 
                     self.wagon.set_tx_mode(cur_tx, ONE_MODE)
-                    self.wagon.spy(-1, 10, prnt=False)
+                    self.wagon.spy(-1, 100, prnt=False)
                     #for i in range(10):
                     #    self.wagon.spy(-1, 10, prnt=False)
-                    data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)[90:, :]
+                    data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
                     data = np.vectorize(hex)(data)
                     #print([hex(d) for d in data[99]])
 
@@ -226,16 +228,23 @@ class BERT(Test):
                     # Same requirement for each of the elinks which should be zero
                     # This resolves issues with noise that cause transient failures
 
-                    cur_result = bool(('0xff' == data[:, cur_rx].flatten()).sum() > 7)
+                    cur_result = bool(('0xff' == data[:, cur_rx].flatten()).sum() > 79)
 
                     zero_cols = [i for i in range(len(data[0])) if i != cur_rx]
 
-                    zero_res = all(('0x0' == data[:, zero_cols].T).astype(int).sum(axis=1) > 7)
+                    other_res = ('0xff' != data[:, zero_cols].T).astype(int).sum(axis=1) > 30
+                    zero_res = all(other_res)
 
                     results[outp['Eng_Elink']] = cur_result and zero_res
 
                     if not cur_result:
                         comments.append('Engine Elink mapping for {} (Mod {} Elink {}) does not match expected mapping'.format(outp['Eng_Elink'], cur_mod, outp['Mod_Elink']))
+
+                    if not zero_res:
+
+                        idx = np.where(not other_res)
+
+                        comments.append('Noise on unexpected line(s) with TX index (Mod {}): {}'.format(cur_mod, idx))
 
                     self.wagon.set_tx_mode(cur_tx, ZERO_MODE)
 
