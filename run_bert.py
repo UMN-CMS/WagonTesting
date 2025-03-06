@@ -242,7 +242,7 @@ class BERT(Test):
 
                     if not zero_res:
 
-                        idx = np.where(not other_res)
+                        idx = np.where(~other_res)
 
                         comments.append('Noise on unexpected line(s) with TX index (Mod {}): {}'.format(cur_mod, idx))
 
