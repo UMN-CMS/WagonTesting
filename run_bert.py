@@ -57,6 +57,9 @@ class BERT(Test):
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
+        self.config_firmware()
+
+        self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
         self.reset_zeros()
         self.rxs = [idx for idx, val in enumerate(self.scan_mask) if val != 0]
 
@@ -157,15 +160,29 @@ class BERT(Test):
 
     def elink_continuity_test(self, comments):
 
-        tx_elink_map = {
-            'CLK1': 0,
-            'CLK2': 1,
-            'CLK3': 2,
-            'DAQ0': 4,
-            'DAQ1': 5,
-            'DAQ2': 6,
-            'X_DAQ': 7,
-        }
+        if self.wagon.get_ntx() > 8:
+            tx_elink_map = {
+                'CLK1': 0,
+                'CLK2': 1,
+                'CLK3': 2,
+                'DAQ0': 4,
+                'DAQ1': 5,
+                'DAQ2': 6,
+                'X_DAQ': 7,
+                'XING0': 8,
+                'XING1': 9,
+                'XING2': 10
+            }
+        else:
+            tx_elink_map = {
+                'CLK1': 0,
+                'CLK2': 1,
+                'CLK3': 2,
+                'DAQ0': 4,
+                'DAQ1': 5,
+                'DAQ2': 6,
+                'X_DAQ': 7,
+            }
 
         wagon_wheel_inputs = {
             'TRIG4': 0,
@@ -181,8 +198,11 @@ class BERT(Test):
             'TRIG3': 0,
         }
 
+        print("="*30)
+        print(self.link_names)
+        print("="*30)
         rx_elink_map = {v: k-1 for k, v in self.link_names.items()}
-        forbidden_inputs = ['XING', 'TRIG']
+        forbidden_inputs = ['TRIG']
 
         results = {}
         for module in self.wag_info.keys():
@@ -196,31 +216,35 @@ class BERT(Test):
             inputs = self.wag_info[module]['Inputs']
             outputs = self.wag_info[module]['Outputs']
 
-            for inp in inputs.values():
+            for key_inp, inp in inputs.items():
 
                 if any([x in inp['Eng_Elink'] for x in forbidden_inputs]): continue
+                if module != "ModX" and "XING" in inp['Eng_Elink']: continue
 
-                cur_mod = int(module[-1])
+                cur_mod = module[-1]
                 cur_tx = tx_elink_map[inp['Eng_Elink']]
-                cur_cp_input = wagon_wheel_inputs[inp['Mod_Elink']]
-                for outp in outputs.values():
+                if inp['Mod_Elink'] != 'Crossover':
+                    cur_cp_input = wagon_wheel_inputs[inp['Mod_Elink']]
+                for key_outp, outp in outputs.items():
 
-                    if 'XING' in outp['Eng_Elink']: continue
-
+                    print(outp)
                     cur_rx = rx_elink_map[outp['Eng_Elink']]
-                    cur_cp_output = wagon_wheel_outputs[outp['Mod_Elink']]
+                    if 'X' in cur_mod:
+                        if key_inp != key_outp: continue
+                    else:
+                        cur_cp_output = wagon_wheel_outputs[outp['Mod_Elink']]
 
-                    cp_setup = [3] * 4
-                    cp_setup[cur_cp_output] = cur_cp_input
+                        cp_setup = [3] * 4
+                        cp_setup[cur_cp_output] = cur_cp_input
 
-                    set_crosspoint(cur_mod, cp_setup)
+                        set_crosspoint(int(cur_mod), cp_setup)
                     self.reset_zeros()
 
                     self.wagon.set_tx_mode(cur_tx, ONE_MODE)
                     self.wagon.spy(-1, 100, prnt=False)
                     #for i in range(10):
                     #    self.wagon.spy(-1, 10, prnt=False)
-                    data = np.array(self.wagon.spy(-1, 100, prnt=False)).reshape(100, -1)
+                    data = np.array(self.wagon.spy(-1, 100, prnt=True)).reshape(100, -1)
                     data = np.vectorize(hex)(data)
                     #print([hex(d) for d in data[99]])
 
@@ -234,6 +258,8 @@ class BERT(Test):
 
                     other_res = ('0xff' != data[:, zero_cols].T).astype(int).sum(axis=1) > 30
                     zero_res = all(other_res)
+
+                    print(cur_result, zero_res)
 
                     results[outp['Eng_Elink']] = cur_result and zero_res
 
@@ -262,7 +288,7 @@ class BERT(Test):
     def reset_zeros(self):
 
         ZERO_MODE = 7
-        for i in range(0,8):
+        for i in range(self.wagon.get_ntx()):
             self.wagon.set_tx_mode(i, ZERO_MODE)
 
         #for i in range(10):
@@ -286,7 +312,8 @@ class BERT(Test):
         PRBS = 1
         PRBS_HALFSPEED = 9
         PRBS_HALFSPEED_SHIFT = 10
-        for i in range(0,8):
+        for i in range(0, self.wagon.get_ntx()):
+            print(i)
             self.wagon.set_tx_mode(i, PRBS)
 
         for i in range(0,3):
@@ -358,39 +385,55 @@ class BERT(Test):
  
         else:
 
-            num_mod = len(self.wag_info.keys()) - 1
+            num_mod = len(self.wag_info.keys()) - 2
+            skip_X = False
 
             inputs = OrderedDict()
             outputs = OrderedDict()
-            for mod in range(1,num_mod+1):
-                inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
-                outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
+            for mod_label in self.wag_info.keys():
 
-                in_dict = self.wag_info["Mod{}".format(mod)]["Inputs"]
+                if mod_label == "IDResistor": continue
+                elif mod_label == "ModX": 
+                    mod = 'X'
+                else:
+                    mod = mod_label[-1]
 
-                new_in_dict = {}
-                for key,i in in_dict.items():
-                    if "XING" not in i["Eng_Elink"] and "TRIG4" not in i["Mod_Elink"]:
-                        new_in_dict[key] = i
+                if mod == 'X':
+                    if self.wag_info["ModX"] == {}: 
+                        skip_X = True
+                        continue
+                    inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
+                    outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
 
-                out_dict = self.wag_info["Mod{}".format(mod)]["Outputs"]
+                else:
+                    inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
+                    outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
 
-                print(new_in_dict)
-                print(out_dict)
+                    in_dict = self.wag_info["Mod{}".format(mod)]["Inputs"]
 
-                nin = len(new_in_dict.keys())
-                nout = len(out_dict.keys())
-                print("Module {} has {} inputs and {} outputs".format(mod, nin, nout))
+                    new_in_dict = {}
+                    for key,i in in_dict.items():
+                        if "TRIG4" not in i["Mod_Elink"] and "XING" not in i["Eng_Elink"]:
+                            new_in_dict[key] = i
 
-                if nin == 1:
-                    link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[0]]
-                elif nin == 2:
-                    link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[1], list(new_in_dict.keys())[1]]
-                elif nin == 3:
-                    link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[1], list(new_in_dict.keys())[1]]
+                    out_dict = self.wag_info["Mod{}".format(mod)]["Outputs"]
 
-        scan_mask = [0] * 12
-        
+                    nin = len(new_in_dict.keys())
+                    nout = len(out_dict.keys())
+                    print("Module {} has {} inputs and {} outputs".format(mod, nin, nout))
+
+                    if nin == 1:
+                        link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[0]]
+                    elif nin == 2:
+                        link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[1], list(new_in_dict.keys())[1]]
+                    elif nin == 3:
+                        link_dict[str(mod)] = [list(new_in_dict.keys())[0], list(new_in_dict.keys())[0], list(new_in_dict.keys())[1], list(new_in_dict.keys())[1]]
+
+        print(inputs)
+        print(outputs)
+
+        scan_mask = [0] * self.wagon.get_nrx()
+
         link_names = {}
 
         orientation = ""
@@ -419,9 +462,12 @@ class BERT(Test):
                             scan_mask[idx+1] = module
                             link_names[idx+1] = rx["link"]
             else: 
-       
-                for mod in range(1,num_mod+1):
-     
+                
+                mod_list = [x[-1] for x in self.wag_info.keys() if x != 'IDResistor']
+                for mod in mod_list:
+    
+                    if mod == 'X' and skip_X: continue
+
                     for rx in txrx["RX"]:
 
                         idx = int(rx["num"])
@@ -455,6 +501,7 @@ class BERT(Test):
 
         link_file.close()
         print(scan_mask)
+        print(link_names)
 
         return link_dict, scan_mask, link_names
 
@@ -565,7 +612,15 @@ class BERT(Test):
             if self.conn is not None:
                 self.conn.send("Quiet Period Length: {} ".format(co_info["delayStep"] * (co2[0] - co1[1])))
                 self.conn.send("Cross Over Length: {} \n".format(co_info["delayStep"] * max(co1[1] - co1[0], co2[1] - co2[0])))
-            
+    
+    def config_firmware(self):
+
+        if max(self.link_names.keys()) > 11:
+            # Set firmware to xoverin
+            os.system('sudo fw-loader load wagon-tester-kria-xoverin')
+        else:
+            # Set firmware to xoverout
+            os.system('sudo fw-loader load wagon-tester-kria-xoverout')
 
 #BERT(args.output, args.iskip, args.nbits, args.module)
 

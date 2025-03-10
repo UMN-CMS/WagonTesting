@@ -41,7 +41,33 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+	"ModX": {
+	    "Inputs": {
+		"0": {
+		    "Eng_Elink": "XING0",
+		    "Mod_Elink": "Crossover",
+                    "Invert": 0
+		},
+		"1": {
+		    "Eng_Elink": "XING1",
+		    "Mod_Elink": "Crossover",
+                    "Invert": 0
+		}
+	   },
+	   "Outputs": {
+		"0": {
+		    "Eng_Elink": "TRIG1",
+		    "Mod_Elink": "Crossover",
+                    "Invert": 0
+		},
+		"1": {
+		    "Eng_Elink": "TRIG0",
+		    "Mod_Elink": "Crossover",
+                    "Invert": 0
+		}
+	   }
+	}
     },
     "WE10B1": {
         "IDResistor": 6340,

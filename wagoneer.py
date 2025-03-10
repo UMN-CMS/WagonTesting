@@ -297,6 +297,12 @@ class Wagon:
         self.wagon.getNode("CTL.RESET_GENERAL").read()
         self.dispatch()
 
+    def get_nrx(self):
+        return int(self.nrx)
+
+    def get_ntx(self):
+        return int(self.ntx)
+
 def cleanup(val):
    cval=0
    for i in range(0,8):
