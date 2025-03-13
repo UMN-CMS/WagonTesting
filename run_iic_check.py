@@ -6,6 +6,7 @@ import HwInterface.mcp23009 as mcp23009
 from Test import Test 
 from math import fabs
 from multiprocessing import Pipe
+from pathlib import Path
 import sys
 
 import time, json
@@ -176,14 +177,17 @@ class IIC_Check(Test):
         print({"pass": passed, "data": data})
         return passed, data, comments
 
-    def get_num_mod(self, cfg_path = "/home/HGCAL_dev/sw/WagonTesting/static/wagonConfig.json"):
+    def get_num_mod(self, cfg_path = Path(__file__).parent / "static" / "wagonConfig.json"):
         self.subtype = self.info_dict["board_sn"][3:-6]
 
         with open(cfg_path, "r") as json_file:
             data = json.load(json_file)
         json_file.close()
 
-        return len(data[self.subtype].keys()) - 1
+        if "ModX" in data[self.subtype].keys():
+            return len(data[self.subtype].keys()) - 1
+        else:
+            return len(data[self.subtype].keys()) - 2
 
 
 if __name__ == '__main__':
