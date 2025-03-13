@@ -185,9 +185,9 @@ class IIC_Check(Test):
         json_file.close()
 
         if "ModX" in data[self.subtype].keys():
-            return len(data[self.subtype].keys()) - 1
-        else:
             return len(data[self.subtype].keys()) - 2
+        else:
+            return len(data[self.subtype].keys()) - 1
 
 
 if __name__ == '__main__':
