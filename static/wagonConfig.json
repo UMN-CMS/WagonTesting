@@ -463,7 +463,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+	"ModX":{}
     },
     "WE20B1": {
         "IDResistor": 1300,

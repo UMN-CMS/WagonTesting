@@ -57,9 +57,6 @@ class BERT(Test):
         self.invert_map = [0,0,0,0,0,0,0,0,0]
 
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
-        self.config_firmware()
-
-        self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
         self.reset_zeros()
         self.rxs = [idx for idx, val in enumerate(self.scan_mask) if val != 0]
 
@@ -76,8 +73,8 @@ class BERT(Test):
         iskip_short = 1
         prbs_short = int(3e5)
 
-        self.set_prbs_len(prbs_short)
         self.scan_mask, self.link_names = self.setup_links(self.info_dict['board_sn'], self.mod, self.clock)
+        self.set_prbs_len(prbs_short)
         self.reset_zeros()
         self.set_prbs()
         self.run_long_scan(iskip_short, prbs_short, kwargs['output'])
@@ -161,6 +158,10 @@ class BERT(Test):
 
     def elink_continuity_test(self, comments):
 
+        print("==="*30)
+        print(self.wagon.get_ntx())
+        print("==="*30)
+
         if self.wagon.get_ntx() > 8:
             tx_elink_map = {
                 'CLK1': 0,
@@ -213,9 +214,13 @@ class BERT(Test):
             if module == 'IDResistor': continue
 
             print('Checking Continuity on {}'.format(module))
+            print(self.wag_info[module].keys())
 
-            inputs = self.wag_info[module]['Inputs']
-            outputs = self.wag_info[module]['Outputs']
+            if 'Inputs' in self.wag_info[module].keys():
+                inputs = self.wag_info[module]['Inputs']
+                outputs = self.wag_info[module]['Outputs']
+            else:
+                continue
 
             for key_inp, inp in inputs.items():
 
@@ -433,7 +438,14 @@ class BERT(Test):
         print(inputs)
         print(outputs)
 
+        if self.wag_info['ModX'] == {}:
+            os.system('sudo fw-loader load wagon-tester-kria-xoverin')
+        else:
+            os.system('sudo fw-loader load wagon-tester-kria-xoverout')
+
+        self.wagon = Wagon()
         scan_mask = [0] * self.wagon.get_nrx()
+
 
         link_names = {}
 
@@ -443,8 +455,6 @@ class BERT(Test):
             orientation = "_east"
         elif self.subtype[:2] == "WW":
             orientation = "_west"
-
-
 
         with open(Path(__file__).parent / 'static' /'txrx{}.json'.format(orientation)) as link_file:
 
@@ -616,6 +626,8 @@ class BERT(Test):
     
     def config_firmware(self):
 
+        print('='*30)
+        print(max(self.link_names.keys()))
         if max(self.link_names.keys()) > 11:
             # Set firmware to xoverin
             os.system('sudo fw-loader load wagon-tester-kria-xoverin')
