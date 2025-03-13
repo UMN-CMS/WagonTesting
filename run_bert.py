@@ -67,6 +67,7 @@ class BERT(Test):
         self.passed = True
         self.data = {}
         
+        self.reset_zeros()
         res_elink, comments = self.elink_continuity_test(comments)
 
         print(res_elink)

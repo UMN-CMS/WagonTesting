@@ -7,6 +7,8 @@ from datetime import datetime
 import time
 import json
 
+from pathlib import Path
+
 
 def parse_ID(ID): #likely will come from an imported utility class, right now just return a basic configuration
     num_modules = 1
@@ -399,7 +401,7 @@ class gen_resist_test(Test):
         print({"pass": passed, "data": data})
         return passed, data, comments
 
-    def get_num_modules(self, path="/home/HGCAL_dev/sw/WagonTesting/static/wagonConfig.json"):
+    def get_num_modules(self, path=Path(__file__).parent / "static" / "wagonConfig.json"):
         
         subtype = self.info_dict["board_sn"][3:-6]
 
@@ -410,8 +412,11 @@ class gen_resist_test(Test):
         f.close()
 
         type_info = types_dict[subtype]
-        
-        return len(type_info.keys()) - 1
+       
+        if "ModX" in type_info.keys():
+            return len(type_info.keys()) - 2
+        else:
+            return len(type_info.keys()) - 1 
 
 
 class id_resist_test(Test):
@@ -460,7 +465,7 @@ class id_resist_test(Test):
         return passed, data, comments
 
 
-    def get_id_res(self, path="/home/HGCAL_dev/sw/WagonTesting/static/wagonConfig.json"):
+    def get_id_res(self, path=Path(__file__).parent / "static" / "wagonConfig.json"):
         
         subtype = self.info_dict["board_sn"][3:-6]
 
