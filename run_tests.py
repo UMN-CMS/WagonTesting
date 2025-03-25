@@ -29,7 +29,7 @@ def run_tests(test_info):
 #sn = sys.argv[1]
 
 #test_info = {'board_sn': str(sn), 'tester': "Jocie"}
-test_info = {'board_sn': '320WE20B1000001', 'tester': "Bryan"}
+test_info = {'board_sn': '320WW21A1000001', 'tester': "Bryan"}
 run_tests(test_info)
 
 #print("Running tests for east wagon")
