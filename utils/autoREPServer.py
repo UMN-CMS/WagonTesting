@@ -8,17 +8,27 @@
 # importing necessary modules
 from asyncore import write
 import time, zmq, json, logging, os, sys
+from pathlib import Path
+
+homedir = Path.home()
+
+REPServerLogPath = f"{homedir}/logs/"
+
+if not os.path.exists(REPServerLogPath):
+    os.makedirs(REPServerLogPath)
+
+logging.FileHandler(REPServerLogPath + "REPServer.log", mode='a')
+
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", filemode='w', format=FORMAT, level=logging.INFO)
+logging.basicConfig(filename=f"{REPServerLogPath}/REPServer.log", filemode='a', format=FORMAT, level=logging.DEBUG)
 
 import multiprocessing as mp
 #from tkinter import NONE
 # Should contain imports for the test scripts
 
 from PUBServer import PUBServer
-from run_adc_self_test import ADC
-from run_gen_res import gen_resist_test
-from run_id_res import id_resist_test
+sys.path.append(str(Path(__file__).parent.parent.resolve()))
+from wagon_rtd import gen_resist_test, id_resist_test
 from run_iic_check import IIC_Check
 from run_bert import BERT
 

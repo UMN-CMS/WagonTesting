@@ -8,8 +8,19 @@
 # importing necessary modules
 from asyncore import write
 import time, zmq, json, logging, os, sys
+from pathlib import Path
+
+homedir = Path.home()
+
+REPServerLogPath = f"{homedir}/logs/"
+
+if not os.path.exists(REPServerLogPath):
+    os.makedirs(REPServerLogPath)
+
+logging.FileHandler(REPServerLogPath + "REPServer.log", mode='a')
+
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename="/home/HGCAL_dev/sw/utils/logs/REPServer.log", filemode='w', format=FORMAT, level=logging.INFO)
+logging.basicConfig(filename=f"{REPServerLogPath}/REPServer.log", filemode='a', format=FORMAT, level=logging.DEBUG)
 
 import multiprocessing as mp
 #from tkinter import NONE
