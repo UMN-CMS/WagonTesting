@@ -70,7 +70,7 @@ def write_case(outfile, tests):
         
         outfile.write('''
         if desired_test == '{}':
-            {} = {}(conn, **test_info)
+            test = {}(conn, **test_info)
 '''.format(test_name, test_name, test_class))
 
 def main():

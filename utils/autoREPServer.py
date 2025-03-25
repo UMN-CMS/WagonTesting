@@ -91,19 +91,19 @@ class REPServer():
 
 
         if desired_test == 'ADCSelfTest':
-            ADCSelfTest = ADC(conn, **test_info)
+            test = ADCSelfTest(conn, **test_info)
 
         if desired_test == 'ResistanceMeasurement':
-            ResistanceMeasurement = gen_resist_test(conn, **test_info)
+            test = ResistanceMeasurement(conn, **test_info)
 
         if desired_test == 'IDResistorMeasurement':
-            IDResistorMeasurement = id_resist_test(conn, **test_info)
+            test = IDResistorMeasurement(conn, **test_info)
 
         if desired_test == 'I2CRead/Write':
-            I2CRead/Write = IIC_Check(conn, **test_info)
+            test = I2CRead/Write(conn, **test_info)
 
         if desired_test == 'BitErrorRateTest':
-            BitErrorRateTest = BERT(conn, **test_info)
+            test = BitErrorRateTest(conn, **test_info)
 
         else:
             conn.send("Invalid request. String does not match any test type.")
