@@ -41,6 +41,22 @@
                     "Invert": 0
                 }
             }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            }
         }
     },
     "WE10B1": {
@@ -70,7 +86,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE11A1": {
         "IDResistor": 604,
@@ -125,6 +142,22 @@
                     "Invert": 0
                 }
             }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            }
         }
     },
     "WE11B2": {
@@ -170,7 +203,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE11C1": {
         "IDResistor": 715,
@@ -225,7 +259,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE12A1": {
         "IDResistor": 768,
@@ -296,73 +331,8 @@
                     "Invert": 0
                 }
             }
-        }
-    },
-    "WE12B1": {
-        "IDResistor": "Unknown",
-        "Mod1": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ0",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG6",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG5",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
         },
-        "Mod2": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ1",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG4",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG3",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
-        },
-        "Mod3": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ2",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG2",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG1",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
-        }
+        "ModX": {}
     },
     "WE20A1": {
         "IDResistor": 1200,
@@ -437,7 +407,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE20B1": {
         "IDResistor": 1300,
@@ -492,6 +463,22 @@
                     "Invert": 0
                 }
             }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            }
         }
     },
     "WE20E1": {
@@ -539,6 +526,32 @@
                 "2": {
                     "Eng_Elink": "TRIG2",
                     "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "XING1",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG1",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -608,6 +621,22 @@
                     "Invert": 0
                 }
             }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            }
         }
     },
     "WE21B1": {
@@ -671,6 +700,22 @@
                 "3": {
                     "Eng_Elink": "TRIG1",
                     "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG0",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -740,73 +785,8 @@
                     "Invert": 0
                 }
             }
-        }
-    },
-    "WE21C2": {
-        "IDResistor": "Unknown",
-        "Mod1": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ0",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG6",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG5",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
         },
-        "Mod2": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ1",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG4",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG3",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
-        },
-        "Mod3": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ2",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG2",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG1",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
-        }
+        "ModX": {}
     },
     "WE21C3": {
         "IDResistor": 2870,
@@ -872,7 +852,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE21C4": {
         "IDResistor": 3160,
@@ -938,7 +919,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE21C6": {
         "IDResistor": 3650,
@@ -1004,7 +986,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE21D1": {
         "IDResistor": 5110,
@@ -1034,7 +1017,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE30A1": {
         "IDResistor": 1500,
@@ -1100,10 +1084,11 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE30A2": {
-        "IDResistor": "Unknown",
+        "IDResistor": 7500,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -1166,7 +1151,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE30A3": {
         "IDResistor": 1600,
@@ -1232,7 +1218,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE31A1": {
         "IDResistor": "Unknown",
@@ -1319,7 +1306,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE31A3": {
         "IDResistor": "Unknown",
@@ -1406,7 +1394,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE40A1": {
         "IDResistor": "Unknown",
@@ -1493,7 +1482,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WE40A2": {
         "IDResistor": "Unknown",
@@ -1580,7 +1570,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW10A1": {
         "IDResistor": 1100,
@@ -1621,6 +1612,22 @@
                 "0": {
                     "Eng_Elink": "TRIG3",
                     "Mod_Elink": "TRIG3",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -1679,7 +1686,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW12A1": {
         "IDResistor": 866,
@@ -1755,73 +1763,8 @@
                     "Invert": 0
                 }
             }
-        }
-    },
-    "WW12B1": {
-        "IDResistor": "Unknown",
-        "Mod1": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ0",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG0",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG1",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
         },
-        "Mod2": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ1",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG2",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG3",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
-        },
-        "Mod3": {
-            "Inputs": {
-                "1": {
-                    "Eng_Elink": "DAQ2",
-                    "Mod_Elink": "DAQ0",
-                    "Invert": 0
-                }
-            },
-            "Outputs": {
-                "3": {
-                    "Eng_Elink": "TRIG4",
-                    "Mod_Elink": "TRIG0",
-                    "Invert": 0
-                },
-                "2": {
-                    "Eng_Elink": "TRIG5",
-                    "Mod_Elink": "TRIG1",
-                    "Invert": 0
-                }
-            }
-        }
+        "ModX": {}
     },
     "WW12C1": {
         "IDResistor": 931,
@@ -1884,6 +1827,22 @@
                 "2": {
                     "Eng_Elink": "TRIG5",
                     "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -1962,7 +1921,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW20B1": {
         "IDResistor": 6810,
@@ -2009,6 +1969,32 @@
                 "2": {
                     "Eng_Elink": "TRIG4",
                     "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "XING1",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG5",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                },
+                "1": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -2072,7 +2058,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW20D1": {
         "IDResistor": 7500,
@@ -2124,6 +2111,22 @@
                 "1": {
                     "Eng_Elink": "TRIG5",
                     "Mod_Elink": "TRIG2",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -2198,7 +2201,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW21B1": {
         "IDResistor": 4320,
@@ -2261,6 +2265,22 @@
                 "2": {
                     "Eng_Elink": "TRIG5",
                     "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -2335,7 +2355,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW21D1": {
         "IDResistor": 3830,
@@ -2398,6 +2419,22 @@
                 "3": {
                     "Eng_Elink": "TRIG5",
                     "Mod_Elink": "TRIG0",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -2467,7 +2504,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW21E2": {
         "IDResistor": 4750,
@@ -2533,7 +2571,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW21E3": {
         "IDResistor": 4930,
@@ -2599,7 +2638,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW30A1": {
         "IDResistor": 1800,
@@ -2665,10 +2705,26 @@
                     "Invert": 0
                 }
             }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            }
         }
     },
     "WW30A2": {
-        "IDResistor": "Unknown",
+        "IDResistor": 7150,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -2728,6 +2784,22 @@
                 "2": {
                     "Eng_Elink": "TRIG5",
                     "Mod_Elink": "TRIG1",
+                    "Invert": 0
+                }
+            }
+        },
+        "ModX": {
+            "Inputs": {
+                "0": {
+                    "Eng_Elink": "XING0",
+                    "Mod_Elink": "Crossover",
+                    "Invert": 0
+                }
+            },
+            "Outputs": {
+                "0": {
+                    "Eng_Elink": "TRIG6",
+                    "Mod_Elink": "Crossover",
                     "Invert": 0
                 }
             }
@@ -2797,7 +2869,8 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     },
     "WW30B2": {
         "IDResistor": "Unknown",
@@ -2863,6 +2936,7 @@
                     "Invert": 0
                 }
             }
-        }
+        },
+        "ModX": {}
     }
 }
