@@ -38,9 +38,9 @@ def write_preamble(outfile, tests, header):
     test_info = {}
 
     for test in tests:
-        #if test["TestPath"] not in test_paths:
-        #    test_paths.append(test["TestPath"])
-        if test["TestScript"] in test_info.keys():
+        if test["TestPath"] not in test_paths:
+            test_paths.append(test["TestPath"])
+        elif test["TestScript"] in test_info.keys():
             test_info[test["TestScript"]].append(test["TestClass"])
         else:
             test_info[test["TestScript"]] = [test["TestClass"]]
@@ -48,7 +48,7 @@ def write_preamble(outfile, tests, header):
     for line in header:
         if "IMPORT HERE" in line:
             for path in test_paths:
-                outfile.write('sys.path.append("{}")\n'.format(path))
+                outfile.write('sys.path.append(str(Path(__file__).parent.parent.resolve()))\n')
             for script,cls in test_info.items():
                 snipet = ", ".join(cls)
                 
