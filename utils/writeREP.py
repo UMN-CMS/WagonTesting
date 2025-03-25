@@ -1,13 +1,15 @@
 import sys
+from pathlib import Path
+import yaml
+from pprint import pprint
 
 # Get testing config specified by user in command line (or in setup.sh script)
-def get_config(cfg_path = "../TestConfigs"):
+def get_config(cfg_path = ''):
 
-    sys.path.append(cfg_path)
+    with open(cfg_path, 'r') as f:
+        cfg = yaml.safe_load(f)
 
-    from Engine_cfg import masterCfg
-
-    return masterCfg
+    return cfg
 
 # Fetch the template server script to write testing portion
 def get_template(path="./static/template_REPServer.py"):
@@ -58,25 +60,28 @@ def write_preamble(outfile, tests, header):
 
 def write_case(outfile, tests):
 
-    i = 0
-
     for test in tests:
 
         if "TestClass" in test.keys():
             test_class = test["TestClass"]
+            test_name = test["name"].strip().replace(" ", "")
         else:
             continue
         
         outfile.write('''
-        if desired_test == 'test{}':
-            test{} = {}(conn, **test_info)
-'''.format(i, i, test_class))
-
-        i += 1
+        if desired_test == '{}':
+            {} = {}(conn, **test_info)
+'''.format(test_name, test_name, test_class))
 
 def main():
 
-    cfg = get_config()
+    cfg_name = sys.argv[1]
+
+    cfg_path = Path(__file__).parent / cfg_name
+
+    print(str(cfg_path.resolve()))
+
+    cfg = get_config(cfg_path = cfg_path)
     test_list = cfg['Test']
 
     lines = get_template()
