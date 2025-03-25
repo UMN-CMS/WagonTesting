@@ -28,6 +28,7 @@ import multiprocessing as mp
 
 from PUBServer import PUBServer
 sys.path.append(str(Path(__file__).parent.parent.resolve()))
+from run_adc_self_test import ADC
 from wagon_rtd import gen_resist_test, id_resist_test
 from run_iic_check import IIC_Check
 from run_bert import BERT
