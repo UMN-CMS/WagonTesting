@@ -371,21 +371,25 @@ class gen_resist_test(Test):
 
         if module is not None:
             self.module_chips[0] = module_ADS124(self.conn, module-1)
-            if not self.module_chips[0].get_resistances(): passed = False   
+            if not self.module_chips[0].get_resistances(): all_passed = False   
             data.update({'module ' + str(module): self.module_chips[0].data})
 
         else:
+            all_passed = True
             for i in range(len(self.module_chips)):
                 print("Testing module {}".format(i+1))
                 self.module_chips[i] = module_ADS124(self.conn, i)
                 self.module_chips[i].data["Module"] = i+1
                 #self.conn.send("LCD ; Percent:{:3f} Test:1".format(i/float(len(self.module_chips))))
                 passed, comments = self.module_chips[i].get_resistances()
+                if not passed: all_passed = False
                 #if not res_val: passed = False   
                 #elif res_val > 100 or res_val < 0.1: passed = False
                 data.update({'module ' + str(i+1): self.module_chips[i].data})
     
-       
+      
+        passed = all_passed
+
         comments = '\n'.join(comments)
 
         passing_criteria = self.module_chips[i].passing_criteria
