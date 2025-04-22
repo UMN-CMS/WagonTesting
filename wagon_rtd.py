@@ -320,17 +320,15 @@ class id_ADS124:
             self.chip.set_idac_channel(self.IDAC5,13)
             if self.passing_criteria['max_id_res'] < 5000:
                 self.chip.set_idac_current(500)
-                scale_factor = 1
             else:
                 self.chip.set_idac_current(250)
-                scale_factor = 2
             print(f'Scale factor: {scale_factor}')
             self.chip.setup_mux(self.WAGON_TYPE,self.GND)
             line = 'WAGON_TYPE -> GND'
             print(line)
             voltage = self.chip.read_volts(vref=2.5, ave=4)
             try:
-                resistance = [ scale_factor * voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
+                resistance = [ voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
             except:
                 resistance = [0]
             self.data[line] = resistance[0]
