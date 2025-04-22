@@ -318,13 +318,19 @@ class id_ADS124:
             self.chip.ref_input(2) # use internal 2.5V reference                                                                                     
             self.chip.set_gain(1,enable=False)
             self.chip.set_idac_channel(self.IDAC5,13)
-            self.chip.set_idac_current(500)
+            if self.passing_criteria['max_id_res'] < 5000:
+                self.chip.set_idac_current(500)
+                scale_factor = 1
+            else:
+                self.chip.set_idac_current(250)
+                scale_factor = 2
+            print(f'Scale factor: {scale_factor}')
             self.chip.setup_mux(self.WAGON_TYPE,self.GND)
             line = 'WAGON_TYPE -> GND'
             print(line)
             voltage = self.chip.read_volts(vref=2.5, ave=4)
             try:
-                resistance = [ voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
+                resistance = [ scale_factor * voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
             except:
                 resistance = [0]
             self.data[line] = resistance[0]
@@ -335,6 +341,7 @@ class id_ADS124:
             if passed:
                 all_passed = True
             else:
+                all_passed = False
                 self.comments.append('ID resistor outside of allowed range: {}'.format(resistance[0]))
 
             self.chip.powerdown()
