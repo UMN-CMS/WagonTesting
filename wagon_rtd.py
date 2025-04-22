@@ -322,7 +322,6 @@ class id_ADS124:
                 self.chip.set_idac_current(500)
             else:
                 self.chip.set_idac_current(250)
-            print(f'Scale factor: {scale_factor}')
             self.chip.setup_mux(self.WAGON_TYPE,self.GND)
             line = 'WAGON_TYPE -> GND'
             print(line)
