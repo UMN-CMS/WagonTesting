@@ -397,7 +397,6 @@ class gen_resist_test(Test):
         passed = all_passed
 
         comments = '\n'.join(comments)
-        print(comments)
 
         passing_criteria = self.module_chips[i].passing_criteria
 
