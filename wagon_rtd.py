@@ -370,6 +370,7 @@ class gen_resist_test(Test):
         east = kwargs['east']
         module = kwargs['module']
         data = {}
+        comments = []
 
         self.module_chips = [None] * num_modules
 
@@ -385,7 +386,8 @@ class gen_resist_test(Test):
                 self.module_chips[i] = module_ADS124(self.conn, i)
                 self.module_chips[i].data["Module"] = i+1
                 #self.conn.send("LCD ; Percent:{:3f} Test:1".format(i/float(len(self.module_chips))))
-                passed, comments = self.module_chips[i].get_resistances()
+                passed, temp_comments = self.module_chips[i].get_resistances()
+                comments += temp_comments
                 if not passed: all_passed = False
                 #if not res_val: passed = False   
                 #elif res_val > 100 or res_val < 0.1: passed = False
@@ -395,6 +397,7 @@ class gen_resist_test(Test):
         passed = all_passed
 
         comments = '\n'.join(comments)
+        print(comments)
 
         passing_criteria = self.module_chips[i].passing_criteria
 
