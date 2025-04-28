@@ -444,7 +444,7 @@ class BERT(Test):
             os.system('sudo fw-loader load wagon-tester-kria-xoverout')
 
         self.wagon = Wagon()
-        scan_mask = [0] * self.wagon.get_nrx()
+        scan_mask = [0] * (self.wagon.get_nrx()+1)
 
 
         link_names = {}
