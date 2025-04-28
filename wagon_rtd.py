@@ -320,17 +320,14 @@ class id_ADS124:
             self.chip.set_idac_channel(self.IDAC5,13)
             if self.passing_criteria['max_id_res'] < 5000:
                 self.chip.set_idac_current(500)
-                scale_factor = 1
             else:
                 self.chip.set_idac_current(250)
-                scale_factor = 2
-            print(f'Scale factor: {scale_factor}')
             self.chip.setup_mux(self.WAGON_TYPE,self.GND)
             line = 'WAGON_TYPE -> GND'
             print(line)
             voltage = self.chip.read_volts(vref=2.5, ave=4)
             try:
-                resistance = [ scale_factor * voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
+                resistance = [ voltage[0] / ((10**-6) * self.chip.get_idac_current()), voltage[1] / ((10**-6) * self.chip.get_idac_current()) ]
             except:
                 resistance = [0]
             self.data[line] = resistance[0]
@@ -373,6 +370,7 @@ class gen_resist_test(Test):
         east = kwargs['east']
         module = kwargs['module']
         data = {}
+        comments = []
 
         self.module_chips = [None] * num_modules
 
@@ -388,7 +386,8 @@ class gen_resist_test(Test):
                 self.module_chips[i] = module_ADS124(self.conn, i)
                 self.module_chips[i].data["Module"] = i+1
                 #self.conn.send("LCD ; Percent:{:3f} Test:1".format(i/float(len(self.module_chips))))
-                passed, comments = self.module_chips[i].get_resistances()
+                passed, temp_comments = self.module_chips[i].get_resistances()
+                comments += temp_comments
                 if not passed: all_passed = False
                 #if not res_val: passed = False   
                 #elif res_val > 100 or res_val < 0.1: passed = False
