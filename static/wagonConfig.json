@@ -1222,7 +1222,7 @@
         "ModX": {}
     },
     "WE31A1": {
-        "IDResistor": "Unknown",
+        "IDResistor": 3300,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -1310,7 +1310,7 @@
         "ModX": {}
     },
     "WE31A3": {
-        "IDResistor": "Unknown",
+        "IDResistor": 3600,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -1398,7 +1398,7 @@
         "ModX": {}
     },
     "WE40A1": {
-        "IDResistor": "Unknown",
+        "IDResistor": 3200,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -1486,7 +1486,7 @@
         "ModX": {}
     },
     "WE40A2": {
-        "IDResistor": "Unknown",
+        "IDResistor": 3400,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -2806,7 +2806,7 @@
         }
     },
     "WW30B1": {
-        "IDResistor": "Unknown",
+        "IDResistor": 3900,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -2873,7 +2873,7 @@
         "ModX": {}
     },
     "WW30B2": {
-        "IDResistor": "Unknown",
+        "IDResistor": 3700,
         "Mod1": {
             "Inputs": {
                 "1": {
