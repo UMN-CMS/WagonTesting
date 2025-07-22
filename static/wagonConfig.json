@@ -418,6 +418,11 @@
                     "Eng_Elink": "DAQ0",
                     "Mod_Elink": "DAQ0",
                     "Invert": 0
+                },
+                "2": {
+                    "Eng_Elink": "DAQ1",
+                    "Mod_Elink": "DAQ1",
+                    "Invert": 0
                 }
             },
             "Outputs": {
@@ -441,7 +446,7 @@
         "Mod2": {
             "Inputs": {
                 "1": {
-                    "Eng_Elink": "DAQ1",
+                    "Eng_Elink": "DAQ2",
                     "Mod_Elink": "DAQ0",
                     "Invert": 0
                 }
@@ -2940,3 +2945,4 @@
         "ModX": {}
     }
 }
+
