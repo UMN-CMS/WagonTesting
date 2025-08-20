@@ -1294,7 +1294,7 @@
         "Mod4": {
             "Inputs": {
                 "1": {
-                    "Eng_Elink": "DAQ4",
+                    "Eng_Elink": "X_DAQ",
                     "Mod_Elink": "DAQ0",
                     "Invert": 0
                 }
@@ -1382,7 +1382,7 @@
         "Mod4": {
             "Inputs": {
                 "1": {
-                    "Eng_Elink": "DAQ4",
+                    "Eng_Elink": "X_DAQ",
                     "Mod_Elink": "DAQ0",
                     "Invert": 0
                 }
@@ -1470,7 +1470,7 @@
         "Mod4": {
             "Inputs": {
                 "1": {
-                    "Eng_Elink": "DAQ4",
+                    "Eng_Elink": "X_DAQ",
                     "Mod_Elink": "DAQ0",
                     "Invert": 0
                 }
@@ -1558,7 +1558,7 @@
         "Mod4": {
             "Inputs": {
                 "1": {
-                    "Eng_Elink": "DAQ4",
+                    "Eng_Elink": "X_DAQ",
                     "Mod_Elink": "DAQ0",
                     "Invert": 0
                 }
@@ -2729,7 +2729,7 @@
         }
     },
     "WW30A2": {
-        "IDResistor": 7150,
+        "IDResistor": 536,
         "Mod1": {
             "Inputs": {
                 "1": {
@@ -2945,4 +2945,3 @@
         "ModX": {}
     }
 }
-
