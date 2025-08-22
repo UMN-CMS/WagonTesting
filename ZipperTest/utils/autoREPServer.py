@@ -96,10 +96,11 @@ class REPServer():
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-        if desired_test == 'test0':
+
+        if desired_test == 'Zipper Resistance Measurement':
             test0 = ZipResTest(conn, **test_info)
 
-        if desired_test == 'test1':
+        if desired_test == 'Zipper Bit Error Rate Test':
             test1 = ZipBERT(conn, **test_info)
 
         else:
