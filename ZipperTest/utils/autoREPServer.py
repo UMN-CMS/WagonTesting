@@ -10,7 +10,7 @@ from asyncore import write
 import time, zmq, json, logging, os, sys
 from pathlib import Path
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename=Path.home() / 'logs' / 'zipper.log', filemode='w', format=FORMAT, level=logging.INFO)
+logging.basicConfig(filename=Path.home() / 'logs' / 'zipper.log', filemode='w', format=FORMAT, level=logging.DEBUG)
 
 if not os.path.exists(Path.home() / 'logs' / 'zipper.log'):
     os.makedirs(Path.home() / 'logs' / 'zipper.log')
@@ -96,10 +96,11 @@ class REPServer():
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-        if desired_test == 'test0':
+
+        if desired_test == 'Zipper Resistance Measurement':
             test0 = ZipResTest(conn, **test_info)
 
-        if desired_test == 'test1':
+        if desired_test == 'Zipper Bit Error Rate Test':
             test1 = ZipBERT(conn, **test_info)
 
         else:
