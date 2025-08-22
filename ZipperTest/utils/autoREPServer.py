@@ -10,7 +10,7 @@ from asyncore import write
 import time, zmq, json, logging, os, sys
 from pathlib import Path
 FORMAT = '%(asctime)s|%(levelname)s|%(message)s|'
-logging.basicConfig(filename=Path.home() / 'logs' / 'zipper.log', filemode='w', format=FORMAT, level=logging.DEBUG)
+logging.basicConfig(filename=Path.home() / 'logs' / 'zipper.log', filemode='w', format=FORMAT, level=logging.INFO)
 
 if not os.path.exists(Path.home() / 'logs' / 'zipper.log'):
     os.makedirs(Path.home() / 'logs' / 'zipper.log')
