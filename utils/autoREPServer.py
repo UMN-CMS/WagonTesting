@@ -32,6 +32,7 @@ from run_adc_self_test import ADC
 from wagon_rtd import gen_resist_test, id_resist_test
 from run_iic_check import IIC_Check
 from run_bert import BERT
+from run_mod4_tests import Mod4LMezzComm, Mod4LMezzId, Mod4Resistance
 
 # Makes the REPServer a class
 class REPServer():
@@ -115,6 +116,15 @@ class REPServer():
 
         if desired_test == 'BitErrorRateTest':
             test = BERT(conn, **test_info)
+
+        if desired_test == 'Mod4LMezzId':
+            test = Mod4LMezzId(conn, **test_info)
+
+        if desired_test == 'Mod4LMezzComm':
+            test = Mod4LMezzComm(conn, **test_info)
+
+        if desired_test == 'Mod4Resistance':
+            test = Mod4Resistance(conn, **test_info)
 
         else:
             conn.send("Invalid request. String does not match any test type.")
