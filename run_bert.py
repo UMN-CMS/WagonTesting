@@ -218,7 +218,7 @@ class BERT(Test):
 
             if 'Inputs' in self.wag_info[module].keys():
                 inputs = self.wag_info[module]['Inputs']
-                outputs = self.wag_info[module]['Outputs']
+                outputs = self.wag_info[module].get('Outputs',{})
             else:
                 continue
 
@@ -409,11 +409,11 @@ class BERT(Test):
                         skip_X = True
                         continue
                     inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
-                    outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
+                    outputs[mod] = self.wag_info["Mod{}".format(mod)].get("Outputs", {})
 
                 else:
                     inputs[mod] = self.wag_info["Mod{}".format(mod)]["Inputs"]
-                    outputs[mod] = self.wag_info["Mod{}".format(mod)]["Outputs"]
+                    outputs[mod] = self.wag_info["Mod{}".format(mod)].get("Outputs", {})
 
                     in_dict = self.wag_info["Mod{}".format(mod)]["Inputs"]
 
@@ -422,7 +422,7 @@ class BERT(Test):
                         if "TRIG4" not in i["Mod_Elink"] and "XING" not in i["Eng_Elink"]:
                             new_in_dict[key] = i
 
-                    out_dict = self.wag_info["Mod{}".format(mod)]["Outputs"]
+                    out_dict = self.wag_info["Mod{}".format(mod)].get("Outputs", {})
 
                     nin = len(new_in_dict.keys())
                     nout = len(out_dict.keys())
