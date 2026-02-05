@@ -13,6 +13,8 @@ class Mod4LMezzComm(Test):
         passed = True
         test_data = {}
         comments = ""
+        if self.conn is not None:
+            self.conn.send("Done.")
         return passed, test_data, comments
 
 
@@ -27,6 +29,8 @@ class Mod4LMezzId(Test):
         passed = True
         test_data = {}
         comments = ""
+        if self.conn is not None:
+            self.conn.send("Done.")
         return passed, test_data, comments
 
 class Mod4Resistance(Test):
@@ -39,4 +43,6 @@ class Mod4Resistance(Test):
         passed = True
         test_data = {}
         comments = ""
+        if self.conn is not None:
+            self.conn.send("Done.")
         return passed, test_data, comments
