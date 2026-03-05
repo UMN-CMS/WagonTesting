@@ -46,3 +46,17 @@ class Mod4Resistance(Test):
         if self.conn is not None:
             self.conn.send("Done.")
         return passed, test_data, comments
+
+class Mod4Reset(Test):
+    def __init__(self, conn, board_sn=-1, tester=''):
+        self.info_dict = {'name': "Mod4 Reset", 'board_sn': board_sn, 'tester': tester}
+        self.conn = conn
+        Test.__init__(self, self.mod4_reset_test, self.info_dict, conn)
+
+    def mod4_reset_test(self, **kwargs):
+        passed = True
+        test_data = {}
+        comments = ""
+        if self.conn is not None:
+            self.conn.send("Done.")
+        return passed, test_data, comments
