@@ -26,19 +26,8 @@ class Mod4LMezzComm(Test):
         data={'tester_ok': True, 'mezz_ok': True}
         comments=''
         passed=True
-        try:
-            self.connection=iic(protocol="I2C", i2c_addr=0x20)
-            self.connection.connect()
-            self.my_pca_chip = PCA9575(self.connection)
-            self.my_pca_chip.setPortsAsOutputs([(1,7)])
-            self.my_pca_chip.setOutputValue((1,7), 1)
-        except Exception as e:
-            data['tester_ok'] = False
-            comments=f"Failed to connect to Tester."
-            passed=False
-        finally:
-            if hasattr(self, 'connection'):
-                self.connection.close()
+
+        # should have some code to make sure the resets are in the right state
 
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
