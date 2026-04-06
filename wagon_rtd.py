@@ -378,7 +378,6 @@ class gen_resist_test(Test):
             self.module_chips[0] = module_ADS124(self.conn, module-1)
             if not self.module_chips[0].get_resistances(): all_passed = False   
             data.update({'module ' + str(module): self.module_chips[0].data})
-
         else:
             all_passed = True
             for i in range(len(self.module_chips)):
@@ -422,12 +421,13 @@ class gen_resist_test(Test):
         f.close()
 
         type_info = types_dict[subtype]
-       
-        if "ModX" in type_info.keys():
-            return len(type_info.keys()) - 2
-        else:
-            return len(type_info.keys()) - 1 
 
+        nmod=0
+        if "ModX" in type_info.keys():
+            nmod=len(type_info.keys()) - 2
+        else:
+            nmod=len(type_info.keys()) - 1 
+        return min(3,nmod)
 
 class id_resist_test(Test):
 

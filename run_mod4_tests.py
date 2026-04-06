@@ -42,7 +42,7 @@ class Mod4LMezzComm(Test):
 
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
-            self.iic.connect()
+            self.iic.connect(dev="/dev/i2c-5")
             self.iic.write_lpgbt(0x01c,0,"LPGBT")
         except Exception as e:
             data['mezz_ok'] = False
@@ -79,7 +79,7 @@ class Mod4LMezzId(Test):
         self.setup_done = True
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
-            self.iic.connect()
+            self.iic.connect("/dev/i2c-5")
             self.iic.write_lpgbt(0x140,0xA3,"LPGBT")
             self.iic.write_lpgbt(0x13f,0b10010011,"LPGBT")
 
