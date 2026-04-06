@@ -7,12 +7,7 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
-
-
-DB_PATH = (Path.home() / "lpgbt_calibration.db").absolute()
-CSV_PATH = (Path.home() / "lpgbt_calibration.csv").absolute()
-
-
+DB_PATH = "file:/opt/lpgbt/lpgbt_calibration.db?mode=ro"
 
 def majority_vote(values):
     result_voted = 0
@@ -35,8 +30,8 @@ class calibrator():
         self.lpgbts = self.eng_conf["LPGBTS"]
         self.chipids = {}
 
-        setup_calibration_database()
-        con = sqlite3.connect(DB_PATH)
+        #setup_calibration_database()
+        con = sqlite3.connect(DB_PATH, uri=True)
         cur = con.cursor()
         self.chipsvals = {}
         self.TJ_USER = {}

@@ -13,7 +13,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 
 
-DB_PATH = (Path.home() / "lpgbt_calibration.db").absolute()
+DB_PATH = "file:/opt/lpgbt/lpgbt_calibration.db?mode=ro"
 
 class Mod4LMezzComm(Test):
 
@@ -117,8 +117,8 @@ class Mod4LMezzId(Test):
             chosen = majority["majority"]
             results["LPGBT"] = {"id": chosen, "candidates": all_ids}
 
-            setup_calibration_database()
-            con = sqlite3.connect(DB_PATH)
+            #setup_calibration_database()
+            con = sqlite3.connect(DB_PATH,uri=True)
             cur = con.cursor()
             chipdata = cur.execute(
                 f"SELECT data from lpgbt WHERE CHIPID = '{chosen:08X}'"
