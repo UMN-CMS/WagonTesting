@@ -80,6 +80,7 @@ class Mod4LMezzId(Test):
             self.iic.write_lpgbt(0x055, 0, "LPGBT")
             self.iic.write_lpgbt(0x056, 0, "LPGBT")
         except Exception as e:
+            print(f"Setup failed: {e}")
             self.setup_done=False
 
         Test.__init__(self, self.lmezz_id_test, self.info_dict, conn)
@@ -88,6 +89,7 @@ class Mod4LMezzId(Test):
         def rr(v, shift):
             return (v >> shift) | ((v << (32 - shift)) & 0xFFFFFFFF)
         if not self.setup_done:
+            print("Setup failed, skipping test.")
             return False, {}, "Failed to connect to I2C interface."
         try:
             results = {}
@@ -135,8 +137,10 @@ class Mod4LMezzId(Test):
             #print(f"Passed: {passed}")
             if self.conn is not None:
                 self.conn.send("Done.")
+            print(f"Contested: {contested}, Chosen: {chosen:08x}")
             return passed, results, "\n".join(comments)
         except Exception as e:
+            print(f"Exception during ID readout: {e}")
             return False, {}, f"Error during ID readout."
 
 class Mod4Resistance(Test):
