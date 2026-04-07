@@ -4,12 +4,13 @@ from Test import Test
 from iic import iic
 import config_bits as cb
 import engine_comm
-from adc_calibrator import setup_calibration_database,majority_vote
+from adc_calibrator import setup_calibration_database,majority_vote,calibrator
 import sqlite3
 from pathlib import Path
 import os
-import gpiod
+import subprocess
 import sys
+import math
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 
@@ -28,7 +29,8 @@ class Mod4LMezzComm(Test):
         comments=''
         passed=True
 
-        # should have some code to make sure the resets are in the right state
+        # "Pin 13" on Kria GPIO is the reset
+        subprocess.run(['gpioset','2','13=1'])
 
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
@@ -146,15 +148,18 @@ class Mod4Resistance(Test):
     def read_gpio_all(self):
         x=self.iic.read_lpgbt(0x1af,2,"LPGBT")
         return (x[0]<<8)|x[1]
-        
+
     def mod4_res_test(self, **kwargs):
         passed = True
         test_data = {}
         comments = ""
 
+        
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
             self.iic.connect("/dev/i2c-5")
+
+            adc=calibrator(iic=self.iic,chips=["LPGBT"])
             
             # enable input on GPIO3,5,8,13,15, output on GPIO10 and 11
             self.iic.write_lpgbt(0x053,0b00001100,"LPGBT") # output on 10 and 11
@@ -167,6 +172,8 @@ class Mod4Resistance(Test):
 
             # set pins high
             self.iic.write_lpgbt(0x055,0b00001100,"LPGBT") #
+            subprocess.run(['gpioset','2','12=1'])
+            names={3:"PG_LDO/PWR_EN",8:"PWR_EN",5:"PG_DCDC/ECON_RE_Hb",10:"ECON_RE_Hb",11:"ECON_RE_Sb",15:"HGCROC_RE_Sb/ECON_RE_Sb",13:"HGCROC_RE_Hb",'ADC3':'VMON_REF', 'ADC6':'VMON_LVS','ADC7':'RTD'}
 
             # check pins are high
             x=self.read_gpio_all()
@@ -175,11 +182,14 @@ class Mod4Resistance(Test):
                 if (x & (1<<pin))==0:
                     passed=False
                     test_data["GPIO%d"%pin]="Stuck low"
+                    comments+="%s stuck low;"%(names[pin])
             test_data["GPIO_HIGH"]=f"{x:016b}"
 
             # set pins low
             self.iic.write_lpgbt(0x055,0b00000000,"LPGBT") #
-
+            # "Pin 12" on Kria GPIO is the pwr_enable
+            subprocess.run(['gpioset','2','12=0'])
+            
             # check pins are low
             should_be_low=(3,5,8,10,11,13,15)
             x=self.read_gpio_all()
@@ -187,7 +197,37 @@ class Mod4Resistance(Test):
                 if (x & (1<<pin))!=0:
                     passed=False
                     test_data["GPIO%d"%pin]="Stuck high"
+                    comments+="%s stuck high;"%(names[pin])
             test_data["GPIO_LOW"]=f"{x:016b}"
+
+            subprocess.run(['gpioset','2','12=1']) # put it back in default
+
+            # loop over ADC-based checks
+            print("Calibrating")
+            adc.calibrate()
+#            cres={3:20,6:100,7:100} nominal
+            cres={3:23,6:91,7:91}
+
+            self.iic.write_lpgbt(0x06a,0x40,"LPGBT") # enable the CURDAC
+                        
+            for (chan,res) in cres.items():
+                currents=(700e-6, 500e-6, 300e-6)
+                ave_res=0
+                for current_target in currents:
+                    cdv=adc.CURDAC_values(current_target,chan,"LPGBT",res)
+                    self.iic.write_lpgbt(0x6d,(1<<chan),"LPGBT") # channel enable
+                    self.iic.write_lpgbt(0x6c,cdv['CURDACValue'],"LPGBT")
+                    self.iic.write_lpgbt(0x121,(chan<<4)|0xF,"LPGBT") # read from the right channel
+                    adc_bits=adc.get_ADC_conversion("LPGBT")
+                    adcv=adc.ADC_measurement(adc_bits,2,"LPGBT")
+                    ave_res+=adc.RSENSE_OHM(adc_bits,2,cdv['ROUT_OHM'],cdv['I_LOAD_A'],"LPGBT")
+                ave_res/=len(currents)
+                if math.fabs(ave_res-res)>5: # failure case
+                    passed=False
+                    comments+="%s out of range;"%(names['ADC%d'%chan])
+                test_data[names['ADC%d'%chan]]=ave_res
+            self.iic.write_lpgbt(0x6d,0,"LPGBT") # channel enable off
+            self.iic.write_lpgbt(0x06a,0,"LPGBT") # disable the CURDAC
             
         except Exception as e:
             print(e)

@@ -22,13 +22,18 @@ def majority_vote(values):
     return {"majority": result_voted, "contested": mismatches}
 
 class calibrator():
-    def __init__(self, board_sn=-1, tester=""):
-        self.eng_conf = loadConfiguration(ConfigType.Engine)["general_configuration"]
-        self.lpgbt_conf = loadConfiguration(ConfigType.LPGBT)
-        self.iic = engine_comm.engine_comm(mode=self.eng_conf["COMM_MODE"], protocol=self.eng_conf["PROTOCOL"])
-        self.iic.connect()
-        self.lpgbts = self.eng_conf["LPGBTS"]
+    def __init__(self, board_sn=-1, tester="", iic=None, chips=None):
         self.chipids = {}
+        if iic is None and chips is None:
+            self.eng_conf = loadConfiguration(ConfigType.Engine)["general_configuration"]
+            self.lpgbt_conf = loadConfiguration(ConfigType.LPGBT)
+            self.iic = engine_comm.engine_comm(mode=self.eng_conf["COMM_MODE"], protocol=self.eng_conf["PROTOCOL"])
+            self.iic.connect()
+            self.lpgbts = self.eng_conf["LPGBTS"]
+        else:
+            self.iic=iic
+            self.lpgbts=chips
+            
 
         #setup_calibration_database()
         con = sqlite3.connect(DB_PATH, uri=True)
@@ -171,7 +176,7 @@ class calibrator():
         VDAC_V = (VDACValue - chipvals['VDAC_OFFSET'] - self.TJ_USER[lpgbt] * chipvals['VDAC_OFFSET_TEMP']) / (chipvals['VDAC_SLOPE'] + self.TJ_USER[lpgbt] * chipvals['VDAC_SLOPE_TEMP'])
         return VDAC_V
     
-    def CURDAC_values(self, CURRENT_A, CDAC_num, lpgbt, RLOAD_OHM=False):
+    def CURDAC_values(self, CURRENT_A, CDAC_num, lpgbt, RLOAD_OHM=None):
         ret = {}
         #Current DAC expected values (CURDACValue: integer, ROUT_OHM: load resistance ohms, I_LOAD_A: expected load resistor current amps)
         chipvals = self.chipsvals[lpgbt]
@@ -179,9 +184,11 @@ class calibrator():
         ret['CURDACValue'] = CURDACValue
         ROUT_OHM = (chipvals[f'CDAC{CDAC_num}_R0'] + self.TJ_USER[lpgbt] * chipvals[f'CDAC{CDAC_num}_R0_TEMP']) / CURDACValue
         ret['ROUT_OHM'] = ROUT_OHM
-        if RLOAD_OHM == False:
+        if RLOAD_OHM is not None:
             I_LOAD_A = CURRENT_A * ROUT_OHM / (ROUT_OHM + RLOAD_OHM)
             ret['I_LOAD_A'] = I_LOAD_A
+        else:
+            ret['I_LOAD_A'] = CURRENT_A
         return ret
     
     def CURDAC_bittoA(self, CURDACValue, CDAC_num, lpgbt):
