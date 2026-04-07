@@ -8,6 +8,7 @@ from adc_calibrator import setup_calibration_database,majority_vote
 import sqlite3
 from pathlib import Path
 import os
+import gpiod
 import sys
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
@@ -23,7 +24,7 @@ class Mod4LMezzComm(Test):
         Test.__init__(self, self.lmezz_comm_test, self.info_dict, conn)
 
     def lmezz_comm_test(self, **kwargs):
-        data={'tester_ok': True, 'mezz_ok': True}
+        data={'mezz_ok': True}
         comments=''
         passed=True
 
@@ -142,10 +143,62 @@ class Mod4Resistance(Test):
         self.conn = conn
         Test.__init__(self, self.mod4_res_test, self.info_dict, conn)
 
+    def read_gpio_all(self):
+        x=self.iic.read_lpgbt(0x1af,2,"LPGBT")
+        return (x[0]<<8)|x[1]
+        
     def mod4_res_test(self, **kwargs):
         passed = True
         test_data = {}
         comments = ""
+
+        try:
+            self.iic = engine_comm.engine_comm("I2C", "MEZZ")
+            self.iic.connect("/dev/i2c-5")
+            
+            # enable input on GPIO3,5,8,13,15, output on GPIO10 and 11
+            self.iic.write_lpgbt(0x053,0b00001100,"LPGBT") # output on 10 and 11
+            self.iic.write_lpgbt(0x054,0,"LPGBT") # no outputs on 0-7
+            # enable pull-up on GPIO3,5,8,13,15
+            self.iic.write_lpgbt(0x059,0b10100001,"LPGBT") # pullup on 15, 13, 8
+            self.iic.write_lpgbt(0x05a,0b00101000,"LPGBT") # pullup on 5, 3
+            self.iic.write_lpgbt(0x057,0b10100001,"LPGBT") # pull enable on 15, 13, 8
+            self.iic.write_lpgbt(0x058,0b00101000,"LPGBT") # pull enable on 5, 3
+
+            # set pins high
+            self.iic.write_lpgbt(0x055,0b00001100,"LPGBT") #
+
+            # check pins are high
+            x=self.read_gpio_all()
+            should_be_high=(3,5,8,10,11,15)
+            for pin in should_be_high:
+                if (x & (1<<pin))==0:
+                    passed=False
+                    test_data["GPIO%d"%pin]="Stuck low"
+            test_data["GPIO_HIGH"]=f"{x:016b}"
+
+            # set pins low
+            self.iic.write_lpgbt(0x055,0b00000000,"LPGBT") #
+
+            # check pins are low
+            should_be_low=(3,5,8,10,11,13,15)
+            x=self.read_gpio_all()
+            for pin in should_be_low:
+                if (x & (1<<pin))!=0:
+                    passed=False
+                    test_data["GPIO%d"%pin]="Stuck high"
+            test_data["GPIO_LOW"]=f"{x:016b}"
+            
+        except Exception as e:
+            print(e)
+            test_data['mezz_ok'] = False
+            comments=f"Failed to write to LPGBT: "+str(e)
+            passed=False
+        finally:
+            if hasattr(self, 'iic'):
+                self.iic.close()
+        
+        
         if self.conn is not None:
             self.conn.send("Done.")
         return passed, test_data, comments
