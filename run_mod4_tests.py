@@ -11,6 +11,7 @@ import os
 import subprocess
 import sys
 import math
+import time
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 
@@ -236,7 +237,7 @@ class Mod4Resistance(Test):
         except Exception as e:
             print(e)
             test_data['mezz_ok'] = False
-            comments=f"Failed to write to LPGBT: "+str(e)
+            comments=f"Failed to write to LPGBT."
             passed=False
         finally:
             if hasattr(self, 'iic'):
@@ -257,6 +258,25 @@ class Mod4Reset(Test):
         passed = True
         test_data = {}
         comments = ""
+        try:
+            self.iic = engine_comm.engine_comm("I2C", "MEZZ")
+            self.iic.connect("/dev/i2c-5")
+
+            self.iic.write_lpgbt(0x121,0xff,"LPGBT") # adc read set as test to vref, vref
+            subprocess.run(['gpioset','2','13=0'])
+            time.sleep(1)
+            subprocess.run(['gpioset','2','13=1'])
+            adc_bits=self.iic.read_lpgbt(0x121)
+            if adc_bits!=0:
+                passed=False
+                comments+="Reset line failed to pull low."
+                test_data['after_test']=adc_bits
+        except Exception as e:
+            passed=False
+            comments=f"Failed to toggle reset line: {e}"
+        finally:
+            if hasattr(self, 'iic'):
+                self.iic.close()
         if self.conn is not None:
             self.conn.send("Done.")
         return passed, test_data, comments
