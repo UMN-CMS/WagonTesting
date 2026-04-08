@@ -12,6 +12,7 @@ import subprocess
 import sys
 import math
 import time
+import traceback
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 
@@ -263,17 +264,20 @@ class Mod4Reset(Test):
             self.iic.connect("/dev/i2c-5")
 
             self.iic.write_lpgbt(0x121,0xff,"LPGBT") # adc read set as test to vref, vref
-            subprocess.run(['gpioset','2','13=0'])
             time.sleep(1)
+            subprocess.run(['gpioset','2','13=0'])
+            time.sleep(2)
             subprocess.run(['gpioset','2','13=1'])
-            adc_bits=self.iic.read_lpgbt(0x121)
+            time.sleep(2)
+            adc_bits=self.iic.read_lpgbt(0x121,target="LPGBT")[0]
             if adc_bits!=0:
                 passed=False
                 comments+="Reset line failed to pull low."
-                test_data['after_test']=adc_bits
+            test_data['after_test']=adc_bits
         except Exception as e:
+            traceback.print_exc()
             passed=False
-            comments=f"Failed to toggle reset line: {e}"
+            comments=f"Failed to toggle reset line."
         finally:
             if hasattr(self, 'iic'):
                 self.iic.close()

@@ -8,7 +8,7 @@ from run_iic_check import IIC_Check
 from run_bert import BERT
 from multiprocessing import Pipe
 from run_adc_self_test import ADC
-from run_mod4_tests import Mod4LMezzComm, Mod4LMezzId, Mod4Resistance
+from run_mod4_tests import Mod4LMezzComm, Mod4LMezzId, Mod4Resistance, Mod4Reset
 
 print("Starting")
 c1, c2 = None, None
@@ -28,6 +28,9 @@ def run_tests(test_info):
 #    print(x.passed,x.data,x.comments)
     print("Running 4th module resistance")
     x=Mod4Resistance(c1, **test_info)
+    print(x.passed,x.data,x.comments)
+    print("Running 4th module reset")
+    x=Mod4Reset(c1,**test_info)
     print(x.passed,x.data,x.comments)
     #print("Running ID Resistance Check")
     #id_resist_test(c1, **test_info)
