@@ -33,6 +33,7 @@ class Mod4LMezzComm(Test):
 
         # "Pin 13" on Kria GPIO is the reset
         subprocess.run(['gpioset','2','13=1'])
+        time.sleep(1)
 
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
@@ -45,6 +46,10 @@ class Mod4LMezzComm(Test):
         finally:
             if hasattr(self, 'iic'):
                 self.iic.close()
+            self.conn.send("Done.")
+        #print(passed)
+        #print(data)
+        #print(comments)
 
         return passed, data, comments
 
