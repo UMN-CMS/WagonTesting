@@ -267,22 +267,28 @@ class Mod4Reset(Test):
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
             self.iic.connect("/dev/i2c-5")
-
-            self.iic.write_lpgbt(0x121,0xff,"LPGBT") # adc read set as test to vref, vref
-            time.sleep(1)
+            before_write=self.iic.read_lpgbt(0x004,target="LPGBT")[0]
+            test_data['before_write']=before_write
+            self.iic.write_lpgbt(0x004,0xff,"LPGBT") # adc read set as test to vref, vref
+            time.sleep(0.1)
+            after_write=self.iic.read_lpgbt(0x004,target="LPGBT")[0]
+            test_data['after_write']=after_write
+            if after_write!=0xff:
+                passed=False
+                comments+="Write to register failed, cannot verify reset functionality."
             subprocess.run(['gpioset','2','13=0'])
             time.sleep(2)
             subprocess.run(['gpioset','2','13=1'])
             time.sleep(2)
-            adc_bits=self.iic.read_lpgbt(0x121,target="LPGBT")[0]
-            if adc_bits!=0:
+            adc_bits=self.iic.read_lpgbt(0x004,target="LPGBT")[0]
+            if adc_bits!=before_write:
                 passed=False
-                comments+="Reset line failed to pull low."
-            test_data['after_test']=adc_bits
+                comments+="Reset line did not reset the register value."
+            test_data['after_reset']=adc_bits
         except Exception as e:
             traceback.print_exc()
             passed=False
-            comments=f"Failed to toggle reset line."
+            comments=f"Unexpected error during reset test."
         finally:
             if hasattr(self, 'iic'):
                 self.iic.close()

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import HwInterface.iic as iic 
+import HwInterface.i2c as iic 
 import HwInterface.mcp23009 as mcp23009
 
 from Test import Test 

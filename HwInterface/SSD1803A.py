@@ -2,7 +2,7 @@
 # Current firmware version uses /dev/i2c-5 with address 0x3C
 # (as of 3/7/23)
 
-from iic import iic
+from i2c import iic
 import time
 import os
 import binascii

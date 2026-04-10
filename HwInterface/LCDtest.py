@@ -1,4 +1,4 @@
-from iic import iic
+from i2c import iic
 
 addr = 0x3c
 dev = "/dev/i2c-5"

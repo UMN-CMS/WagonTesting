@@ -4,7 +4,7 @@ import sys
 sys.path.append(str(Path(__file__).parent))
 print(sys.path)
 
-import iic as i2c
+import i2c
 import mcp23009
 from math import fabs
 
