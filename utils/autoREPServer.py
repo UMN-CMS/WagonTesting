@@ -101,32 +101,31 @@ class REPServer():
         # ! your test master config                            !
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
         if desired_test == 'ADCSelfTest':
             test = ADC(conn, **test_info)
 
-        if desired_test == 'ResistanceMeasurement':
+        elif desired_test == 'ResistanceMeasurement':
             test = gen_resist_test(conn, **test_info)
 
-        if desired_test == 'IDResistorMeasurement':
+        elif desired_test == 'IDResistorMeasurement':
             test = id_resist_test(conn, **test_info)
 
-        if desired_test == 'I2CRead/Write':
+        elif desired_test == 'I2CRead/Write':
             test = IIC_Check(conn, **test_info)
 
-        if desired_test == 'BitErrorRateTest':
+        elif desired_test == 'BitErrorRateTest':
             test = BERT(conn, **test_info)
 
-        if desired_test == 'Mod4LMezzId':
+        elif desired_test == 'Mod4LMezzId':
             test = Mod4LMezzId(conn, **test_info)
 
-        if desired_test == 'Mod4LMezzComm':
+        elif desired_test == 'Mod4LMezzComm':
             test = Mod4LMezzComm(conn, **test_info)
 
-        if desired_test == 'Mod4Resistance':
+        elif desired_test == 'Mod4Resistance':
             test = Mod4Resistance(conn, **test_info)
         
-        if desired_test == 'Mod4Reset':
+        elif desired_test == 'Mod4Reset':
             test = Mod4Reset(conn, **test_info)
 
         else:
@@ -157,6 +156,7 @@ class REPServer():
         process_PUBServer.join()
 
         logging.debug("Processes have ended.")
+        print(f'Test finished {desired_test}')
 
 # Having an odd bug where it trys to instantiate the server twice, this prevents anything weird from happening
 try:
