@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import iic 
+import i2c as iic 
 import mcp23009
 from math import fabs
 
