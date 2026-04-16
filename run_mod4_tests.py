@@ -46,7 +46,8 @@ class Mod4LMezzComm(Test):
         finally:
             if hasattr(self, 'iic'):
                 self.iic.close()
-            self.conn.send("Done.")
+            if self.conn is not None:
+                self.conn.send("Done.")
         #print(passed)
         #print(data)
         #print(comments)
@@ -155,10 +156,49 @@ class Mod4Resistance(Test):
         self.info_dict = {'name': "Mod4 Resistance", 'board_sn': board_sn, 'tester': tester}
         self.conn = conn
         Test.__init__(self, self.mod4_res_test, self.info_dict, conn)
+    
+    pairs = {
+        5: 10,
+        11: 15,
+        10: 5,
+        15: 11
+    }
 
-    def read_gpio_all(self):
-        x=self.iic.read_lpgbt(0x1af,2,"LPGBT")
-        return (x[0]<<8)|x[1]
+    def set_all_inputs(self):
+        self.iic.write_lpgbt(0x053, 0, "LPGBT")
+        self.iic.write_lpgbt(0x054, 0, "LPGBT")
+    
+    def clear_writes(self):
+        self.iic.write_lpgbt(0x055, 0, "LPGBT")
+        self.iic.write_lpgbt(0x056, 0, "LPGBT")
+
+    def set_output(self, pin=16):
+        if pin < 8:
+            self.iic.write_lpgbt(0x054, (1 << pin), "LPGBT")
+        else:
+            self.iic.write_lpgbt(0x053, (1 << (pin-8)), "LPGBT")
+
+    def drive_high(self, pin):
+        if pin < 8:
+            self.iic.write_lpgbt(0x056, (1 << pin), "LPGBT")
+        else:
+            self.iic.write_lpgbt(0x055, (1 << (pin-8)), "LPGBT")
+
+    def pulldown_configure(self):
+        self.iic.write_lpgbt(0x057, 0xff , "LPGBT")
+        self.iic.write_lpgbt(0x058, 0xff , "LPGBT")
+        self.iic.write_lpgbt(0x059, 0 , "LPGBT")
+        self.iic.write_lpgbt(0x05a, 0, "LPGBT")
+
+    def read_gpio(self, pin):
+        if pin<8:
+            reg=0x1b0
+            bit=pin
+        else:
+            reg=0x1af
+            bit=pin-8
+        val=self.iic.read_lpgbt(reg,target= "LPGBT")[0]
+        return (val>>bit)&1
 
     def mod4_res_test(self, **kwargs):
         passed = True
@@ -171,45 +211,52 @@ class Mod4Resistance(Test):
             self.iic.connect("/dev/i2c-5")
 
             adc=calibrator(iic=self.iic,chips=["LPGBT"])
-            
-            # enable input on GPIO3,5,8,13,15, output on GPIO10 and 11
-            self.iic.write_lpgbt(0x053,0b00001100,"LPGBT") # output on 10 and 11
-            self.iic.write_lpgbt(0x054,0,"LPGBT") # no outputs on 0-7
-            # enable pull-up on GPIO3,5,8,13,15
-            self.iic.write_lpgbt(0x059,0b10100001,"LPGBT") # pullup on 15, 13, 8
-            self.iic.write_lpgbt(0x05a,0b00101000,"LPGBT") # pullup on 5, 3
-            self.iic.write_lpgbt(0x057,0b10100001,"LPGBT") # pull enable on 15, 13, 8
-            self.iic.write_lpgbt(0x058,0b00101000,"LPGBT") # pull enable on 5, 3
 
-            # set pins high
-            self.iic.write_lpgbt(0x055,0b00001100,"LPGBT") #
-            subprocess.run(['gpioset','2','12=1'])
-            names={3:"PG_LDO/PWR_EN",8:"PWR_EN",5:"PG_DCDC/ECON_RE_Hb",10:"ECON_RE_Hb",11:"ECON_RE_Sb",15:"HGCROC_RE_Sb/ECON_RE_Sb",13:"HGCROC_RE_Hb",'ADC3':'VMON_REF', 'ADC6':'VMON_LVS','ADC7':'RTD'}
+            gpio_pins={3,5,8,10,11,13,15}
+            names={3:"PG_LDO",8:"PWR_EN",5:"PG_DCDC",10:"ECON_RE_Hb",11:"ECON_RE_Sb",15:"HGCROC_RE_Sb",13:"HGCROC_RE_Hb",'ADC3':'VMON_REF', 'ADC6':'VMON_LVS','ADC7':'RTD'}
 
-            # check pins are high
-            x=self.read_gpio_all()
-            should_be_high=(3,5,8,10,11,15)
-            for pin in should_be_high:
-                if (x & (1<<pin))==0:
-                    passed=False
-                    test_data["GPIO%d"%pin]="Stuck low"
-                    comments+="%s stuck low;"%(names[pin])
-            test_data["GPIO_HIGH"]=f"{x:016b}"
 
-            # set pins low
-            self.iic.write_lpgbt(0x055,0b00000000,"LPGBT") #
+            self.clear_writes()
+            self.pulldown_configure()
+            self.set_all_inputs()
             # "Pin 12" on Kria GPIO is the pwr_enable
-            subprocess.run(['gpioset','2','12=0'])
-            
-            # check pins are low
-            should_be_low=(3,5,8,10,11,13,15)
-            x=self.read_gpio_all()
-            for pin in should_be_low:
-                if (x & (1<<pin))!=0:
+            subprocess.run(['gpioset','2','12=1'])
+
+            test_data['X_PWR_EN']={}
+            for pin in gpio_pins:
+                val=self.read_gpio(pin)
+                test_data['X_PWR_EN'][names[pin]]=val
+                should_be_high=(pin==3 or pin==8)
+                if val and not should_be_high:
                     passed=False
-                    test_data["GPIO%d"%pin]="Stuck high"
-                    comments+="%s stuck high;"%(names[pin])
-            test_data["GPIO_LOW"]=f"{x:016b}"
+                    comments+=f"GPIO{pin} stuck high when X_PWR_EN is set high.\n"
+                elif not val and should_be_high:
+                    passed=False
+                    comments+=f"GPIO{pin} stuck low when X_PWR_EN is set high.\n"
+            
+            # Set X_PWR_EN low
+            subprocess.run(['gpioset','2','12=0'])
+
+            for pina in gpio_pins:
+                if pina in (3,8,13):
+                    continue
+                test_data[names[pina]]={}
+                self.clear_writes()
+                self.set_all_inputs()
+                self.set_output(pina)
+                self.drive_high(pina)
+                for pin in gpio_pins:
+                    val=self.read_gpio(pin)
+                    test_data[names[pina]][names[pin]] = val
+                    should_be_high=(pin==pina or pin==self.pairs.get(pina,-1))
+                    if val and not should_be_high:
+                        passed=False
+                        comments+=f"GPIO{pin} stuck high when GPIO{pina} is set high.\n"
+                    elif not val and should_be_high:
+                        passed=False
+                        comments+=f"GPIO{pin} stuck low when GPIO{pina} is set high.\n"
+
+
 
             subprocess.run(['gpioset','2','12=1']) # put it back in default
 
@@ -218,6 +265,7 @@ class Mod4Resistance(Test):
             adc.calibrate()
 #            cres={3:20,6:100,7:100} nominal
             cres={3:23,6:91,7:91}
+            tollerance=5
 
             self.iic.write_lpgbt(0x06a,0x40,"LPGBT") # enable the CURDAC
                         
@@ -230,28 +278,32 @@ class Mod4Resistance(Test):
                     self.iic.write_lpgbt(0x6c,cdv['CURDACValue'],"LPGBT")
                     self.iic.write_lpgbt(0x121,(chan<<4)|0xF,"LPGBT") # read from the right channel
                     adc_bits=adc.get_ADC_conversion("LPGBT")
-                    adcv=adc.ADC_measurement(adc_bits,2,"LPGBT")
+                    # adcv=adc.ADC_measurement(adc_bits,2,"LPGBT")
                     ave_res+=adc.RSENSE_OHM(adc_bits,2,cdv['ROUT_OHM'],cdv['I_LOAD_A'],"LPGBT")
                 ave_res/=len(currents)
-                if math.fabs(ave_res-res)>5: # failure case
+                if math.fabs(ave_res-res)>tollerance: # failure case
                     passed=False
                     comments+="%s out of range;"%(names['ADC%d'%chan])
                 test_data[names['ADC%d'%chan]]=ave_res
             self.iic.write_lpgbt(0x6d,0,"LPGBT") # channel enable off
             self.iic.write_lpgbt(0x06a,0,"LPGBT") # disable the CURDAC
+
+            test_data['test_criteria']={
+                names['ADC3']+'_range':[cres[3]-tollerance, cres[3]+tollerance],
+                names['ADC6']+'_range':[cres[6]-tollerance, cres[6]+tollerance],
+                names['ADC7']+'_range':[cres[7]-tollerance, cres[7]+tollerance],
+            }
             
-        except Exception as e:
-            print(e)
-            test_data['mezz_ok'] = False
+        except Exception:
+            traceback.print_exc()
             comments=f"Failed to write to LPGBT."
             passed=False
         finally:
             if hasattr(self, 'iic'):
                 self.iic.close()
-        
-        
-        if self.conn is not None:
-            self.conn.send("Done.")
+            if self.conn is not None:
+                self.conn.send("Done.")
+
         return passed, test_data, comments
 
 class Mod4Reset(Test):
