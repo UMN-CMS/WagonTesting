@@ -264,8 +264,8 @@ class Mod4Resistance(Test):
             print("Calibrating")
             adc.calibrate()
 #            cres={3:20,6:100,7:100} nominal
-            cres={3:23,6:91,7:91}
-            tollerance=5
+            cres={3:17.5,6:85.5,7:85.5}
+            tollerance=0.5
 
             self.iic.write_lpgbt(0x06a,0x40,"LPGBT") # enable the CURDAC
                         
