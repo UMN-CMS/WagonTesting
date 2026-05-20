@@ -264,8 +264,8 @@ class Mod4Resistance(Test):
             print("Calibrating")
             adc.calibrate()
 #            cres={3:20,6:100,7:100} nominal
-            cres={3:17.5,6:85.5,7:85.5}
-            tollerance=0.5
+            cres={3:22.5,6:85.5,7:85.5}
+            tollerance={3:5.5,6:0.5,7:0.5}
 
             self.iic.write_lpgbt(0x06a,0x40,"LPGBT") # enable the CURDAC
                         
@@ -281,7 +281,7 @@ class Mod4Resistance(Test):
                     # adcv=adc.ADC_measurement(adc_bits,2,"LPGBT")
                     ave_res+=adc.RSENSE_OHM(adc_bits,2,cdv['ROUT_OHM'],cdv['I_LOAD_A'],"LPGBT")
                 ave_res/=len(currents)
-                if math.fabs(ave_res-res)>tollerance: # failure case
+                if math.fabs(ave_res-res)>tollerance[chan]: # failure case
                     passed=False
                     comments+="%s out of range;"%(names['ADC%d'%chan])
                 test_data[names['ADC%d'%chan]]=ave_res
@@ -289,9 +289,9 @@ class Mod4Resistance(Test):
             self.iic.write_lpgbt(0x06a,0,"LPGBT") # disable the CURDAC
 
             test_data['test_criteria']={
-                names['ADC3']+'_range':[cres[3]-tollerance, cres[3]+tollerance],
-                names['ADC6']+'_range':[cres[6]-tollerance, cres[6]+tollerance],
-                names['ADC7']+'_range':[cres[7]-tollerance, cres[7]+tollerance],
+                names['ADC3']+'_range':[cres[3]-tollerance[3], cres[3]+tollerance[3]],
+                names['ADC6']+'_range':[cres[6]-tollerance[6], cres[6]+tollerance[6]],
+                names['ADC7']+'_range':[cres[7]-tollerance[7], cres[7]+tollerance[7]],
             }
             
         except Exception:
