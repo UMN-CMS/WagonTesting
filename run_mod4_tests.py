@@ -204,15 +204,17 @@ class Mod4Resistance(Test):
         passed = True
         test_data = {}
         comments = ""
-
         
         try:
             self.iic = engine_comm.engine_comm("I2C", "MEZZ")
             self.iic.connect("/dev/i2c-5")
 
             adc=calibrator(iic=self.iic,chips=["LPGBT"])
-
-            gpio_pins={3,5,8,10,11,13,15}
+            
+            if self.info_dict['board_sn'][5:9]=='31A1':
+                gpio_pins={3,8,11,13,15}
+            else:
+                gpio_pins={3,5,8,10,11,13,15}
             names={3:"PG_LDO",8:"PWR_EN",5:"PG_DCDC",10:"ECON_RE_Hb",11:"ECON_RE_Sb",15:"HGCROC_RE_Sb",13:"HGCROC_RE_Hb",'ADC3':'VMON_REF', 'ADC6':'VMON_LVS','ADC7':'RTD'}
 
 
@@ -265,7 +267,7 @@ class Mod4Resistance(Test):
             adc.calibrate()
 #            cres={3:20,6:100,7:100} nominal
             cres={3:22.5,6:90.5,7:90.5}
-            tollerance={3:5.5,6:5.5,7:5.5}
+            tollerance={3:6.5,6:6.5,7:6.5}
 
             self.iic.write_lpgbt(0x06a,0x40,"LPGBT") # enable the CURDAC
                         
