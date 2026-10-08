@@ -211,7 +211,7 @@ class Mod4Resistance(Test):
 
             adc=calibrator(iic=self.iic,chips=["LPGBT"])
             
-            if self.info_dict['board_sn'][5:9]=='31A1':
+            if self.info_dict['board_sn'][5:9] in ['31A1', '31A3']:
                 gpio_pins={3,8,11,13,15}
             else:
                 gpio_pins={3,5,8,10,11,13,15}
